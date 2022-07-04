@@ -3,7 +3,8 @@ from pygame import *
 from initialising import *
 from images import *
 import math
-from math import atan2, degrees, floor
+from math import atan2, degrees, floor, sin, cos, radians
+import random
 
 # arbiter class for game logic and storing global variables and stuff
 
@@ -46,6 +47,80 @@ class arbiter():
 
 # This is the mouse controlled reticle used for aiming and shooting
 
+class bullitimpact(pygame.sprite.Sprite):
+    def __init__(self, coords):
+        super().__init__()
+        self.surf = hitpix[0]
+        self.rect = self.surf.get_rect()
+        self.rect.center = coords
+        self.timer = 0
+    def update(self):
+        self.timer += 1
+        picnum = self.timer // 2
+        self.surf = hitpix[picnum]
+        screen.blit(self.surf, self.rect)
+        if self.timer > 8:
+            self.kill()
+
+class hitdetector(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.surf = pygame.Surface((3,3))
+        self.surf.set_alpha(0)
+        self.rect = self.surf.get_rect()
+
+class Tracereffect(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.orig = tracer
+        self.surf = pygame.transform.rotate(self.orig, ref.angle)
+        self.rect = self.surf.get_rect()
+        self.pos = vec(liz.rect.center)
+        self.error = random.randint(-1,1) // 2
+        self.tick = 0
+        self.scantick = 0
+        self.angle = ref.angle + 90 + self.error
+        if self.angle > 360:
+            self.angle -= 360
+        self.pos.x += (sin(radians(self.angle))) * 50
+        self.pos.y += (cos(radians(self.angle))) * 50
+        self.rect.center = self.pos
+        self.impactsite = (0,0)
+
+        ping = hitdetector()
+        ping.rect.center = self.pos
+
+        for i in range(100):
+            knal = pygame.sprite.spritecollide(ping, hardblocks, False)
+            if not knal:
+                ping.rect.centerx += (sin(radians(self.angle))) * 10
+                ping.rect.centery += (cos(radians(self.angle))) * 10
+                self.impactsite = vec(ping.rect.center)
+            else:
+                ping.kill()
+
+        deviation = vec(self.error, self.error)
+        self.impactsite += deviation
+
+
+
+    def update(self):
+
+        self.pos.x += (sin(radians(self.angle))) * 120
+        self.pos.y += (cos(radians(self.angle))) * 120
+        self.tick += 1
+        self.rect.center = self.pos
+        screen.blit(self.surf, self.rect)
+        hits = pygame.sprite.spritecollide(self, hardblocks, False)
+        if hits:
+            pow = bullitimpact(self.impactsite)
+            allsprites.add(pow)
+            for i in range(len(hits)):
+                screen.blit(hits[i].surf, hits[i].rect)
+                self.kill()
+        if self.tick > 20:
+            self.kill()
+
 class Reticle(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -83,8 +158,12 @@ class barrels(pygame.sprite.Sprite):
         self.surf = pygame.transform.rotate(self.preimage, self.angle)
         self.rect = self.surf.get_rect()
     def fire(self):
+
         if self.animtick >= 3:
             self.animtick = 0
+        if self.animtick == 0:
+            trace = Tracereffect()
+            allsprites.add(trace)
         self.firing = True
         self.barrelstate = self.orig[(self.animtick) + 2]
         self.animtick += 1

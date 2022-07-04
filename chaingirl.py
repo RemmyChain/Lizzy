@@ -43,7 +43,7 @@ while running:
     lizposition = font.render("Lizzy position: " + str(liz.pos), True, ("black"))
     virtualcoords = font.render("level virtual position: " + str(ref.virtualposition), True, ("black"))
     screen.blit(virtualcoords, (20, 20))
-    screen.blit(lizposition, (20,40))
+    screen.blit(terminal, (20,40))
     screen.blit(lizvelocity, (20, 60))
 
     pygame.display.update()
@@ -60,8 +60,6 @@ while running:
 
     if ref.death == True:
         running = False
-
-# setting FPS
 
     pygame.time.Clock().tick(30)
 

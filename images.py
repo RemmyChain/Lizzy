@@ -2,6 +2,8 @@ import pygame
 
 rocktile = pygame.image.load("rockblock.png").convert_alpha()
 
+tracer = pygame.image.load("tracer.png").convert_alpha()
+
 hitpix = [
     pygame.image.load("hit1.png").convert_alpha(),
     pygame.image.load("hit2.png").convert_alpha(),

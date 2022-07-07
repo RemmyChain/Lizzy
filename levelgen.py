@@ -45,11 +45,18 @@ def basicplatformconstructor(position, size):
 class basicplatformblock(pygame.sprite.Sprite):
     def __init__(self, imageset, index, position, hardtop):
         super().__init__()
-        self.surf = imageset[index]
+        self.image = (imageset[index])
+        self.surf = pygame.surface.Surface ((100,100), pygame.SRCALPHA)
+        
         self.rect = self.surf.get_rect()
         self.rect.topleft = position
         self.hardtop = hardtop
+        self.hole = pygame.surface.Surface ((20,20))
+        self.hole.fill(("black"))
+        self.hole.set_alpha(0)
+        self.surf.blit(self.image, (0, 0))
     def update(self):
+        self.surf.blit(self.hole, (20,20))
         screen.blit(self.surf, self.rect)
 
 # hard block class (blocks player movement and normal attacks, also is a platform)

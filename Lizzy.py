@@ -113,8 +113,9 @@ class Tracereffect(pygame.sprite.Sprite):
         screen.blit(self.surf, self.rect)
         hits = pygame.sprite.spritecollide(self, hardblocks, False)
         if hits:
-            pow = bullitimpact(self.impactsite)
-            allsprites.add(pow)
+            if (abs(self.rect.center[0] - self.impactsite[0]) < 50):
+                pow = bullitimpact(self.impactsite)
+                allsprites.add(pow)
             for i in range(len(hits)):
                 screen.blit(hits[i].surf, hits[i].rect)
                 self.kill()

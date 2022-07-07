@@ -253,10 +253,15 @@ class Lizlegs(pygame.sprite.Sprite):
             self.reverse = True
             self.runanim = Lizlegsreverse
             speed = speed * -1
-        self.frame = (self.runtimer // 10) + 3
-        self.runtimer += speed // 3
         if self.runtimer >= 60:
             self.runtimer = -30
+        self.frame = (self.runtimer // 10) + 3
+        if self.frame > 9:
+            self.frame = 0
+        if self.frame < 0:
+            self.frame = 0
+        self.runtimer += speed // 3
+
         if speed != 0 and key != 0:
             self.surf = self.runanim[self.frame]
         if speed == 0 and liz.grounded and key == 0:

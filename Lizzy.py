@@ -434,15 +434,20 @@ class LizMain(pygame.sprite.Sprite):
             legs.airborne(int(self.vel.x))
         torso.reverse(int(self.vel.x), key)
 
-        if gatling.firing:
-            self.recoil.x = cos(radians(ref.angle)) * 3
-            if not self.grounded:
-                self.recoil.y = sin(radians(ref.angle)) * -3
-
-            self.vel -= self.recoil
-
         self.vel.x -= self.vel.x * self.fric
         self.vel += self.grav
+
+        if gatling.firing:
+            self.recoil.x = cos(radians(ref.angle)) * 1.5
+            if not self.grounded:
+                self.recoil.y = sin(radians(ref.angle)) * -2.5
+                if self.vel.y > 40 or self.vel.y < -40:
+                    self.recoil.y = 0
+            self.vel -= self.recoil
+        else:
+            self.recoil = vec(0,0)
+
+
         self.pos += self.vel
         self.rect.midbottom = self.pos
         if self.vel.x < 0.1 and self.vel.x > -0.1:

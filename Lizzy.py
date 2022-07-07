@@ -245,11 +245,11 @@ class Lizlegs(pygame.sprite.Sprite):
                 self.surf = Lizlegsaireverse[0]
             else:
                 self.surf = Lizlegsaireverse[1]
-    def run(self, speed):
-        if speed > 0:
+    def run(self, speed, key):
+        if speed > 0 and key != 0:
             self.reverse = False
             self.runanim = Lizlegsrun
-        if speed < 0:
+        if speed < 0 and key != 0:
             self.reverse = True
             self.runanim = Lizlegsreverse
             speed = speed * -1
@@ -257,9 +257,9 @@ class Lizlegs(pygame.sprite.Sprite):
         self.runtimer += speed // 3
         if self.runtimer >= 60:
             self.runtimer = -30
-        if speed != 0:
+        if speed != 0 and key != 0:
             self.surf = self.runanim[self.frame]
-        if speed == 0 and liz.grounded:
+        if speed == 0 and liz.grounded and key == 0:
             if self.reverse:
                 self.surf = pygame.transform.flip(Lizlegstill, True, False)
             else:
@@ -295,10 +295,10 @@ class Liztorso(pygame.sprite.Sprite):
         if self.reversed:
             self.surf = pygame.transform.rotate((self.aim[self.frame]), (rotateangle * -1))
         self.rect = self.surf.get_rect()
-    def reverse(self, speed):
-        if speed < 0:
+    def reverse(self, speed, key):
+        if speed < 0 and key != 0:
             self.reversed = True
-        if speed > 0:
+        if speed > 0 and key != 0:
             self.reversed = False
 
 # Lizzy's main control sprite with transparant surface and the rect hitbox.
@@ -405,7 +405,7 @@ class LizMain(pygame.sprite.Sprite):
         else:
             self.grav.y = 2
         key = pygame.key.get_pressed()
-        self.key = key
+
         self.mousekey = pygame.mouse.get_pressed()
         if self.mousekey[0]:
             if not gatling.spinning:
@@ -416,18 +416,23 @@ class LizMain(pygame.sprite.Sprite):
             gatling.winddown()
         if key[K_d]:
             self.vel.x += self.acc.x
+
         if key[K_a]:
             self.vel.x -= self.acc.x
+
         if self.grounded and key[K_SPACE]:
             self.vel.y = -25
         if not key[K_SPACE] and self.vel.y < -5:
             self.vel.y += 5
         self.surf = self.orig
+        if not key[K_a] and not key[K_d]:
+            key = 0
         if self.grounded:
-            legs.run(int(self.vel.x))
+
+            legs.run(int(self.vel.x), key)
         else:
             legs.airborne(int(self.vel.x))
-        torso.reverse(int(self.vel.x))
+        torso.reverse(int(self.vel.x), key)
 
         if gatling.firing:
             self.recoil.x = cos(radians(ref.angle)) * 3

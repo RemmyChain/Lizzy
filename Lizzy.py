@@ -318,6 +318,7 @@ class LizMain(pygame.sprite.Sprite):
         self.pos = vec(200, 1000)
         self.fric = 0.2
         self.grounded = False
+        self.recoil = vec(0,0)
     def deathcheck(self):
         if self.pos.y > 2000:
             ref.death = True
@@ -404,6 +405,7 @@ class LizMain(pygame.sprite.Sprite):
         else:
             self.grav.y = 2
         key = pygame.key.get_pressed()
+        self.key = key
         self.mousekey = pygame.mouse.get_pressed()
         if self.mousekey[0]:
             if not gatling.spinning:
@@ -426,6 +428,14 @@ class LizMain(pygame.sprite.Sprite):
         else:
             legs.airborne(int(self.vel.x))
         torso.reverse(int(self.vel.x))
+
+        if gatling.firing:
+            self.recoil.x = cos(radians(ref.angle)) * 3
+            if not self.grounded:
+                self.recoil.y = sin(radians(ref.angle)) * -3
+
+            self.vel -= self.recoil
+
         self.vel.x -= self.vel.x * self.fric
         self.vel += self.grav
         self.pos += self.vel

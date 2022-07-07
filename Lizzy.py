@@ -102,6 +102,14 @@ class Tracereffect(pygame.sprite.Sprite):
         ping = hitdetector()
         ping.rect.center = self.pos
 
+       
+
+
+
+    def update(self):
+
+        ping = hitdetector()
+        ping.rect.center = self.pos
         for i in range(100):
             knal = pygame.sprite.spritecollide(ping, hardblocks, False)
             if not knal:
@@ -110,14 +118,6 @@ class Tracereffect(pygame.sprite.Sprite):
                 self.impactsite = vec(ping.rect.center)
             else:
                 ping.kill()
-
-        deviation = vec(self.error, self.error)
-        self.impactsite += deviation
-        self.rotation = 0
-
-
-
-    def update(self):
 
         self.pos.x += (sin(radians(self.angle))) * 120
         self.pos.y += (cos(radians(self.angle))) * 120

@@ -98,11 +98,12 @@ class Tracereffect(pygame.sprite.Sprite):
         self.pos.y += (cos(radians(self.angle))) * 50
         self.rect.center = self.pos
         self.impactsite = (0,0)
+        self.rotation = 0
 
         ping = hitdetector()
         ping.rect.center = self.pos
 
-       
+
 
 
 

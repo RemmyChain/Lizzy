@@ -42,9 +42,11 @@ while running:
     lizvelocity = font.render("Lizzy velocity: " + str(liz.vel), True, ("black"))
     lizposition = font.render("Lizzy position: " + str(liz.pos), True, ("black"))
     virtualcoords = font.render("level virtual position: " + str(ref.virtualposition), True, ("black"))
+    spritenumber = font.render("number of sprites: " + str(len(allsprites)), True, ("black"))
     screen.blit(virtualcoords, (20, 20))
     screen.blit(terminal, (20,40))
     screen.blit(lizvelocity, (20, 60))
+    screen.blit(spritenumber, (20,80))
 
     pygame.display.update()
 

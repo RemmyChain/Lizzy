@@ -48,16 +48,28 @@ class arbiter():
 # This is the mouse controlled reticle used for aiming and shooting
 
 class bullitimpact(pygame.sprite.Sprite):
-    def __init__(self, coords):
+    def __init__(self, coords, rotation):
         super().__init__()
-        self.surf = hitpix[0]
+        self.orig = hitpix[0]
+        self.surf = pygame.transform.rotate(self.orig, rotation)
         self.rect = self.surf.get_rect()
         self.rect.center = coords
+        if rotation == 0:
+            self.rect.midbottom = coords
+        elif rotation == 90:
+            self.rect.midright = coords
+        elif rotation == 180:
+            self.rect.midtop = coords
+        elif rotation == 270:
+            self.rect.midleft = coords
+
+
         self.timer = 0
+        self.rotation = rotation
     def update(self):
         self.timer += 1
         picnum = self.timer // 2
-        self.surf = hitpix[picnum]
+        self.surf = pygame.transform.rotate(hitpix[picnum], self.rotation)
         screen.blit(self.surf, self.rect)
         if self.timer > 8:
             self.kill()
@@ -101,6 +113,7 @@ class Tracereffect(pygame.sprite.Sprite):
 
         deviation = vec(self.error, self.error)
         self.impactsite += deviation
+        self.rotation = 0
 
 
 
@@ -114,7 +127,15 @@ class Tracereffect(pygame.sprite.Sprite):
         hits = pygame.sprite.spritecollide(self, hardblocks, False)
         if hits:
             if (abs(self.rect.center[0] - self.impactsite[0]) < 50):
-                pow = bullitimpact(self.impactsite)
+                if abs(self.impactsite[1] - hits[0].rect.top) < 15:
+                    self.rotation = 0
+                elif abs(self.impactsite[0] - hits[0].rect.left) < 15:
+                    self.rotation = 90
+                elif abs(self.impactsite[1] - hits[0].rect.bottom) < 15:
+                    self.rotation = 180
+                elif abs(self.impactsite[0] - hits[0].rect.right) < 15:
+                    self.rotation = 270
+                pow = bullitimpact(self.impactsite, self.rotation)
                 allsprites.add(pow)
             for i in range(len(hits)):
                 screen.blit(hits[i].surf, hits[i].rect)

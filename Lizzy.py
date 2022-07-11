@@ -21,7 +21,8 @@ class arbiter():
 
     def angleget(self):
         lizpos = vec(liz.rect.center)
-        difference = vec(lizpos - cursor.pos)
+        mousepos = vec(pygame.mouse.get_pos())
+        difference = vec(lizpos - mousepos)
         self.angle = round((degrees(atan2(difference.x, difference.y)) + 90), 2)
         if self.angle < 0:
             self.angle += 360
@@ -464,5 +465,5 @@ liz = LizMain()
 legs = Lizlegs()
 torso = Liztorso()
 gatling = barrels()
-cursor = Reticle()
+# cursor = Reticle()
 

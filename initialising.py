@@ -8,7 +8,10 @@ screen = pygame.display.set_mode((0, 0), flags, 16)
 background = pygame.image.load("bg01.jpg").convert()
 running = True
 vec = pygame.math.Vector2
-pygame.mouse.set_visible(False)
+# pygame.mouse.set_visible(False)
+mousesurf = pygame.image.load("reticle.png")
+reticursor = pygame.cursors.Cursor((15,15), mousesurf)
+pygame.mouse.set_cursor(reticursor)
 font = pygame.font.SysFont("comicsansms", 20)
 pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
 

@@ -32,7 +32,7 @@ while running:
     for entity in allsprites:
         entity.update()
     liz.update()
-    cursor.update()
+#    cursor.update()
 
 # this is for rendering some data on the screen for testing and debugging ets.
 

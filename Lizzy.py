@@ -99,6 +99,8 @@ class spriticle(pygame.sprite.Sprite):
         super().__init__()
         self.orig = pygame.surface.Surface((100,100))
         self.orig.set_colorkey((0,0,0))
+        self.splintscreen = pygame.surface.Surface((100,100))
+        self.splintscreen.set_colorkey((0,0,0))
         self.orig.set_alpha(255)
         self.alpha = 255
         self.fade = 0.85
@@ -116,6 +118,14 @@ class spriticle(pygame.sprite.Sprite):
             self.rect.midleft = coords
         self.rotation = rotation
         self.particlelist = []
+        self.splinterlist = []
+
+        for i in range(random.randint(1,3)):
+            randomdir = random.randrange(-10,10)
+            xpos = 50
+            ypos = 100
+            splinter = particle(xpos, ypos, randomdir , (-10 + randomdir), 0, 0, 5, -1, (255,220,150), self.splintscreen)
+            self.splinterlist.append(splinter)
 
         for i in range(6):
             randomized1 = random.randrange(-10,10) / 10
@@ -131,14 +141,19 @@ class spriticle(pygame.sprite.Sprite):
 
     def update(self):
         # self.orig.fill((0,0,0))
+        self.splintscreen.fill((0,0,0))
         for i in range(len(self.particlelist)):
             self.particlelist[i].draw()
+        for i in range(len(self.splinterlist)):
+            self.splinterlist[i].draw()
         self.timer += 1
         self.alpha = self.alpha * self.fade
 
         self.surf = pygame.transform.rotate(self.orig, self.rotation)
+        self.splinters = pygame.transform.rotate(self.splintscreen, self.rotation)
         self.surf.set_alpha(self.alpha)
         screen.blit(self.surf, self.rect)
+        screen.blit(self.splinters, self.rect)
         if self.timer > 15:
             self.kill()
 

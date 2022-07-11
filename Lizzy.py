@@ -55,7 +55,7 @@ class arbiter():
             liz.pos.x -= liz.vel.x
         else:
             self.xscrolling = False
-        if (liz.pos.y >= 800 and liz.vel.y > 0 and self.virtualposition.y <= 800) or (liz.pos.y <= 400 and liz.vel.y < 0):
+        if (liz.pos.y >= 800 and liz.vel.y > 0 and self.virtualposition.y <= 800) or (liz.pos.y <= 400 and liz.vel.y < 0 and self.virtualposition.y >= -400):
             self.yscrolling = True
             for entity in allsprites:
                 position = list(entity.rect.center)
@@ -472,7 +472,8 @@ class LizMain(pygame.sprite.Sprite):
         else:
             self.recoil = vec(0,0)
 
-
+        if self.pos.y <= 0:
+            self.vel.y = 1
         self.pos += self.vel
         self.rect.midbottom = self.pos
         if self.vel.x < 0.1 and self.vel.x > -0.1:

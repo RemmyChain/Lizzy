@@ -117,7 +117,7 @@ class spriticle(pygame.sprite.Sprite):
         self.rotation = rotation
         self.particlelist = []
 
-        for i in range(7):
+        for i in range(6):
             randomized1 = random.randrange(-10,10) / 10
             randomized2 = random.randrange(-10, 10) / 10
             randomized3 = random.randrange(-10, 10) / 10
@@ -126,7 +126,7 @@ class spriticle(pygame.sprite.Sprite):
 
             xpos = 50
             ypos = 100
-            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (10,10,10), self.orig)
+            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (50,40,10), self.orig)
             self.particlelist.append(part)
 
     def update(self):

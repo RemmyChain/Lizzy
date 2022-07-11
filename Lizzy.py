@@ -13,9 +13,24 @@ class arbiter():
         self.angle = 0
         self.death = False
         self.virtualposition = vec(0,0)
+        self.scrollmeter = vec(0,0)
+        self.xscrolling = False
+        self.yscrolling = False
     def update(self):
         self.angleget()
+
         self.scroll()
+        self.virtpos()
+    def virtpos(self):
+        if self.xscrolling:
+            self.scrollmeter.x += int(liz.vel.x)
+        if self.yscrolling:
+            self.scrollmeter.y += int(liz.vel.y)
+
+        self.virtualposition = liz.pos  + self.scrollmeter
+        self.virtualposition.x = int(self.virtualposition.x)
+        # self.virtualposition.x = int(self.virtualposition.x)
+        # self.virtualposition.y = int(self.virtualposition.y)
 
 # computing angle between Lizzy and the reticle for determining where she points her gatling at.
 
@@ -31,20 +46,25 @@ class arbiter():
 
     def scroll(self):
         if (liz.pos.x >= 800 and liz.vel.x > 0) or (liz.pos.x <= 700 and liz.vel.x < 0):
-            self.scrolling = True
+            self.xscrolling = True
             for entity in allsprites:
                 position = list(entity.rect.center)
                 position[0] -= int(liz.vel.x)
-                self.virtualposition.x += int(liz.vel.x)
+            #    self.virtualposition.x += int(liz.vel.x)
                 entity.rect.center = position
             liz.pos.x -= liz.vel.x
-        if (liz.pos.y >= 800 and liz.vel.y > 0 and self.virtualposition.y <= 0) or (liz.pos.y <= 400 and liz.vel.y < 0):
+        else:
+            self.xscrolling = False
+        if (liz.pos.y >= 800 and liz.vel.y > 0 and self.virtualposition.y <= 800) or (liz.pos.y <= 400 and liz.vel.y < 0):
+            self.yscrolling = True
             for entity in allsprites:
                 position = list(entity.rect.center)
                 position[1] -= int(liz.vel.y)
-                self.virtualposition.y += int(liz.vel.y)
+            #    self.virtualposition.y += int(liz.vel.y)
                 entity.rect.center = position
             liz.pos.y -= liz.vel.y
+        else:
+            self.yscrolling = False
 
 # This is the mouse controlled reticle used for aiming and shooting
 

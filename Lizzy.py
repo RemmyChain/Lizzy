@@ -66,7 +66,84 @@ class arbiter():
         else:
             self.yscrolling = False
 
-# This is the mouse controlled reticle used for aiming and shooting
+
+class particle():
+    def __init__(self, xpos, ypos, xvel, yvel, xacc, yacc, size, dsize, color, surface):
+        self.xpos = xpos
+        self.ypos = ypos
+        self.xvel = xvel
+        self.yvel = yvel
+        self.xacc = xacc
+        self.yacc = yacc
+        self.size = size
+        self.dsize = dsize
+        self.color = color
+        self.surface = surface
+        self.center = vec(self.xpos, self.ypos)
+    def draw(self):
+        pygame.draw.circle(self.surface, self.color, self.center, self.size, 0)
+        self.xvel += self.xacc
+        self.yvel += self.yacc
+        if self.yvel > 0:
+            self.yvel = random.randrange(-1,1)
+        # self.xpos += self.xvel
+        # self.ypos += self.ypos
+        self.size += self.dsize
+        self.center.x += self.xvel
+        self.center.y += self.yvel
+
+
+
+class spriticle(pygame.sprite.Sprite):
+    def __init__(self, coords, rotation):
+        super().__init__()
+        self.orig = pygame.surface.Surface((100,100))
+        self.orig.set_colorkey((0,0,0))
+        self.orig.set_alpha(255)
+        self.alpha = 255
+        self.fade = 0.85
+        self.rect = self.orig.get_rect()
+        self.rect.center = coords
+        self.coords = vec(coords)
+        self.timer = 0
+        if rotation == 0:
+            self.rect.midbottom = coords
+        elif rotation == 90:
+            self.rect.midright = coords
+        elif rotation == 180:
+            self.rect.midtop = coords
+        elif rotation == 270:
+            self.rect.midleft = coords
+        self.rotation = rotation
+        self.particlelist = []
+
+        for i in range(7):
+            randomized1 = random.randrange(-10,10) / 10
+            randomized2 = random.randrange(-10, 10) / 10
+            randomized3 = random.randrange(-10, 10) / 10
+            randomized4 = random.randrange(-10, 10) / 10
+            randomized5 = random.randrange(-10, 10) / 10
+
+            xpos = 50
+            ypos = 100
+            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (10,10,10), self.orig)
+            self.particlelist.append(part)
+
+    def update(self):
+        # self.orig.fill((0,0,0))
+        for i in range(len(self.particlelist)):
+            self.particlelist[i].draw()
+        self.timer += 1
+        self.alpha = self.alpha * self.fade
+
+        self.surf = pygame.transform.rotate(self.orig, self.rotation)
+        self.surf.set_alpha(self.alpha)
+        screen.blit(self.surf, self.rect)
+        if self.timer > 15:
+            self.kill()
+
+
+
 
 class bullitimpact(pygame.sprite.Sprite):
     def __init__(self, coords, rotation):
@@ -151,7 +228,8 @@ class Tracereffect(pygame.sprite.Sprite):
                     self.rotation = 180
                 elif abs(self.impactsite[0] - hits[0].rect.right) < 15:
                     self.rotation = 270
-                pow = bullitimpact(self.impactsite, self.rotation)
+            #    pow = bullitimpact(self.impactsite, self.rotation)
+                pow = spriticle(self.impactsite, self.rotation)
                 allsprites.add(pow)
             for i in range(len(hits)):
                 screen.blit(hits[i].surf, hits[i].rect)

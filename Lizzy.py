@@ -440,10 +440,15 @@ class LizMain(pygame.sprite.Sprite):
 
         if gatling.firing:
             self.recoil.x = cos(radians(ref.angle)) * 1.5
-            if not self.grounded:
-                self.recoil.y = sin(radians(ref.angle)) * -2.5
-                if self.vel.y > 40 or self.vel.y < -40:
+
+            self.recoil.y = sin(radians(ref.angle)) * -2.5
+            if self.grounded:
+                if self.recoil.y < 2:
                     self.recoil.y = 0
+                else:
+                    self.pos.y -= 5
+            if self.vel.y > 40 or self.vel.y < -40:
+                self.recoil.y = 0
             self.vel -= self.recoil
         else:
             self.recoil = vec(0,0)

@@ -2,6 +2,7 @@ import pygame
 from pygame import *
 from initialising import *
 from images import *
+from Lizzy import *
 import math
 from math import atan2, degrees, floor, sin, cos, radians
 import random
@@ -31,7 +32,62 @@ class particle():
         self.center.x += self.xvel
         self.center.y += self.yvel
 
+class muzzleflash(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.orig = pygame.surface.Surface((100,50))
+        self.orig.set_colorkey((0,0,0))
+        self.orig.set_alpha(200)
+        self.rect = self.orig.get_rect()
+        self.list = []
+        self.timer = 0
+        self.angle = ref.angle
+        self.offangle = ref.angle
+        self.pos = vec(liz.rect.center)
+    def update(self):
 
+        self.timer += 1
+        self.orig.fill((0,0,0))
+        if self.timer > 2:
+            for i in range(12):
+                random1 = random.randrange(20, 30)
+                random2 = random.randrange(0, 50)
+                random3 = random.randrange(-5, 5)
+                random4 = random.randrange(5, 15)
+                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 7, -2, (250,230,200), self.orig)
+                self.list.append(part)
+        for i in self.list:
+            i.draw()
+            if i.size < 1:
+                self.list.remove(i)
+        self.glow = pygame.transform.scale(self.orig, (130, 65))
+        self.glow.set_alpha(100)
+        self.glowy = pygame.transform.rotate(self.glow, self.angle)
+        self.glowrect = self.glowy.get_rect()
+        self.surf = pygame.transform.rotate(self.orig, self.angle)
+        self.rect = self.surf.get_rect()
+
+        self.angle = gatling.angle
+        if self.angle > 360:
+            self.angle -= 360
+        self.offangle = gatling.angle
+
+        if self.offangle > 360:
+            self.offangle -= 360
+        xoffset = 150 * cos(radians(self.offangle))
+        yoffset = 150 * sin(radians(self.offangle))
+        self.pos = vec(liz.rect.center)
+        self.pos.x += xoffset
+        self.pos.y -= yoffset
+        self.rect.center = self.pos
+        self.glowrect.center = self.pos
+
+        screen.blit(self.glowy, self.glowrect)
+        screen.blit(self.surf, self.rect)
+        if self.timer > 2:
+            self.timer = 0
+        if gatling.firing == False:
+            self.kill()
 
 class spriticle(pygame.sprite.Sprite):
     def __init__(self, coords, rotation):

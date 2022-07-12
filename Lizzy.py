@@ -5,6 +5,7 @@ from images import *
 import math
 from math import atan2, degrees, floor, sin, cos, radians
 import random
+import FX
 from FX import *
 
 # arbiter class for game logic and storing global variables and stuff
@@ -163,6 +164,7 @@ class barrels(pygame.sprite.Sprite):
         self.spinspeed = 0
         self.iteration = 0
         self.firing = False
+        self.flash = False
     def rotate(self):
         self.angle = ref.angle
         if torso.reversed:
@@ -172,6 +174,10 @@ class barrels(pygame.sprite.Sprite):
         self.surf = pygame.transform.rotate(self.preimage, self.angle)
         self.rect = self.surf.get_rect()
     def fire(self):
+        if not self.flash:
+            flash = FX.muzzleflash()
+            allsprites.add(flash)
+            self.flash = True
 
         if self.animtick >= 3:
             self.animtick = 0
@@ -201,6 +207,7 @@ class barrels(pygame.sprite.Sprite):
             self.spinning = True
     def winddown(self):
         self.firing = False
+        self.flash = False
         self.animtick += 1
         if self.animtick == 1:
             self.barrelstate = self.orig[1]

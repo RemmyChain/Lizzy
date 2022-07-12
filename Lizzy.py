@@ -350,6 +350,7 @@ class LizMain(pygame.sprite.Sprite):
 
         if hits:
             revert = self.pos.x - self.vel.x
+            reverty = self.pos.y - self.vel.y
             for i in range(len(hits)):
                 if hits[i].rect.center[1] < self.rect.bottom + 10 and hits[i].rect.center[1] > self.rect.top - 10:
                     self.pos.x = revert
@@ -365,6 +366,7 @@ class LizMain(pygame.sprite.Sprite):
                 if self.vel.y < 0:
                     if (self.vel.x <= 0 and self.rect.center[0] - hits[i].rect.center[0] < 45) or (self.vel.x >= 0 and self.rect.center[0] - hits[i].rect.center[0] > -45):
                         self.vel.y = 0
+                        self.pos.y = reverty
 
 
 # main update routine

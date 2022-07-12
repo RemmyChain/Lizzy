@@ -22,6 +22,10 @@ from levelgen import *
 
 from Lizzy import *
 
+# Special effects
+
+from FX import *
+
 # main game loop
 
 while running:

@@ -1,6 +1,7 @@
 import pygame
 from initialising import *
 from images import *
+from FX import *
 
 # a simple construction funtion building square platforms out of 100 x 100 sprite blocks
 
@@ -69,6 +70,11 @@ class hardblock(pygame.sprite.Sprite):
         self.rect.topleft = position
     def update(self):
         screen.blit(self.surf, self.rect)
+    def gethit(self, impactsite, rotation):
+
+
+        pow = spriticle(impactsite, rotation)
+        allsprites.add(pow)
 
 def hardblockplacement(hbcoords, image):
     for i in range(len(hbcoords)):

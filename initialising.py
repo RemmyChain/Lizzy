@@ -6,7 +6,10 @@ pygame.init()
 
 flags = FULLSCREEN | DOUBLEBUF
 screen = pygame.display.set_mode((0, 0), flags, 16)
-background = pygame.image.load(os.path.join('images', 'bg01.jpg')).convert()
+# screen = pygame.display.set_mode((600, 600))
+backgroundimage = pygame.image.load(os.path.join('images', 'bg01.jpg')).convert()
+screensize = screen.get_size()
+background = pygame.transform.scale(backgroundimage, screensize)
 running = True
 vec = pygame.math.Vector2
 # pygame.mouse.set_visible(False)

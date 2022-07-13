@@ -8,7 +8,7 @@ from math import atan2, degrees, floor, sin, cos, radians
 import random
 
 class particle():
-    def __init__(self, xpos, ypos, xvel, yvel, xacc, yacc, size, dsize, color, surface):
+    def __init__(self, xpos, ypos, xvel, yvel, xacc, yacc, size, dsize, color, surface, colorchange):
         self.xpos = xpos
         self.ypos = ypos
         self.xvel = xvel
@@ -18,10 +18,19 @@ class particle():
         self.size = size
         self.dsize = dsize
         self.color = color
+        self.colorchange = colorchange
         self.surface = surface
         self.center = vec(self.xpos, self.ypos)
+        self.red = self.color[0]
+        self.blue = self.color[2]
+        self.green = self.color[1]
     def draw(self):
         pygame.draw.circle(self.surface, self.color, self.center, self.size, 0)
+
+        self.red += self.colorchange[0]
+        self.green += self.colorchange[1]
+        self.blue += self.colorchange[2]
+        self.color = (self.red, self.green, self.blue)
         self.xvel += self.xacc
         self.yvel += self.yacc
         if self.yvel > 0:
@@ -44,17 +53,18 @@ class muzzleflash(pygame.sprite.Sprite):
         self.angle = ref.angle
         self.offangle = ref.angle
         self.pos = vec(liz.rect.center)
+
     def update(self):
 
         self.timer += 1
         self.orig.fill((0,0,0))
         if self.timer > 2:
             for i in range(12):
-                random1 = random.randrange(20, 30)
+                random1 = random.randrange(23, 27)
                 random2 = random.randrange(0, 50)
                 random3 = random.randrange(-5, 5)
                 random4 = random.randrange(5, 15)
-                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 7, -2, (250,230,200), self.orig)
+                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 5, -1, (255,255,255), self.orig, (-10,-40,-60))
                 self.list.append(part)
         for i in self.list:
             i.draw()
@@ -74,8 +84,8 @@ class muzzleflash(pygame.sprite.Sprite):
 
         if self.offangle > 360:
             self.offangle -= 360
-        xoffset = 150 * cos(radians(self.offangle))
-        yoffset = 150 * sin(radians(self.offangle))
+        xoffset = 160 * cos(radians(self.offangle))
+        yoffset = 160 * sin(radians(self.offangle))
         self.pos = vec(liz.rect.center)
         self.pos.x += xoffset
         self.pos.y -= yoffset
@@ -119,7 +129,7 @@ class spriticle(pygame.sprite.Sprite):
             randomdir = random.randrange(-10,10)
             xpos = 50
             ypos = 100
-            splinter = particle(xpos, ypos, randomdir , (-10 + randomdir), 0, 0, 5, -1, (255,220,150), self.splintscreen)
+            splinter = particle(xpos, ypos, randomdir , (-10 + randomdir), 0, 0, 5, -1, (255,220,150), self.splintscreen, (0,0,0))
             self.splinterlist.append(splinter)
 
         for i in range(6):
@@ -131,7 +141,7 @@ class spriticle(pygame.sprite.Sprite):
 
             xpos = 50
             ypos = 100
-            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (50,40,10), self.orig)
+            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (50,40,10), self.orig, (0,0,0))
             self.particlelist.append(part)
 
     def update(self):

@@ -176,7 +176,7 @@ class barrels(pygame.sprite.Sprite):
     def fire(self):
         if not self.flash:
             flash = FX.muzzleflash()
-            allsprites.add(flash)
+            flashy.add(flash)
             self.flash = True
 
         if self.animtick >= 3:
@@ -388,6 +388,7 @@ class LizMain(pygame.sprite.Sprite):
         torso.update()
         gatling.rotate()
 
+
 # function for integrating all Lizzy's various sprites
 
     def integrate(self):
@@ -406,6 +407,8 @@ class LizMain(pygame.sprite.Sprite):
         screen.blit(torso.surf, torso.rect)
         screen.blit(gatling.surf, gatling.rect)
         screen.blit(self.surf, self.rect)
+        for entity in flashy:
+            entity.update()
 
 # controlling movement and actions based on keyboard and mouse input
 

@@ -18,6 +18,10 @@ class arbiter():
         self.scrollmeter = vec(0,0)
         self.xscrolling = False
         self.yscrolling = False
+        self.sbleft = int(screensize[0] * 0.4)
+        self.sbright = int(screensize[0] * 0.6)
+        self.sbtop = int(screensize[1] * 0.4)
+        self.sbbottom = int(screensize[1] * 0.7)
     def update(self):
         self.angleget()
 
@@ -47,7 +51,7 @@ class arbiter():
 # scrolling the level.
 
     def scroll(self):
-        if (liz.pos.x >= 800 and liz.vel.x > 0) or (liz.pos.x <= 700 and liz.vel.x < 0):
+        if (liz.pos.x >= self.sbright and liz.vel.x > 0) or (liz.pos.x <= self.sbleft and liz.vel.x < 0):
             self.xscrolling = True
             for entity in allsprites:
                 position = list(entity.rect.center)
@@ -57,7 +61,7 @@ class arbiter():
             liz.pos.x -= liz.vel.x
         else:
             self.xscrolling = False
-        if (liz.pos.y >= 800 and liz.vel.y > 0 and self.virtualposition.y <= 800) or (liz.pos.y <= 400 and liz.vel.y < 0 and self.virtualposition.y >= -400):
+        if (liz.pos.y >= self.sbbottom and liz.vel.y > 0 and self.virtualposition.y <= 800) or (liz.pos.y <= self.sbtop and liz.vel.y < 0 and self.virtualposition.y >= -400):
             self.yscrolling = True
             for entity in allsprites:
                 position = list(entity.rect.center)
@@ -323,7 +327,7 @@ class LizMain(pygame.sprite.Sprite):
         self.acc = vec(4, 0)
         self.grav = vec(0, 0)
         self.vel = vec(0, 0)
-        self.pos = vec(200, 1000)
+        self.pos = vec(200, 200)
         self.fric = 0.2
         self.grounded = False
         self.recoil = vec(0,0)

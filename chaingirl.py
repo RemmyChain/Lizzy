@@ -26,6 +26,10 @@ from Lizzy import *
 
 from FX import *
 
+# enemies
+
+from enemies import *
+
 # main game loop
 
 while running:

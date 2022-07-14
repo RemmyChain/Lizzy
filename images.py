@@ -1,6 +1,11 @@
 import pygame
 import os
 
+kamakerbody = pygame.image.load(os.path.join('images', 'kamakerbody2.png')).convert_alpha()
+kamakerhead = pygame.image.load(os.path.join('images', 'kamakerhead.png')).convert_alpha()
+kamakerpaw = pygame.image.load(os.path.join('images', 'kamakerpaw.png')).convert_alpha()
+kamakertail = pygame.image.load(os.path.join('images', 'kamakertail.png')).convert_alpha()
+
 rocktile = pygame.image.load(os.path.join('images', 'rockblock.png')).convert_alpha()
 
 tracer = pygame.image.load(os.path.join('images', 'tracer.png')).convert_alpha()

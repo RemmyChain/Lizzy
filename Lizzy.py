@@ -2,6 +2,7 @@ import pygame
 from pygame import *
 from initialising import *
 from images import *
+from enemies import *
 import math
 from math import atan2, degrees, floor, sin, cos, radians
 import random
@@ -59,6 +60,7 @@ class arbiter():
             #    self.virtualposition.x += int(liz.vel.x)
                 entity.rect.center = position
             liz.pos.x -= liz.vel.x
+
         else:
             self.xscrolling = False
         if (liz.pos.y >= self.sbbottom and liz.vel.y > 0 and self.virtualposition.y <= 800) or (liz.pos.y <= self.sbtop and liz.vel.y < 0 and self.virtualposition.y >= -400):
@@ -69,6 +71,7 @@ class arbiter():
             #    self.virtualposition.y += int(liz.vel.y)
                 entity.rect.center = position
             liz.pos.y -= liz.vel.y
+
         else:
             self.yscrolling = False
 

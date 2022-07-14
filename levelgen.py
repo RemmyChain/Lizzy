@@ -1,6 +1,7 @@
 import pygame
 from initialising import *
 from images import *
+from enemies import *
 from FX import *
 
 # a simple construction funtion building square platforms out of 100 x 100 sprite blocks
@@ -107,3 +108,7 @@ basicplatformconstructor((0,1000), 15)
 basicplatformconstructor((2000,1000), 10)
 
 hardblockplacement(hardblocklist, rocktile)
+
+kamaker1 = kamaker((1000,600))
+enemies.add(kamaker1)
+allsprites.add(kamaker1)

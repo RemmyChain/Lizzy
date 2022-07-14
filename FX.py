@@ -3,6 +3,7 @@ from pygame import *
 from initialising import *
 from images import *
 from Lizzy import *
+from enemies import *
 import math
 from math import atan2, degrees, floor, sin, cos, radians
 import random

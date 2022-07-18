@@ -163,6 +163,30 @@ class spriticle(pygame.sprite.Sprite):
         if self.timer > 15:
             self.kill()
 
+class organichit(pygame.sprite.Sprite):
+    def __init__(self, coords):
+        super().__init__()
+        self.pos = vec(coords)
+        self.timer = 0
+        self.surf = pygame.surface.Surface((100, 100))
+        self.surf.set_colorkey((0, 0, 0))
+        self.rect = self.surf.get_rect()
+        self.rect.center = self.pos
+        self.list = []
+        for i in range(5):
+            xvel = random.randrange(-100, 100) / 10
+            yvel = 10 - abs(xvel)
+            yvel *= random.randint(-1, 1)
+            part = particle(50, 50, xvel, yvel, -1, -1, 5, -1, (240, 0, 0), self.surf, (0, 0, 0))
+            self.list.append(part)
+    def update(self):
+        self.surf.fill((0, 0, 0))
+        for i in self.list:
+            i.draw()
+        self.timer += 1
+        screen.blit(self.surf, self.rect)
+        if self.timer > 20:
+            self.kill()
 
 
 

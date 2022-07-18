@@ -91,7 +91,7 @@ class Tracereffect(pygame.sprite.Sprite):
         self.surf = pygame.transform.rotate(self.orig, ref.angle)
         self.rect = self.surf.get_rect()
         self.pos = vec(liz.rect.center)
-        self.error = random.randint(-1,1) // 2
+        self.error = random.randint(-1, 1) // 2
         self.tick = 0
         self.scantick = 0
         self.angle = ref.angle + 90 + self.error
@@ -110,7 +110,8 @@ class Tracereffect(pygame.sprite.Sprite):
         ping.rect.center = self.pos
         for i in range(100):
             knal = pygame.sprite.spritecollide(ping, hardblocks, False)
-            if not knal:
+            pats = pygame.sprite.spritecollide(ping, enemies, False)
+            if not knal and not pats:
                 ping.rect.centerx += (sin(radians(self.angle))) * 10
                 ping.rect.centery += (cos(radians(self.angle))) * 10
                 self.impactsite = vec(ping.rect.center)
@@ -123,7 +124,8 @@ class Tracereffect(pygame.sprite.Sprite):
         self.rect.center = self.pos
         screen.blit(self.surf, self.rect)
         hits = pygame.sprite.spritecollide(self, hardblocks, False)
-        if hits:
+        splut = pygame.sprite.spritecollide(self, enemies, False)
+        if hits and not splut:
             if (abs(self.rect.center[0] - self.impactsite[0]) < 50):
                 if abs(self.impactsite[1] - hits[0].rect.top) < 15:
                     self.rotation = 0
@@ -140,6 +142,14 @@ class Tracereffect(pygame.sprite.Sprite):
             for i in range(len(hits)):
                 screen.blit(hits[i].surf, hits[i].rect)
                 self.kill()
+
+        if splut and not hits:
+
+            for i in splut:
+                i.gethit(self.impactsite)
+                screen.blit(i.surf, i.rect)
+                self.kill()
+
         if self.tick > 20:
             self.kill()
 

@@ -17,12 +17,13 @@ class kamaker(pygame.sprite.Sprite):
         self.surf.set_alpha(255)
         self.surf.set_colorkey((0,0,0))
         self.rect = self.surf.get_rect()
+        self.hardblocked = False
 
         self.pos = vec(coords)
         self.rect.midbottom = self.pos
         self.speed = -5
         self.fallspeed = 0
-        self.health = 100
+        self.health = 25
         self.grounded = False
         self.gravity = 2
         self.reversed = False
@@ -39,12 +40,28 @@ class kamaker(pygame.sprite.Sprite):
 
 
 
-    def gethit(self):
+    def gethit(self, hitcoords):
+
         self.health -= 1
-        if self.helth <= 0:
+        hitfx = organichit(hitcoords)
+        allsprites.add(hitfx)
+
+        if hitcoords[0] < self.rect.centerx:
+            if not self.hardblocked:
+                self.rect.centerx += 10
+            else:
+                self.rect.centerx -= 10
+        if hitcoords[0] > self.rect.centerx:
+            if not self.hardblocked:
+                self.rect.centerx -= 10
+            else:
+                self.rect.centerx += 5
+
+        if self.health <= 0:
             self.kill()
 
     def move(self):
+
         self.oldpos = self.pos
         self.pos = vec(self.rect.midbottom)
         if not self.grounded:
@@ -65,14 +82,14 @@ class kamaker(pygame.sprite.Sprite):
         if self.grounded:
 
             if not self.reversed:
-                self.rect.centerx -= 200
+                self.rect.centerx -= 150
             elif self.reversed:
-                self.rect.centerx += 200
+                self.rect.centerx += 150
             hits = pygame.sprite.spritecollide(self, platforms, False)
             if not self.reversed:
-                self.rect.centerx += 200
+                self.rect.centerx += 150
             elif self.reversed:
-                self.rect.centerx -= 200
+                self.rect.centerx -= 150
             if not hits:
                 if self.reversed:
                     self.reversed = False
@@ -81,10 +98,10 @@ class kamaker(pygame.sprite.Sprite):
                     self.reversed = True
                     self.pos.x += self.speed
 
-
-
             # self.rect.midbottom = self.pos
+
     def platformcheck(self):
+
         hits = pygame.sprite.spritecollide(self, platforms, False)
         if hits:
             for i in hits:
@@ -105,6 +122,10 @@ class kamaker(pygame.sprite.Sprite):
                 self.reversed = True
             elif self.reversed:
                 self.reversed = False
+            self.hardblocked = True
+        else:
+            self.hardblocked = False
+
     def render(self):
 
         if not self.reversed:
@@ -113,6 +134,7 @@ class kamaker(pygame.sprite.Sprite):
             flipped = pygame.transform.flip(self.surf, True, False)
             screen.blit(flipped, self.rect)
         self.surf.fill((0, 0, 0))
+
     def update(self):
         if self.timer > 19:
             self.timer = 0

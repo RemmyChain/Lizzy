@@ -133,6 +133,9 @@ class kamaker(pygame.sprite.Sprite):
         else:
             flipped = pygame.transform.flip(self.surf, True, False)
             screen.blit(flipped, self.rect)
+        if self.health < 25:
+            healthrect = pygame.Rect(self.rect.left, self.rect.bottom, self.health * 5, 5)
+            pygame.draw.rect(screen, ("red"), healthrect)
         self.surf.fill((0, 0, 0))
 
     def update(self):

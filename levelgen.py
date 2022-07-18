@@ -109,6 +109,9 @@ basicplatformconstructor((2000,1000), 10)
 
 hardblockplacement(hardblocklist, rocktile)
 
-kamaker1 = kamaker((1000,600))
+kamaker1 = kamaker((1000, 600))
+kamaker2 = kamaker((2200, 600))
 enemies.add(kamaker1)
+enemies.add(kamaker2)
 allsprites.add(kamaker1)
+allsprites.add(kamaker2)

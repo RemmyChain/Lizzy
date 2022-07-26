@@ -411,9 +411,8 @@ class LizMain(pygame.sprite.Sprite):
 
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
-        if ouch and not self.gothit:
+        if ouch and not self.gothit and self.hittimer == 0:
             self.gothit = True
-            self.pos -= self.vel
             if abs(self.vel.x) > 15:
                 self.vel.x *= -1.5
             elif abs(self.vel.x) < 15:
@@ -423,10 +422,11 @@ class LizMain(pygame.sprite.Sprite):
                     self.vel.x -= 20
 
             self.vel.y *= -1
-        if self.gothit:
+        if self.gothit or self.hittimer > 1:
             self.hittimer += 1
-        if self.hittimer >= 15:
+        if self.hittimer >= 10:
             self.gothit = False
+        if self.hittimer >= 25:
             self.hittimer = 0
 
 

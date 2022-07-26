@@ -332,6 +332,7 @@ class LizMain(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.orig = pygame.Surface((50,180))
+        self.hitsurf = Lizhit
         self.orig.fill("red")
         self.orig.set_alpha(0)
         self.surf = self.orig
@@ -445,10 +446,16 @@ class LizMain(pygame.sprite.Sprite):
 # render all component sprite to the screen in correct order
 
     def render(self):
-        screen.blit(legs.surf, legs.rect)
-        screen.blit(torso.surf, torso.rect)
-        screen.blit(gatling.surf, gatling.rect)
-        screen.blit(self.surf, self.rect)
+        if self.gothit:
+            if self.vel.x <= 0:
+                screen.blit(self.hitsurf, self.rect)
+            if self.vel.x > 0:
+                screen.blit(pygame.transform.flip(self.hitsurf, True, False), self.rect)
+        else:
+            screen.blit(legs.surf, legs.rect)
+            screen.blit(torso.surf, torso.rect)
+            screen.blit(gatling.surf, gatling.rect)
+            screen.blit(self.surf, self.rect)
         for entity in flashy:
             entity.update()
 

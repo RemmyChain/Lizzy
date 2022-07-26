@@ -344,6 +344,8 @@ class LizMain(pygame.sprite.Sprite):
         self.fric = 0.2
         self.grounded = False
         self.recoil = vec(0,0)
+        self.gothit = False
+        self.hittimer = 0
     def deathcheck(self):
         if self.pos.y > 2000:
             ref.death = True
@@ -396,6 +398,7 @@ class LizMain(pygame.sprite.Sprite):
 # main update routine
 
     def update(self):
+        self.gethit()
         self.move()
         self.groundcheck()
         self.hardblockcheck()
@@ -404,6 +407,28 @@ class LizMain(pygame.sprite.Sprite):
         self.deathcheck()
         torso.update()
         gatling.rotate()
+
+    def gethit(self):
+        ouch = pygame.sprite.spritecollide(self, enemies, False)
+        if ouch and not self.gothit:
+            self.gothit = True
+            if abs(self.vel.x) > 15:
+                self.vel.x *= -1.5
+            elif abs(self.vel.x) < 15:
+                if ouch[0].rect.centerx < self.rect.centerx:
+                    self.vel.x += 20
+                if ouch[0].rect.centerx > self.rect.centerx:
+                    self.vel.x -= 20
+
+            self.vel.y *= -1
+        if self.gothit:
+            self.hittimer += 1
+        if self.hittimer >= 15:
+            self.gothit = False
+            self.hittimer = 0
+
+
+
 
 
 # function for integrating all Lizzy's various sprites
@@ -434,23 +459,25 @@ class LizMain(pygame.sprite.Sprite):
             self.grav.y = 0
         else:
             self.grav.y = 2
+
         key = pygame.key.get_pressed()
 
+
         self.mousekey = pygame.mouse.get_pressed()
-        if self.mousekey[0]:
+        if self.mousekey[0] and not self.gothit:
             if not gatling.spinning:
                 gatling.spinup()
             if gatling.spinning:
                 gatling.fire()
         if not self.mousekey[0] and gatling.spinning:
             gatling.winddown()
-        if key[K_d]:
+        if key[K_d] and not self.gothit:
             self.vel.x += self.acc.x
 
-        if key[K_a]:
+        if key[K_a] and not self.gothit:
             self.vel.x -= self.acc.x
 
-        if self.grounded and key[K_SPACE]:
+        if self.grounded and key[K_SPACE] and not self.gothit:
             self.vel.y = -25
     #    if not key[K_SPACE] and self.vel.y < -5:
     #        self.vel.y += 5

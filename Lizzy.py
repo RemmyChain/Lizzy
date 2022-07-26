@@ -413,6 +413,7 @@ class LizMain(pygame.sprite.Sprite):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
         if ouch and not self.gothit:
             self.gothit = True
+            self.pos -= self.vel
             if abs(self.vel.x) > 15:
                 self.vel.x *= -1.5
             elif abs(self.vel.x) < 15:

@@ -414,13 +414,14 @@ class LizMain(pygame.sprite.Sprite):
         if ouch and not self.gothit and self.hittimer == 0:
             self.gothit = True
             if abs(self.vel.x) > 15:
-                self.vel.x *= -1.5
+                self.vel.x *= -1
             elif abs(self.vel.x) < 15:
                 if ouch[0].rect.centerx < self.rect.centerx:
-                    self.vel.x += 20
+                    self.vel.x = 15
                 if ouch[0].rect.centerx > self.rect.centerx:
-                    self.vel.x -= 20
-
+                    self.vel.x = -15
+            if self.vel.y > 20:
+                self.vel.y = 20
             self.vel.y *= -1
         if self.gothit or self.hittimer > 1:
             self.hittimer += 1

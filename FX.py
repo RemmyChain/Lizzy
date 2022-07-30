@@ -5,8 +5,45 @@ from images import *
 from Lizzy import *
 from enemies import *
 import math
-from math import atan2, degrees, floor, sin, cos, radians
+from math import atan2, degrees, floor, sin, cos, radians, pi
 import random
+
+class crash(pygame.sprite.Sprite):
+    def __init__(self, coords):
+        super().__init__()
+        self.pos = vec(coords)
+        self.surf = pygame.surface.Surface((300, 300))
+        self.rect = self.surf.get_rect()
+        self.rect.center = self.pos
+        self.surf.fill((0, 0, 0))
+        self.surf.set_alpha(255)
+        self.surf.set_colorkey((0, 0, 0))
+        self.innersurf = pygame.surface.Surface((100, 100))
+        self.innersurf.fill((255, 255, 255))
+        self.timer = 0
+        self.scale = 0
+        self.fade = 0
+        for i in range(0, 8):
+            spacing = (pi / 4)
+            angle = (spacing * i) + (random.randint(-5, 5) / 50)
+            radius = random.randint(20, 25)
+            x = cos(angle) * 50 + 50
+            y = sin(angle) * 50 + 50
+            pygame.draw.circle(self.innersurf, (0, 0, 0), (x, y), radius, 0)
+
+    def update(self):
+        self.surf.fill((0, 0, 0))
+        self.innersurfx = pygame.transform.smoothscale(self.innersurf, ((100 + self.scale), (100 + self.scale)))
+        self.surf.set_alpha(255 - self.fade)
+
+        self.surf.blit(self.innersurfx, ((100 - (self.scale / 2)), (100 - (self.scale / 2))))
+        screen.blit(self.surf, self.rect)
+        self.timer += 1
+        self.scale += 20 - self.timer
+        self.fade += 10 + self.timer * 5
+        if self.timer > 10:
+            self.kill()
+
 
 
 class particle():

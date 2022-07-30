@@ -412,6 +412,11 @@ class LizMain(pygame.sprite.Sprite):
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
         if ouch and not self.gothit and self.hittimer == 0:
+            xcor = ((self.rect.centerx * 2) + ouch[0].rect.centerx) // 3
+            ycor = ((self.rect.centery * 2) + ouch[0].rect.centery) // 3
+            crashcoords = (xcor, ycor)
+            paf = FX.crash(crashcoords)
+            allsprites.add(paf)
             self.gothit = True
             if abs(self.vel.x) > 15:
                 self.vel.x *= -1

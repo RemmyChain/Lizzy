@@ -13,6 +13,7 @@ class kamaker(pygame.sprite.Sprite):
     def __init__(self, coords):
         super().__init__()
         self.surf = pygame.Surface((200,100))
+        self.killed = False
         self.surf.fill((0,0,0))
         self.surf.set_alpha(255)
         self.surf.set_colorkey((0,0,0))
@@ -28,6 +29,7 @@ class kamaker(pygame.sprite.Sprite):
         self.gravity = 2
         self.reversed = False
         self.timer = 0
+        self.deathtimer = 0
         self.oldpos = self.pos
         self.xpos1 = 40
         self.xpos2 = 85
@@ -37,6 +39,9 @@ class kamaker(pygame.sprite.Sprite):
         self.ypos2 = 70
         self.ypos3 = 70
         self.ypos4 = 70
+        self.partlist1 = []
+        self.partlist2 = []
+
 
 
 
@@ -47,7 +52,8 @@ class kamaker(pygame.sprite.Sprite):
         hitfx = organichit(hitcoords)
         allsprites.add(hitfx)
         copysurf = self.surf
-        self.surf.blit(copysurf, (100, 50), special_flags=BLEND_RGB_ADD)
+        if not self.killed:
+            self.surf.blit(copysurf, (100, 50), special_flags=BLEND_RGB_ADD)
 
         if hitcoords[0] < self.rect.centerx:
             if not self.hardblocked:
@@ -61,7 +67,7 @@ class kamaker(pygame.sprite.Sprite):
                 self.rect.centerx += 5
 
         if self.health <= 0:
-            self.kill()
+            self.killed = True
 
     def move(self):
 
@@ -150,13 +156,46 @@ class kamaker(pygame.sprite.Sprite):
         if self.timer > 19:
             self.timer = 0
         self.edgedetect()
-        self.move()
+        if not self.killed:
+            self.move()
         self.platformcheck()
         self.hardblockscheck()
-        self.animate()
-        self.render()
+
+
+        if self.deathtimer < 5:
+            self.animate()
+            self.render()
+        if self.killed:
+            self.deathani()
         self.timer += 1
         self.gothit = False
+
+    def deathani(self):
+        if self.deathtimer == 0:
+            for i in range(30):
+                x = self.rect.centerx + (random.randint( -30, 30))
+                y = self.rect.centery + (random.randint(-10, 10))
+                part1 = particle(x, y, 0, 0, 0, 0, 1, 4, (20, 200, 20), screen, (0 ,0 ,0))
+                self.partlist1.append(part1)
+        if self.deathtimer < 8:
+
+            for i in self.partlist1:
+                i.draw()
+
+        if self.deathtimer == 6:
+            for i in range(50):
+                x = self.rect.centerx + (random.randint(-40, 40))
+                y = self.rect.centery + (random.randint(-20, 20))
+                part2 = particle(x, y, 0, 0, random.randint(-5, 5), random.randint(-5, 5), 8, -0.5, (20, 200, 20), screen, (0 ,0 ,0))
+                self.partlist2.append(part2)
+        if self.deathtimer > 6 and self.deathtimer < 20:
+            for i in self.partlist2:
+                i.draw()
+
+        if self.deathtimer > 20:
+            self.kill()
+        self.deathtimer += 1
+
 
     def animate(self):
         self.frontpawfront()

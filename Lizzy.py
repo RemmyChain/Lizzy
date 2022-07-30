@@ -140,7 +140,7 @@ class Tracereffect(pygame.sprite.Sprite):
                 # pow = spriticle(self.impactsite, self.rotation)
                 # allsprites.add(pow)
             for i in range(len(hits)):
-                screen.blit(hits[i].surf, hits[i].rect)
+                screen.blit(hits[i].surf, hits[i].rect,)
                 self.kill()
 
         if splut and not hits:

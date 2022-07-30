@@ -8,6 +8,7 @@ import math
 from math import atan2, degrees, floor, sin, cos, radians
 import random
 
+
 class particle():
     def __init__(self, xpos, ypos, xvel, yvel, xacc, yacc, size, dsize, color, surface, colorchange):
         self.xpos = xpos
@@ -173,11 +174,11 @@ class organichit(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.rect.center = self.pos
         self.list = []
-        for i in range(5):
+        for i in range(7):
             xvel = random.randrange(-100, 100) / 10
             yvel = 10 - abs(xvel)
             yvel *= random.randint(-1, 1)
-            part = particle(50, 50, xvel, yvel, -1, -1, 5, -1, (240, 0, 0), self.surf, (0, 0, 0))
+            part = particle(50, 50, xvel, yvel, -1, -1, 3, -0.2, (240, 0, 0), self.surf, (0, 0, 0))
             self.list.append(part)
     def update(self):
         self.surf.fill((0, 0, 0))

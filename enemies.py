@@ -18,7 +18,7 @@ class kamaker(pygame.sprite.Sprite):
         self.surf.set_colorkey((0,0,0))
         self.rect = self.surf.get_rect()
         self.hardblocked = False
-
+        self.gothit = False
         self.pos = vec(coords)
         self.rect.midbottom = self.pos
         self.speed = -5
@@ -42,9 +42,12 @@ class kamaker(pygame.sprite.Sprite):
 
     def gethit(self, hitcoords):
 
+        self.gothit = True
         self.health -= 1
         hitfx = organichit(hitcoords)
         allsprites.add(hitfx)
+        copysurf = self.surf
+        self.surf.blit(copysurf, (100, 50), special_flags=BLEND_RGB_ADD)
 
         if hitcoords[0] < self.rect.centerx:
             if not self.hardblocked:
@@ -130,9 +133,14 @@ class kamaker(pygame.sprite.Sprite):
 
         if not self.reversed:
             screen.blit(self.surf, self.rect)
+            if self.gothit:
+                screen.blit(self.surf, self.rect, special_flags=BLEND_RGB_ADD)
         else:
             flipped = pygame.transform.flip(self.surf, True, False)
             screen.blit(flipped, self.rect)
+            if self.gothit:
+                screen.blit(flipped, self.rect, special_flags=BLEND_RGB_ADD)
+
         if self.health < 25:
             healthrect = pygame.Rect(self.rect.left, self.rect.bottom, self.health * 5, 5)
             pygame.draw.rect(screen, ("red"), healthrect)
@@ -148,6 +156,7 @@ class kamaker(pygame.sprite.Sprite):
         self.animate()
         self.render()
         self.timer += 1
+        self.gothit = False
 
     def animate(self):
         self.frontpawfront()

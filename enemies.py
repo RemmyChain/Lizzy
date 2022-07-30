@@ -175,7 +175,8 @@ class kamaker(pygame.sprite.Sprite):
             for i in range(30):
                 x = self.rect.centerx + (random.randint( -30, 30))
                 y = self.rect.centery + (random.randint(-10, 10))
-                part1 = particle(x, y, 0, 0, 0, 0, 1, 4, (20, 200, 20), screen, (0 ,0 ,0))
+                randomcol = random.randint( 170, 230)
+                part1 = particle(x, y, 0, 0, 0, 0, 1, 4, (50, randomcol, 20), screen, (0 ,0 ,0))
                 self.partlist1.append(part1)
         if self.deathtimer < 8:
 
@@ -186,13 +187,14 @@ class kamaker(pygame.sprite.Sprite):
             for i in range(50):
                 x = self.rect.centerx + (random.randint(-40, 40))
                 y = self.rect.centery + (random.randint(-20, 20))
-                part2 = particle(x, y, 0, 0, random.randint(-5, 5), random.randint(-5, 5), 8, -0.5, (20, 200, 20), screen, (0 ,0 ,0))
+                randomcol2 = random.randint( 170, 230)
+                part2 = particle(x, y, random.randint(-15, 15), random.randint(-30, 0), 0, 1, 8, -0.5, (50, randomcol2, 20), screen, (0 ,0 ,0))
                 self.partlist2.append(part2)
         if self.deathtimer > 6 and self.deathtimer < 20:
             for i in self.partlist2:
                 i.draw()
 
-        if self.deathtimer > 20:
+        if self.deathtimer > 30:
             self.kill()
         self.deathtimer += 1
 

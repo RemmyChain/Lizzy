@@ -28,6 +28,12 @@ class arbiter():
 
         self.scroll()
         self.virtpos()
+        self.hud()
+
+    def hud(self):
+        lizhealth = pygame.Rect(20, 120, liz.health * 5, 5)
+        pygame.draw.rect(screen, ("red"), lizhealth)
+
     def virtpos(self):
         if self.xscrolling:
             self.scrollmeter.x += int(liz.vel.x)
@@ -74,7 +80,6 @@ class arbiter():
 
         else:
             self.yscrolling = False
-
 
 
 class hitdetector(pygame.sprite.Sprite):
@@ -347,8 +352,14 @@ class LizMain(pygame.sprite.Sprite):
         self.recoil = vec(0,0)
         self.gothit = False
         self.hittimer = 0
+        self.health = 100
+
     def deathcheck(self):
         if self.pos.y > 2000:
+            self.health = 0
+
+        if self.health == 0:
+
             ref.death = True
             torso.kill()
             legs.kill()
@@ -412,6 +423,7 @@ class LizMain(pygame.sprite.Sprite):
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
         if ouch and not self.gothit and self.hittimer == 0:
+            self.health -= ouch[0].attack
             xcor = ((self.rect.centerx * 2) + ouch[0].rect.centerx) // 3
             ycor = ((self.rect.centery * 2) + ouch[0].rect.centery) // 3
             crashcoords = (xcor, ycor)

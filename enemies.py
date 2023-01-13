@@ -41,9 +41,7 @@ class kamaker(pygame.sprite.Sprite):
         self.ypos4 = 70
         self.partlist1 = []
         self.partlist2 = []
-
-
-
+        self.attack = 20
 
     def gethit(self, hitcoords):
 

@@ -338,6 +338,7 @@ class LizMain(pygame.sprite.Sprite):
         super().__init__()
         self.orig = pygame.Surface((50,180))
         self.hitsurf = Lizhit
+        self.deathsurf = Lizdeath[0]
         self.orig.fill("red")
         self.orig.set_alpha(0)
         self.surf = self.orig
@@ -352,13 +353,36 @@ class LizMain(pygame.sprite.Sprite):
         self.recoil = vec(0,0)
         self.gothit = False
         self.hittimer = 0
+        self.deathtimer = 0
         self.health = 100
+        self.dying = False
+        self.dead = False
+
+# dying animation controller
+
+    def swansong(self):
+        self.dying = True
+        self.deathtimer += 1
+
+        if self.deathtimer == 25:
+            self.deathtimer = 0
+            self.dying = False
+            self.dead = True
+
+# check if dead (due to fall or health depletion)
 
     def deathcheck(self):
         if self.pos.y > 2000:
             self.health = 0
 
+        if self.health < 0:
+            self.health = 0
+
         if self.health == 0:
+
+            self.swansong()
+
+        if self.dead:
 
             ref.death = True
             torso.kill()
@@ -422,7 +446,7 @@ class LizMain(pygame.sprite.Sprite):
 
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
-        if ouch and not self.gothit and self.hittimer == 0:
+        if ouch and not self.gothit and self.hittimer == 0 and not self.dying:
             self.health -= ouch[0].attack
             xcor = ((self.rect.centerx * 2) + ouch[0].rect.centerx) // 3
             ycor = ((self.rect.centery * 2) + ouch[0].rect.centery) // 3
@@ -465,11 +489,39 @@ class LizMain(pygame.sprite.Sprite):
 # render all component sprite to the screen in correct order
 
     def render(self):
-        if self.gothit:
+        if self.gothit and not self.dying:
             if self.vel.x <= 0:
                 screen.blit(self.hitsurf, self.rect)
             if self.vel.x > 0:
                 screen.blit(pygame.transform.flip(self.hitsurf, True, False), self.rect)
+
+        elif self.dying:
+            if self.vel.x <= 0:
+                if self.deathtimer >= 1 and self.deathtimer < 5:
+                    screen.blit(self.hitsurf, self.rect)
+                if self.deathtimer >= 5 and self.deathtimer < 10:
+                    self.deathsurf = Lizdeath[0]
+                    screen.blit(self.deathsurf, self.rect)
+                if self.deathtimer >= 10 and self.deathtimer < 15:
+                    self.deathsurf = Lizdeath[1]
+                    screen.blit(self.deathsurf, self.rect)
+                if self.deathtimer >= 15 and self.deathtimer < 25:
+                    self.deathsurf = Lizdeath[2]
+                    screen.blit(self.deathsurf, self.rect)
+            if self.vel.x > 0:
+                if self.deathtimer >= 1 and self.deathtimer < 5:
+                    screen.blit(pygame.transform.flip(self.hitsurf, True, False), self.rect)
+                if self.deathtimer >= 5 and self.deathtimer < 10:
+                    self.deathsurf = Lizdeath[0]
+                    screen.blit(pygame.transform.flip(self.deathsurf, True, False), self.rect)
+                if self.deathtimer >= 10 and self.deathtimer < 15:
+                    self.deathsurf = Lizdeath[1]
+                    screen.blit(pygame.transform.flip(self.deathsurf, True, False), self.rect)
+                if self.deathtimer >= 15 and self.deathtimer < 25:
+                    self.deathsurf = Lizdeath[2]
+                    screen.blit(pygame.transform.flip(self.deathsurf, True, False), self.rect)
+
+
         else:
             screen.blit(legs.surf, legs.rect)
             screen.blit(torso.surf, torso.rect)

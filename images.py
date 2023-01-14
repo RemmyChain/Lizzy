@@ -3,6 +3,12 @@ import os
 
 Lizhit = pygame.image.load(os.path.join('images', 'lizhit.png')).convert_alpha()
 
+Lizdeath = [
+    pygame.image.load(os.path.join('images', 'lizdeath01.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'lizdeath02.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'lizdeath01.png')).convert_alpha(),
+]
+
 kamakerbody = pygame.image.load(os.path.join('images', 'kamakerbody2.png')).convert_alpha()
 kamakerhead = pygame.image.load(os.path.join('images', 'kamakerhead.png')).convert_alpha()
 kamakerpaw = pygame.image.load(os.path.join('images', 'kamakerpaw.png')).convert_alpha()

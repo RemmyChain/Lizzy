@@ -367,15 +367,15 @@ class LizMain(pygame.sprite.Sprite):
 
         if self.deathtimer < 5:
             self.deathsurf = Lizhit
-            self.yoffset = 0
+            self.yoffset = -100
 
         if 5 <= self.deathtimer < 10:
             self.deathsurf = Lizdeath[0]
-            self.yoffset = -30
+            self.yoffset = -100
 
         if 10 <= self.deathtimer < 15:
             self.deathsurf = Lizdeath[1]
-            self.yoffset = -30
+            self.yoffset = -50
 
         if 15 <= self.deathtimer <= 30:
             self.deathsurf = Lizdeath[2]
@@ -516,7 +516,7 @@ class LizMain(pygame.sprite.Sprite):
 
         elif self.dying:
             if self.vel.x <= 0:
-                screen.blit(self.deathsurf, self.rect)
+                screen.blit(self.deathsurf, (self.rect.centerx, (self.rect.centery + self.yoffset)))
             if self.vel.x > 0:
                 screen.blit(pygame.transform.flip(self.deathsurf, True, False), (self.rect.centerx, (self.rect.centery + self.yoffset)))
 

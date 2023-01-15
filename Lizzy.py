@@ -357,6 +357,7 @@ class LizMain(pygame.sprite.Sprite):
         self.health = 100
         self.dying = False
         self.dead = False
+        self.yoffset = 0
 
 # dying animation controller
 
@@ -366,18 +367,22 @@ class LizMain(pygame.sprite.Sprite):
 
         if self.deathtimer < 5:
             self.deathsurf = Lizhit
+            self.yoffset = 0
 
         if 5 <= self.deathtimer < 10:
             self.deathsurf = Lizdeath[0]
+            self.yoffset = -30
 
         if 10 <= self.deathtimer < 15:
             self.deathsurf = Lizdeath[1]
+            self.yoffset = -30
 
-        if 15 <= self.deathtimer <= 25:
+        if 15 <= self.deathtimer <= 30:
             self.deathsurf = Lizdeath[2]
+            self.yoffset = 50
 
 
-        if self.deathtimer == 25:
+        if self.deathtimer == 30:
             self.deathtimer = 0
             self.dying = False
             self.dead = True
@@ -449,9 +454,9 @@ class LizMain(pygame.sprite.Sprite):
     def update(self):
         if not self.dying:
             self.gethit()
-            self.move()
-            self.groundcheck()
-            self.hardblockcheck()
+        self.move()
+        self.groundcheck()
+        self.hardblockcheck()
         self.integrate()
         self.render()
         self.deathcheck()
@@ -513,7 +518,7 @@ class LizMain(pygame.sprite.Sprite):
             if self.vel.x <= 0:
                 screen.blit(self.deathsurf, self.rect)
             if self.vel.x > 0:
-                screen.blit(pygame.transform.flip(self.deathsurf, True, False), self.rect)
+                screen.blit(pygame.transform.flip(self.deathsurf, True, False), (self.rect.centerx, (self.rect.centery + self.yoffset)))
 
 
 
@@ -537,20 +542,20 @@ class LizMain(pygame.sprite.Sprite):
 
 
         self.mousekey = pygame.mouse.get_pressed()
-        if self.mousekey[0] and not self.gothit:
+        if self.mousekey[0] and not self.gothit and not self.dying:
             if not gatling.spinning:
                 gatling.spinup()
             if gatling.spinning:
                 gatling.fire()
         if not self.mousekey[0] and gatling.spinning:
             gatling.winddown()
-        if key[K_d] and not self.gothit:
+        if key[K_d] and not self.gothit and not self.dying:
             self.vel.x += self.acc.x
 
-        if key[K_a] and not self.gothit:
+        if key[K_a] and not self.gothit and not self.dying:
             self.vel.x -= self.acc.x
 
-        if self.grounded and key[K_SPACE] and not self.gothit:
+        if self.grounded and key[K_SPACE] and not self.gothit and not self.dying:
             self.vel.y = -25
     #    if not key[K_SPACE] and self.vel.y < -5:
     #        self.vel.y += 5

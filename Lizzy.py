@@ -466,7 +466,11 @@ class LizMain(pygame.sprite.Sprite):
 
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
+        if ouch:
+
+            self.pos -= self.vel
         if ouch and not self.gothit and self.hittimer == 0:
+
             self.health -= ouch[0].attack
             xcor = ((self.rect.centerx * 2) + ouch[0].rect.centerx) // 3
             ycor = ((self.rect.centery * 2) + ouch[0].rect.centery) // 3
@@ -483,7 +487,7 @@ class LizMain(pygame.sprite.Sprite):
                     self.vel.x = -15
             if self.vel.y > 20:
                 self.vel.y = 20
-            self.vel.y *= -1
+            self.vel.y *= -1.1
         if self.gothit or self.hittimer > 1:
             self.hittimer += 2
         if self.hittimer >= 10:
@@ -544,11 +548,13 @@ class LizMain(pygame.sprite.Sprite):
 
         self.mousekey = pygame.mouse.get_pressed()
         if self.mousekey[0] and not self.gothit and not self.dying:
-            if not gatling.spinning:
+            if not gatling.spinning and not self.dying:
                 gatling.spinup()
-            if gatling.spinning:
+            if gatling.spinning and not self.dying:
                 gatling.fire()
         if not self.mousekey[0] and gatling.spinning:
+            gatling.winddown()
+        if self.dying or self.gothit and gatling.spinning:
             gatling.winddown()
         if key[K_d] and not self.gothit and not self.dying:
             self.vel.x += self.acc.x

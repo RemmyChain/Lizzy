@@ -358,6 +358,7 @@ class LizMain(pygame.sprite.Sprite):
         self.dying = False
         self.dead = False
         self.yoffset = 0
+        self.reverse = False
 
 # dying animation controller
 
@@ -484,10 +485,10 @@ class LizMain(pygame.sprite.Sprite):
                 self.vel.y = 20
             self.vel.y *= -1
         if self.gothit or self.hittimer > 1:
-            self.hittimer += 1
+            self.hittimer += 2
         if self.hittimer >= 10:
             self.gothit = False
-        if self.hittimer >= 25:
+        if self.hittimer >= 24:
             self.hittimer = 0
 
 
@@ -509,15 +510,15 @@ class LizMain(pygame.sprite.Sprite):
 
     def render(self):
         if self.gothit and not self.dying:
-            if self.vel.x <= 0:
+            if self.reverse:
                 screen.blit(self.hitsurf, self.rect)
-            if self.vel.x > 0:
+            if not self.reverse:
                 screen.blit(pygame.transform.flip(self.hitsurf, True, False), self.rect)
 
         elif self.dying:
-            if self.vel.x <= 0:
+            if self.reverse:
                 screen.blit(self.deathsurf, (self.rect.centerx, (self.rect.centery + self.yoffset)))
-            if self.vel.x > 0:
+            if not self.reverse:
                 screen.blit(pygame.transform.flip(self.deathsurf, True, False), (self.rect.centerx, (self.rect.centery + self.yoffset)))
 
 
@@ -593,6 +594,11 @@ class LizMain(pygame.sprite.Sprite):
         self.rect.midbottom = self.pos
         if self.vel.x < 0.1 and self.vel.x > -0.1:
             self.vel.x = 0
+
+        if self.vel.x > 0:
+            self.reverse = False
+        if self.vel.x < 0:
+            self.reverse = True
 
 # creating instances of all the stuff
 

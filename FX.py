@@ -38,7 +38,7 @@ class crash(pygame.sprite.Sprite):
 
         self.surf.blit(self.innersurfx, ((100 - (self.scale / 2)), (100 - (self.scale / 2))))
         screen.blit(self.surf, self.rect)
-        self.timer += 1
+        self.timer += 2
         self.scale += 20 - self.timer
         self.fade += 10 + self.timer * 5
         if self.timer > 10:

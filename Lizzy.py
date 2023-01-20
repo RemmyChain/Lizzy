@@ -65,8 +65,11 @@ class arbiter():
                 i.rect.center += self.leveloffset
             liz.health = 100
             liz.dead = False
+            liz.gothit = False
+            liz.dying = False
+            liz.hittimer = 0
+            liz.deathtimer = 0
             self.death = False
-            self.respawned = True
 
     def hud(self):
         lizhealth = pygame.Rect(20, 120, liz.health * 5, 5)
@@ -447,6 +450,7 @@ class LizMain(pygame.sprite.Sprite):
         if self.dead:
 
             ref.death = True
+
   #          torso.kill()
   #          legs.kill()
   #          self.kill()
@@ -536,6 +540,10 @@ class LizMain(pygame.sprite.Sprite):
         if self.hittimer >= 10:
             self.gothit = False
         if self.hittimer >= 24:
+            self.hittimer = 0
+
+        if not ouch:
+            self.gothit = False
             self.hittimer = 0
 
 

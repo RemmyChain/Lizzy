@@ -23,12 +23,50 @@ class arbiter():
         self.sbright = int(screensize[0] * 0.6)
         self.sbtop = int(screensize[1] * 0.4)
         self.sbbottom = int(screensize[1] * 0.7)
+        self.lizpossave = vec(0,0)
+        self.leveloffset = vec(0,0)
+        self.virtpossave = vec(0,0)
+        self.savetimer = 0
+
     def update(self):
         self.angleget()
-
+        self.save()
         self.scroll()
         self.virtpos()
         self.hud()
+
+    def save(self):
+
+        if liz.grounded and not self.death:
+            self.savetimer += 1
+            if self.savetimer == 5:
+                self.lizpossave = vec(liz.pos)
+        #    self.lizpossave.y -= 200
+                self.virtpossave = vec(self.scrollmeter)
+
+                self.leveloffset = vec(0,0)
+
+                self.savetimer = 0
+
+        if not liz.grounded:
+            if self.xscrolling:
+                self.leveloffset.x += liz.vel.x
+            if self.yscrolling:
+                self.leveloffset.y += liz.vel.y
+
+        if self.death:
+            liz.pos = vec(self.lizpossave)
+
+            self.scrollmeter = vec(self.virtpossave)
+
+            liz.vel = vec(0,0)
+
+            for i in allsprites:
+                i.rect.center += self.leveloffset
+            liz.health = 100
+            liz.dead = False
+            self.death = False
+            self.respawned = True
 
     def hud(self):
         lizhealth = pygame.Rect(20, 120, liz.health * 5, 5)
@@ -42,6 +80,10 @@ class arbiter():
 
         self.virtualposition = liz.pos  + self.scrollmeter
         self.virtualposition.x = int(self.virtualposition.x)
+        if liz.grounded:
+            self.virtualposition.y = int(self.virtualposition.y / 100) * 100
+
+        # self.virtualposition.y = int(self.virtualposition.y)
         # self.virtualposition.x = int(self.virtualposition.x)
         # self.virtualposition.y = int(self.virtualposition.y)
 
@@ -392,7 +434,8 @@ class LizMain(pygame.sprite.Sprite):
 
     def deathcheck(self):
         if self.pos.y > 2000:
-            self.health = 0
+
+            ref.death = True
 
         if self.health < 0:
             self.health = 0
@@ -404,9 +447,9 @@ class LizMain(pygame.sprite.Sprite):
         if self.dead:
 
             ref.death = True
-            torso.kill()
-            legs.kill()
-            self.kill()
+  #          torso.kill()
+  #          legs.kill()
+  #          self.kill()
 
 # this checks if Lizzy is on solid ground or in the air
 
@@ -453,7 +496,7 @@ class LizMain(pygame.sprite.Sprite):
 # main update routine
 
     def update(self):
-        if not self.dying:
+        if not self.dying and not self.dead:
             self.gethit()
         self.move()
         self.groundcheck()

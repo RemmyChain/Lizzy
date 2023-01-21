@@ -616,6 +616,7 @@ class LizMain(pygame.sprite.Sprite):
 # controlling movement and actions based on keyboard and mouse input
 
     def move(self):
+        # setting gravity if not on solid ground
         if self.grounded or self.vel.y > 40:
             self.grav.y = 0
         else:
@@ -634,12 +635,13 @@ class LizMain(pygame.sprite.Sprite):
             gatling.winddown()
         if self.dying or self.gothit and gatling.spinning:
             gatling.winddown()
+# move left and right:
         if key[K_d] and not self.gothit and not self.dying:
             self.vel.x += self.acc.x
 
         if key[K_a] and not self.gothit and not self.dying:
             self.vel.x -= self.acc.x
-
+# jump:
         if self.grounded and key[K_SPACE] and not self.gothit and not self.dying:
             self.vel.y = -25
     #    if not key[K_SPACE] and self.vel.y < -5:
@@ -653,10 +655,10 @@ class LizMain(pygame.sprite.Sprite):
         else:
             legs.airborne(int(self.vel.x))
         torso.reverse(int(self.vel.x), key)
-
+# adding velocity based on gravity and friction forces
         self.vel.x -= self.vel.x * self.fric
         self.vel += self.grav
-
+# gatling recoil force:
         if gatling.firing:
             self.recoil.x = cos(radians(ref.angle)) * 1.5
 
@@ -674,6 +676,7 @@ class LizMain(pygame.sprite.Sprite):
 
         if self.pos.y <= 0:
             self.vel.y = 1
+# position change based on velocity
         self.pos += self.vel
         self.rect.midbottom = self.pos
         if self.vel.x < 0.1 and self.vel.x > -0.1:

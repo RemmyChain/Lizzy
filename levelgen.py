@@ -4,6 +4,7 @@ from images import *
 from enemies import *
 from FX import *
 
+
 # a simple construction function building square platforms out of 100 x 100 sprite blocks
 
 def basicplatformconstructor(position, size):

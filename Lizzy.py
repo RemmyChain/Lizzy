@@ -9,6 +9,25 @@ import random
 import FX
 from FX import *
 
+# simple placeholder sprite used to gauge level shift to use for saving and reverting during respawn
+
+class yardstick(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.surf = pygame.surface.Surface((10,10))
+        self.surf.fill((0, 0, 0))
+        self.surf.set_alpha(0)
+        self.surf.set_colorkey((0, 0, 0))
+        self.rect = self.surf.get_rect()
+        self.rect.center = (0, 0)
+    def update(self):
+        pass
+
+
+schrevel = yardstick()
+allsprites.add(schrevel)
+
+
 # arbiter class for game logic and storing global variables and stuff
 
 class arbiter():
@@ -27,8 +46,8 @@ class arbiter():
         self.leveloffset = vec(0,0)
         self.virtpossave = vec(0,0)
         self.savetimer = 0
-        self.vault = []
-        self.listcount = 0
+
+        self.peiling = vec(0,0)
 
     def update(self):
         self.angleget()
@@ -45,21 +64,12 @@ class arbiter():
             self.savetimer += 1
             if self.savetimer == 5:
                 self.lizpossave = vec(liz.pos)
-        #    self.lizpossave.y -= 200
+
                 self.virtpossave = vec(self.scrollmeter)
 
                 self.leveloffset = vec(0,0)
-
+                self.peiling = vec(schrevel.rect.center)
                 self.savetimer = 0
-                self.vault.clear()
-                for i in allsprites:
-                    self.vault.append(i.rect.center)
-
-        if not liz.grounded:
-            if self.xscrolling:
-                self.leveloffset.x += liz.vel.x
-            if self.yscrolling:
-                self.leveloffset.y += liz.vel.y
 
         if self.death:
             liz.pos = vec(self.lizpossave)
@@ -67,14 +77,10 @@ class arbiter():
             self.scrollmeter = vec(self.virtpossave)
 
             liz.vel = vec(0,0)
+            leveloffset = vec(schrevel.rect.center - self.peiling)
 
-            #for i in allsprites:
-            #    i.rect.center += self.leveloffset
             for i in allsprites:
-                i.rect.center = vec(self.vault[self.listcount])
-                self.listcount += 1
-            self.listcount = 0
-
+                i.rect.center -= leveloffset
 
             liz.health = 100
             liz.dead = False

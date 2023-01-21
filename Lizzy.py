@@ -82,6 +82,10 @@ class arbiter():
             for i in allsprites:
                 i.rect.center -= leveloffset
 
+            gatling.firing = False
+            gatling.spinning = False
+            gatling.animtick = 0
+
             liz.health = 100
             liz.dead = False
             liz.gothit = False

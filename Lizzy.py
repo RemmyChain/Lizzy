@@ -27,6 +27,8 @@ class arbiter():
         self.leveloffset = vec(0,0)
         self.virtpossave = vec(0,0)
         self.savetimer = 0
+        self.vault = []
+        self.listcount = 0
 
     def update(self):
         self.angleget()
@@ -49,6 +51,9 @@ class arbiter():
                 self.leveloffset = vec(0,0)
 
                 self.savetimer = 0
+                self.vault.clear()
+                for i in allsprites:
+                    self.vault.append(i.rect.center)
 
         if not liz.grounded:
             if self.xscrolling:
@@ -63,8 +68,14 @@ class arbiter():
 
             liz.vel = vec(0,0)
 
+            #for i in allsprites:
+            #    i.rect.center += self.leveloffset
             for i in allsprites:
-                i.rect.center += self.leveloffset
+                i.rect.center = vec(self.vault[self.listcount])
+                self.listcount += 1
+            self.listcount = 0
+
+
             liz.health = 100
             liz.dead = False
             liz.gothit = False
@@ -86,8 +97,8 @@ class arbiter():
 
         self.virtualposition = liz.pos  + self.scrollmeter
         self.virtualposition.x = int(self.virtualposition.x)
-        if liz.grounded:
-            self.virtualposition.y = int(self.virtualposition.y / 100) * 100
+        #if liz.grounded:
+         #   self.virtualposition.y = int(self.virtualposition.y / 100) * 100
 
         # self.virtualposition.y = int(self.virtualposition.y)
         # self.virtualposition.x = int(self.virtualposition.x)

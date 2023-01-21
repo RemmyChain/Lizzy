@@ -35,6 +35,8 @@ class arbiter():
         self.virtpos()
         self.hud()
 
+# a function for saving and reverting position upon death
+
     def save(self):
 
         if liz.grounded and not self.death:
@@ -69,6 +71,7 @@ class arbiter():
             liz.dying = False
             liz.hittimer = 0
             liz.deathtimer = 0
+            liz.immune = True
             self.death = False
 
     def hud(self):
@@ -404,12 +407,18 @@ class LizMain(pygame.sprite.Sprite):
         self.dead = False
         self.yoffset = 0
         self.reverse = False
+        self.immune = False
+        self.immunetimer = 0
+        self.blink = False
+
 
 # dying animation controller
 
     def swansong(self):
 
         self.deathtimer += 1
+        self.immune = False
+        self.immunetimer = 0
 
         if self.deathtimer < 5:
             self.deathsurf = Lizhit
@@ -450,6 +459,19 @@ class LizMain(pygame.sprite.Sprite):
         if self.dead:
 
             ref.death = True
+
+    # invulnerability timer blink thing for hit and respawn
+
+        if self.immune:
+            self.immunetimer += 1
+            if self.immunetimer % 3 == 0:
+                self.blink = True
+            else:
+                self.blink = False
+            if self.immunetimer == 31:
+
+                self.immunetimer = 0
+                self.immune = False
 
   #          torso.kill()
   #          legs.kill()
@@ -506,17 +528,21 @@ class LizMain(pygame.sprite.Sprite):
         self.groundcheck()
         self.hardblockcheck()
         self.integrate()
-        self.render()
+        if not self.blink:
+            self.render()
         self.deathcheck()
         torso.update()
         gatling.rotate()
+
+
 
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
         if ouch:
 
             self.pos -= self.vel
-        if ouch and not self.gothit and self.hittimer == 0:
+
+        if ouch and not self.gothit and self.hittimer == 0 and not self.immune:
 
             self.health -= ouch[0].attack
             xcor = ((self.rect.centerx * 2) + ouch[0].rect.centerx) // 3
@@ -525,6 +551,7 @@ class LizMain(pygame.sprite.Sprite):
             paf = FX.crash(crashcoords)
             allsprites.add(paf)
             self.gothit = True
+            self.immune = True
             if abs(self.vel.x) > 15:
                 self.vel.x *= -1
             elif abs(self.vel.x) < 15:

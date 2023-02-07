@@ -431,6 +431,8 @@ class LizMain(pygame.sprite.Sprite):
         self.immune = False
         self.immunetimer = 0
         self.blink = False
+        self.melee = False
+        self.meleetimer = 0
 
 
 # dying animation controller

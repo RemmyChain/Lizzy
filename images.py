@@ -3,6 +3,16 @@ import os
 
 Lizhit = pygame.image.load(os.path.join('images', 'lizhit.png')).convert_alpha()
 
+Lizmelee = [
+    pygame.image.load(os.path.join('images', 'melee01.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'melee02.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'melee03.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'melee04.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'melee05.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'melee06.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'melee07.png')).convert_alpha(),
+]
+
 Lizdeath = [
     pygame.image.load(os.path.join('images', 'lizdeath01.png')).convert_alpha(),
     pygame.image.load(os.path.join('images', 'lizdeath02.png')).convert_alpha(),

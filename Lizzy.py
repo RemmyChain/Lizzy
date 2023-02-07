@@ -408,6 +408,7 @@ class LizMain(pygame.sprite.Sprite):
         self.orig = pygame.Surface((50,180))
         self.hitsurf = Lizhit
         self.deathsurf = Lizdeath[0]
+        self.meleesurf = Lizmelee[0]
         self.orig.fill("red")
         self.orig.set_alpha(0)
         self.surf = self.orig
@@ -626,6 +627,11 @@ class LizMain(pygame.sprite.Sprite):
             if not self.reverse:
                 screen.blit(pygame.transform.flip(self.deathsurf, True, False), (self.rect.centerx, (self.rect.centery + self.yoffset)))
 
+        elif self.melee:
+            if not self.reverse:
+                screen.blit(self.meleesurf, self.rect)
+            if self.reverse:
+                screen.blit(pygame.transform.flip(self.meleesurf, True, False), self.rect)
 
 
         else:
@@ -635,6 +641,19 @@ class LizMain(pygame.sprite.Sprite):
             screen.blit(self.surf, self.rect)
         for entity in flashy:
             entity.update()
+
+    def whack(self):
+        if self.meleetimer < 13:
+            picindex = self.meleetimer // 2
+            self.meleesurf = Lizmelee[picindex]
+        else:
+            self.meleesurf = Lizmelee[6]
+        self.meleetimer += 1
+
+        if self.meleetimer > 16:
+            self.melee = False
+            self.meleetimer = 0
+            self.immune = False
 
 # controlling movement and actions based on keyboard and mouse input
 
@@ -649,7 +668,7 @@ class LizMain(pygame.sprite.Sprite):
 
 
         self.mousekey = pygame.mouse.get_pressed()
-        if self.mousekey[0] and not self.gothit and not self.dying:
+        if self.mousekey[0] and not self.gothit and not self.dying and not self.melee:
             if not gatling.spinning and not self.dying:
                 gatling.spinup()
             if gatling.spinning and not self.dying:
@@ -664,11 +683,18 @@ class LizMain(pygame.sprite.Sprite):
 
         if key[K_a] and not self.gothit and not self.dying:
             self.vel.x -= self.acc.x
+
+# melee attack:
+        if self.mousekey[1] and not self.gothit and not self.dying and not self.melee:
+            self.melee = True
+            # self.immune = True
+        if self.melee:
+            self.whack()
+
 # jump:
         if self.grounded and key[K_SPACE] and not self.gothit and not self.dying:
             self.vel.y = -25
-    #    if not key[K_SPACE] and self.vel.y < -5:
-    #        self.vel.y += 5
+
         self.surf = self.orig
         if not key[K_a] and not key[K_d]:
             key = 0

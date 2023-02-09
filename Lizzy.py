@@ -629,9 +629,11 @@ class LizMain(pygame.sprite.Sprite):
 
         elif self.melee:
             if not self.reverse:
-                screen.blit(self.meleesurf, self.rect)
+                blitplace = self.rect.center + vec(-70,-90)
+                screen.blit(self.meleesurf, (blitplace))
             if self.reverse:
-                screen.blit(pygame.transform.flip(self.meleesurf, True, False), self.rect)
+                blitplace = self.rect.center + vec(-70, -90)
+                screen.blit(pygame.transform.flip(self.meleesurf, True, False), blitplace)
 
 
         else:
@@ -685,7 +687,7 @@ class LizMain(pygame.sprite.Sprite):
             self.vel.x -= self.acc.x
 
 # melee attack:
-        if self.mousekey[1] and not self.gothit and not self.dying and not self.melee:
+        if self.mousekey[2] and not self.gothit and not self.dying and not self.melee:
             self.melee = True
             # self.immune = True
         if self.melee:

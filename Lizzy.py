@@ -628,10 +628,12 @@ class LizMain(pygame.sprite.Sprite):
                 screen.blit(pygame.transform.flip(self.deathsurf, True, False), (self.rect.centerx, (self.rect.centery + self.yoffset)))
 
         elif self.melee:
-            if not self.reverse:
+            lizpos = vec(liz.rect.center)
+            mousepos = vec(pygame.mouse.get_pos())
+            if mousepos.x >= lizpos.x:
                 blitplace = self.rect.center + vec(-140,-90)
                 screen.blit(self.meleesurf, (blitplace))
-            if self.reverse:
+            if mousepos.x < lizpos.x:
                 blitplace = self.rect.center + vec(-140, -90)
                 screen.blit(pygame.transform.flip(self.meleesurf, True, False), blitplace)
 

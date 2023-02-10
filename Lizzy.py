@@ -629,10 +629,10 @@ class LizMain(pygame.sprite.Sprite):
 
         elif self.melee:
             if not self.reverse:
-                blitplace = self.rect.center + vec(-70,-90)
+                blitplace = self.rect.center + vec(-140,-90)
                 screen.blit(self.meleesurf, (blitplace))
             if self.reverse:
-                blitplace = self.rect.center + vec(-70, -90)
+                blitplace = self.rect.center + vec(-140, -90)
                 screen.blit(pygame.transform.flip(self.meleesurf, True, False), blitplace)
 
 

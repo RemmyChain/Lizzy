@@ -43,10 +43,10 @@ class kamaker(pygame.sprite.Sprite):
         self.partlist2 = []
         self.attack = 20
 
-    def gethit(self, hitcoords):
+    def gethit(self, hitcoords, damage):
 
         self.gothit = True
-        self.health -= 1
+        self.health -= damage
         hitfx = organichit(hitcoords)
         allsprites.add(hitfx)
         copysurf = self.surf

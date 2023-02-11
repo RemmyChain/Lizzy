@@ -150,6 +150,27 @@ class arbiter():
         else:
             self.yscrolling = False
 
+class meleehurtbox(pygame.sprite.Sprite):
+    def __init__(self, position):
+        super().__init__()
+        self.surf = pygame.surface.Surface((80, 40))
+        self.surf.set_alpha(0)
+        self.rect = self.surf.get_rect()
+        self.offset = position
+        self.timer = 0
+    def update(self):
+        coords = vec((liz.rect.centerx + self.offset), liz.rect.centery)
+        self.rect.center = coords
+
+        whackedbeast = pygame.sprite.spritecollide(self, enemies, False)
+        if whackedbeast:
+            for i in whackedbeast:
+                i.gethit(self.rect.center, 5)
+
+        self.timer += 1
+        if self.timer > 5:
+            self.kill()
+
 
 class hitdetector(pygame.sprite.Sprite):
     def __init__(self):
@@ -220,7 +241,7 @@ class Tracereffect(pygame.sprite.Sprite):
         if splut and not hits:
 
             for i in splut:
-                i.gethit(self.impactsite)
+                i.gethit(self.impactsite, 1)
                 screen.blit(i.surf, i.rect)
                 self.kill()
 
@@ -434,6 +455,7 @@ class LizMain(pygame.sprite.Sprite):
         self.blink = False
         self.melee = False
         self.meleetimer = 0
+        self.meleereverse = False
 
 
 # dying animation controller
@@ -631,9 +653,11 @@ class LizMain(pygame.sprite.Sprite):
             lizpos = vec(liz.rect.center)
             mousepos = vec(pygame.mouse.get_pos())
             if mousepos.x >= lizpos.x:
+                self.meleereverse = False
                 blitplace = self.rect.center + vec(-140,-90)
                 screen.blit(self.meleesurf, (blitplace))
             if mousepos.x < lizpos.x:
+                self.meleereverse = True
                 blitplace = self.rect.center + vec(-140, -90)
                 screen.blit(pygame.transform.flip(self.meleesurf, True, False), blitplace)
 
@@ -654,7 +678,16 @@ class LizMain(pygame.sprite.Sprite):
             self.meleesurf = Lizmelee[6]
         self.meleetimer += 1
 
+        if self.meleetimer == 10:
+            if self.meleereverse:
+                boxpos = -50
+            else:
+                boxpos = 50
+            hurtbox = meleehurtbox(boxpos)
+            allsprites.add(hurtbox)
+
         if self.meleetimer > 16:
+
             self.melee = False
             self.meleetimer = 0
             self.immune = False

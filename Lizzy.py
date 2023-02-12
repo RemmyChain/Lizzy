@@ -151,25 +151,41 @@ class arbiter():
             self.yscrolling = False
 
 class meleehurtbox(pygame.sprite.Sprite):
-    def __init__(self, position):
+    def __init__(self, position, orient):
         super().__init__()
         self.surf = pygame.surface.Surface((80, 40))
-        self.surf.set_alpha(0)
+        self.surf.fill((0, 0, 0))
+        self.surf.set_alpha(100)
         self.rect = self.surf.get_rect()
-        self.offset = position
+        self.offset = vec(position)
         self.timer = 0
+        self.orient = orient
     def update(self):
-        coords = vec((liz.rect.centerx + self.offset), liz.rect.centery)
+        coords = vec(liz.rect.center) + self.offset
         self.rect.center = coords
 
         whackedbeast = pygame.sprite.spritecollide(self, enemies, False)
         if whackedbeast:
+
             for i in whackedbeast:
-                i.gethit(self.rect.center, 5)
+                i.gethit(self.rect.center, 10)
+                if self.orient == "left":
+                    i.rect.centerx -= 30
+                    liz.vel.x += 10
+                    crashcoords = vec((self.rect.centerx - 30), self.rect.centery)
+                elif self.orient == "right":
+                    i.rect.centerx += 30
+                    liz.vel.x -= 10
+                    crashcoords = vec((self.rect.centerx + 30), self.rect.centery)
+            paf = FX.crash(crashcoords)
+            allsprites.add(paf)
+            self.kill()
 
         self.timer += 1
         if self.timer > 5:
             self.kill()
+
+        # screen.blit(self.surf, self.rect)
 
 
 class hitdetector(pygame.sprite.Sprite):
@@ -687,10 +703,12 @@ class LizMain(pygame.sprite.Sprite):
 
         if self.meleetimer == 10:
             if self.meleereverse:
-                boxpos = -50
+                boxpos = (-80, 0)
+                orient = "left"
             else:
-                boxpos = 50
-            hurtbox = meleehurtbox(boxpos)
+                boxpos = (140, 0)
+                orient = "right"
+            hurtbox = meleehurtbox(boxpos, orient)
             allsprites.add(hurtbox)
 
         if self.meleetimer > 16:

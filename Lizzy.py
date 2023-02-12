@@ -535,9 +535,6 @@ class LizMain(pygame.sprite.Sprite):
                 self.immunetimer = 0
                 self.immune = False
 
-  #          torso.kill()
-  #          legs.kill()
-  #          self.kill()
 
 # this checks if Lizzy is on solid ground or in the air
 
@@ -685,6 +682,8 @@ class LizMain(pygame.sprite.Sprite):
             screen.blit(self.surf, self.rect)
         for entity in flashy:
             entity.update()
+
+# melee strike function:
 
     def whack(self):
         if self.blink:

@@ -514,7 +514,7 @@ class LizMain(pygame.sprite.Sprite):
                 self.blink = True
             else:
                 self.blink = False
-            if self.immunetimer == 31:
+            if self.immunetimer >= 31:
 
                 self.immunetimer = 0
                 self.immune = False
@@ -671,6 +671,13 @@ class LizMain(pygame.sprite.Sprite):
             entity.update()
 
     def whack(self):
+        if self.blink:
+            self.blink = False
+
+        if gatling.firing:
+            gatling.firing = False
+            gatling.spinning = False
+            gatling.winddown()
         if self.meleetimer < 13:
             picindex = self.meleetimer // 2
             self.meleesurf = Lizmelee[picindex]

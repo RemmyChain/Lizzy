@@ -685,7 +685,10 @@ class LizMain(pygame.sprite.Sprite):
 
 # melee strike function:
 
-    def whack(self):
+    def whack(self, direction):
+        if self.meleetimer == 0:
+            if direction == "up":
+                liz.vel.y -= 30
         if self.blink:
             self.blink = False
 
@@ -695,9 +698,17 @@ class LizMain(pygame.sprite.Sprite):
             gatling.winddown()
         if self.meleetimer < 13:
             picindex = self.meleetimer // 2
-            self.meleesurf = Lizmelee[picindex]
+            if direction == "side":
+                self.meleesurf = Lizmelee[picindex]
+            elif direction == "up":
+                increment = 90 / 7
+                self.meleesurf = pygame.transform.rotate(Lizmelee[picindex], (picindex * increment))
         else:
-            self.meleesurf = Lizmelee[6]
+            if direction == "side":
+                self.meleesurf = Lizmelee[6]
+            elif direction == "up":
+                self.meleesurf = pygame.transform.rotate(Lizmelee[6], 90)
+
         self.meleetimer += 1
 
         if self.meleetimer == 10:
@@ -750,7 +761,10 @@ class LizMain(pygame.sprite.Sprite):
             self.melee = True
             # self.immune = True
         if self.melee:
-            self.whack()
+            if not key[K_w]:
+                self.whack("side")
+            elif key[K_w]:
+                self.whack("up")
 
 # jump:
         if self.grounded and key[K_SPACE] and not self.gothit and not self.dying:

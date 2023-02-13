@@ -13,6 +13,7 @@ Lizmelee = [
     pygame.image.load(os.path.join('images', 'melee07.png')).convert_alpha(),
 ]
 
+
 Lizdeath = [
     pygame.image.load(os.path.join('images', 'lizdeath01.png')).convert_alpha(),
     pygame.image.load(os.path.join('images', 'lizdeath02.png')).convert_alpha(),

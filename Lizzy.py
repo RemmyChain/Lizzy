@@ -472,6 +472,7 @@ class LizMain(pygame.sprite.Sprite):
         self.melee = False
         self.meleetimer = 0
         self.meleereverse = False
+        self.blitoffset = vec(0, 0)
 
 
 # dying animation controller
@@ -668,10 +669,12 @@ class LizMain(pygame.sprite.Sprite):
             if mousepos.x >= lizpos.x:
                 self.meleereverse = False
                 blitplace = self.rect.center + vec(-140,-90)
+                blitplace += self.blitoffset
                 screen.blit(self.meleesurf, (blitplace))
             if mousepos.x < lizpos.x:
                 self.meleereverse = True
                 blitplace = self.rect.center + vec(-140, -90)
+                blitplace += self.blitoffset
                 screen.blit(pygame.transform.flip(self.meleesurf, True, False), blitplace)
 
 
@@ -703,11 +706,17 @@ class LizMain(pygame.sprite.Sprite):
             elif direction == "up":
                 increment = 90 / 7
                 self.meleesurf = pygame.transform.rotate(Lizmelee[picindex], (picindex * increment))
+                self.blitoffset.y = (picindex * -15)
+                if not self.meleereverse:
+                    self.blitoffset.x = (picindex * 10)
         else:
             if direction == "side":
                 self.meleesurf = Lizmelee[6]
             elif direction == "up":
                 self.meleesurf = pygame.transform.rotate(Lizmelee[6], 90)
+                self.blitoffset.y = -105
+                if not self.meleereverse:
+                    self.blitoffset.x = 70
 
         self.meleetimer += 1
 
@@ -726,6 +735,7 @@ class LizMain(pygame.sprite.Sprite):
             self.melee = False
             self.meleetimer = 0
             self.immune = False
+            self.blitoffset = vec(0, 0)
 
 # controlling movement and actions based on keyboard and mouse input
 

@@ -480,6 +480,7 @@ class LizMain(pygame.sprite.Sprite):
         self.meleetimer = 0
         self.meleereverse = False
         self.blitoffset = vec(0, 0)
+        self.airmelee = True
 
 
 # dying animation controller
@@ -534,7 +535,7 @@ class LizMain(pygame.sprite.Sprite):
 
         if self.immune:
             self.immunetimer += 1
-            if self.immunetimer % 3 == 0:
+            if self.immunetimer % 3 == 0 and not self.melee:
                 self.blink = True
             else:
                 self.blink = False
@@ -671,15 +672,15 @@ class LizMain(pygame.sprite.Sprite):
                 screen.blit(pygame.transform.flip(self.deathsurf, True, False), (self.rect.centerx, (self.rect.centery + self.yoffset)))
 
         elif self.melee:
-            lizpos = vec(liz.rect.center)
-            mousepos = vec(pygame.mouse.get_pos())
-            if mousepos.x >= lizpos.x:
-                self.meleereverse = False
+
+            if not self.meleereverse:
+
                 blitplace = self.rect.center + vec(-140,-90)
                 blitplace += self.blitoffset
                 screen.blit(self.meleesurf, (blitplace))
-            if mousepos.x < lizpos.x:
-                self.meleereverse = True
+
+            elif self.meleereverse:
+
                 blitplace = self.rect.center + vec(-140, -90)
                 blitplace += self.blitoffset
                 screen.blit(pygame.transform.flip(self.meleesurf, True, False), blitplace)
@@ -696,9 +697,25 @@ class LizMain(pygame.sprite.Sprite):
 # melee strike function:
 
     def whack(self, direction):
+
+        lizpos = vec(liz.rect.center)
+        mousepos = vec(pygame.mouse.get_pos())
+        if mousepos.x >= lizpos.x:
+            self.meleereverse = False
+
+        if mousepos.x < lizpos.x:
+            self.meleereverse = True
+
         if self.meleetimer == 0:
-            if direction == "up":
-                liz.vel.y -= 30
+
+            if not self.grounded:
+                if direction == "up":
+                    liz.vel.y -= 30
+                elif self.meleereverse:
+                    liz.vel.x -= 40
+                elif not self.meleereverse:
+                    liz.vel.x += 40
+
         if self.blink:
             self.blink = False
 
@@ -728,6 +745,7 @@ class LizMain(pygame.sprite.Sprite):
         self.meleetimer += 1
 
         if self.meleetimer == 10:
+            self.immune = True
             if direction == "side":
                 if self.meleereverse:
                     boxpos = (-80, 0)
@@ -758,6 +776,14 @@ class LizMain(pygame.sprite.Sprite):
         else:
             self.grav.y = 2
 
+# setting aerial melee token if grounded:
+
+        if not self.airmelee:
+            if self.grounded:
+                self.airmelee = True
+
+# key input:
+
         key = pygame.key.get_pressed()
 
 
@@ -779,9 +805,11 @@ class LizMain(pygame.sprite.Sprite):
             self.vel.x -= self.acc.x
 
 # melee attack:
-        if self.mousekey[2] and not self.gothit and not self.dying and not self.melee:
+        if self.mousekey[2] and not self.gothit and not self.dying and not self.melee and self.airmelee:
             self.melee = True
-            # self.immune = True
+            if not self.grounded:
+                self.airmelee = False
+
         if self.melee:
             if not key[K_w]:
                 self.whack("side")

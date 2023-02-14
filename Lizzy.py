@@ -153,7 +153,10 @@ class arbiter():
 class meleehurtbox(pygame.sprite.Sprite):
     def __init__(self, position, orient):
         super().__init__()
-        self.surf = pygame.surface.Surface((80, 40))
+        if orient == "left" or orient == "right":
+            self.surf = pygame.surface.Surface((80, 40))
+        else:
+            self.surf = pygame.surface.Surface((40, 80))
         self.surf.fill((0, 0, 0))
         self.surf.set_alpha(100)
         self.rect = self.surf.get_rect()
@@ -177,6 +180,10 @@ class meleehurtbox(pygame.sprite.Sprite):
                     i.rect.centerx += 30
                     liz.vel.x -= 10
                     crashcoords = vec((self.rect.centerx + 30), self.rect.centery)
+                elif self.orient == "up":
+                    i.rect.centery += 30
+                    liz.vel.y = 0
+                    crashcoords = vec(self.rect.centerx, (self.rect.centery - 30))
             paf = FX.crash(crashcoords)
             allsprites.add(paf)
             self.kill()
@@ -185,7 +192,7 @@ class meleehurtbox(pygame.sprite.Sprite):
         if self.timer > 5:
             self.kill()
 
-        # screen.blit(self.surf, self.rect)
+        screen.blit(self.surf, self.rect)
 
 
 class hitdetector(pygame.sprite.Sprite):
@@ -721,12 +728,17 @@ class LizMain(pygame.sprite.Sprite):
         self.meleetimer += 1
 
         if self.meleetimer == 10:
-            if self.meleereverse:
-                boxpos = (-80, 0)
-                orient = "left"
-            else:
-                boxpos = (140, 0)
-                orient = "right"
+            if direction == "side":
+                if self.meleereverse:
+                    boxpos = (-80, 0)
+                    orient = "left"
+                else:
+                    boxpos = (140, 0)
+                    orient = "right"
+            elif direction == "up":
+                orient = "up"
+                boxpos = (0, -120)
+
             hurtbox = meleehurtbox(boxpos, orient)
             allsprites.add(hurtbox)
 

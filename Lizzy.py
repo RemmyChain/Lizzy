@@ -163,6 +163,7 @@ class meleehurtbox(pygame.sprite.Sprite):
         self.offset = vec(position)
         self.timer = 0
         self.orient = orient
+
     def update(self):
         coords = vec(liz.rect.center) + self.offset
         self.rect.center = coords
@@ -184,15 +185,19 @@ class meleehurtbox(pygame.sprite.Sprite):
                     i.rect.centery += 30
                     liz.vel.y = 0
                     crashcoords = vec(self.rect.centerx, (self.rect.centery - 30))
+                elif self.orient == "down":
+                    i.rect.centery += 30
+                    liz.vel.y = -20
+                    crashcoords = vec(self.rect.centerx, (self.rect.centery + 30))
             paf = FX.crash(crashcoords)
             allsprites.add(paf)
             self.kill()
-
-        self.timer += 1
+        if not liz.groundpound:
+            self.timer += 1
         if self.timer > 5:
             self.kill()
 
-        screen.blit(self.surf, self.rect)
+        # screen.blit(self.surf, self.rect)
 
 
 class hitdetector(pygame.sprite.Sprite):
@@ -481,6 +486,7 @@ class LizMain(pygame.sprite.Sprite):
         self.meleereverse = False
         self.blitoffset = vec(0, 0)
         self.airmelee = True
+        self.groundpound = False
 
 
 # dying animation controller
@@ -711,6 +717,11 @@ class LizMain(pygame.sprite.Sprite):
             if not self.grounded:
                 if direction == "up":
                     liz.vel.y -= 30
+                elif direction == "down":
+
+                    liz.vel.x = 0
+                    liz.vel.y -= 10
+
                 elif self.meleereverse:
                     liz.vel.x -= 40
                 elif not self.meleereverse:
@@ -733,6 +744,12 @@ class LizMain(pygame.sprite.Sprite):
                 self.blitoffset.y = (picindex * -15)
                 if not self.meleereverse:
                     self.blitoffset.x = (picindex * 10)
+            elif direction == "down":
+                increment = (90 / 7) * -1
+                self.meleesurf = pygame.transform.rotate(Lizmelee[picindex], (picindex * increment))
+                self.blitoffset.y = (picindex * -15)
+                if self.meleereverse:
+                    self.blitoffset.x = (picindex * 10)
         else:
             if direction == "side":
                 self.meleesurf = Lizmelee[6]
@@ -740,6 +757,11 @@ class LizMain(pygame.sprite.Sprite):
                 self.meleesurf = pygame.transform.rotate(Lizmelee[6], 90)
                 self.blitoffset.y = -105
                 if not self.meleereverse:
+                    self.blitoffset.x = 70
+            elif direction == "down":
+                self.meleesurf = pygame.transform.rotate(Lizmelee[6], -90)
+                self.blitoffset.y = -105
+                if self.meleereverse:
                     self.blitoffset.x = 70
 
         self.meleetimer += 1
@@ -756,12 +778,21 @@ class LizMain(pygame.sprite.Sprite):
             elif direction == "up":
                 orient = "up"
                 boxpos = (0, -120)
+            elif direction == "down":
+                orient = "down"
+                boxpos = (0, 120)
+                self.groundpound = True
 
             hurtbox = meleehurtbox(boxpos, orient)
             allsprites.add(hurtbox)
 
         if self.meleetimer > 16:
 
+            if direction == "down" and not self.grounded:
+                self.meleetimer = 16
+
+        if self.meleetimer > 16:
+            self.groundpound = False
             self.melee = False
             self.meleetimer = 0
             self.immune = False
@@ -811,10 +842,12 @@ class LizMain(pygame.sprite.Sprite):
                 self.airmelee = False
 
         if self.melee:
-            if not key[K_w]:
+            if not key[K_w] and not key[K_s]:
                 self.whack("side")
             elif key[K_w]:
                 self.whack("up")
+            elif key[K_s]:
+                self.whack("down")
 
 # jump:
         if self.grounded and key[K_SPACE] and not self.gothit and not self.dying:

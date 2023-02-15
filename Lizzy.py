@@ -485,7 +485,7 @@ class LizMain(pygame.sprite.Sprite):
         self.meleetimer = 0
         self.meleereverse = False
         self.blitoffset = vec(0, 0)
-        self.airmelee = True
+        self.meleetoken = [1, 1, 1]
         self.groundpound = False
 
 
@@ -797,6 +797,13 @@ class LizMain(pygame.sprite.Sprite):
             self.meleetimer = 0
             self.immune = False
             self.blitoffset = vec(0, 0)
+            if direction == "side":
+                self.meleetoken[0] -= 1
+            elif direction == "up":
+                self.meleetoken[1] -= 1
+
+            elif direction == "down":
+                self.meleetoken[2] -= 1
 
 # controlling movement and actions based on keyboard and mouse input
 
@@ -807,11 +814,6 @@ class LizMain(pygame.sprite.Sprite):
         else:
             self.grav.y = 2
 
-# setting aerial melee token if grounded:
-
-        if not self.airmelee:
-            if self.grounded:
-                self.airmelee = True
 
 # key input:
 
@@ -835,19 +837,24 @@ class LizMain(pygame.sprite.Sprite):
         if key[K_a] and not self.gothit and not self.dying:
             self.vel.x -= self.acc.x
 
-# melee attack:
-        if self.mousekey[2] and not self.gothit and not self.dying and not self.melee and self.airmelee:
+# setting melee token if grounded and not pressing melee button:
+
+        if self.grounded and not self.mousekey[2]:
+            self.meleetoken = [1, 1, 1]
+
+        # melee attack:
+        if self.mousekey[2] and not self.gothit and not self.dying and not self.melee:
             self.melee = True
-            if not self.grounded:
-                self.airmelee = False
 
         if self.melee:
-            if not key[K_w] and not key[K_s]:
+            if not key[K_w] and not key[K_s] and self.meleetoken[0] > 0:
                 self.whack("side")
-            elif key[K_w]:
+            elif key[K_w] and self.meleetoken[1] > 0:
                 self.whack("up")
-            elif key[K_s]:
+            elif key[K_s] and self.meleetoken[2] > 0:
                 self.whack("down")
+            else:
+                self.melee = False
 
 # jump:
         if self.grounded and key[K_SPACE] and not self.gothit and not self.dying:

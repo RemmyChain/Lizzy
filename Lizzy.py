@@ -89,6 +89,8 @@ class arbiter():
             gatling.animtick = 0
 
             liz.health = 100
+            if liz.ammo[0] < 100:
+                liz.ammo[0] = 100
             liz.dead = False
             liz.gothit = False
             liz.dying = False
@@ -100,6 +102,9 @@ class arbiter():
     def hud(self):
         lizhealth = pygame.Rect(20, 120, liz.health * 5, 5)
         pygame.draw.rect(screen, ("red"), lizhealth)
+        ammocount = font.render("AMMO: " + str(liz.ammo[0]), True, ("black"))
+        screen.blit(ammocount, (20, 140))
+
 
     def virtpos(self):
         if self.xscrolling:
@@ -325,6 +330,7 @@ class barrels(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
 
     def fire(self):
+        liz.ammo[0] -= 1
         if not self.flash:
             flash = FX.muzzleflash()
             flashy.add(flash)
@@ -511,6 +517,7 @@ class LizMain(pygame.sprite.Sprite):
         self.meleetoken = [1, 1, 1]
         self.groundpound = False
         self.meleestate = "null"
+        self.ammo = [200, 0, 0]
 
     # dying animation controller
 
@@ -839,15 +846,17 @@ class LizMain(pygame.sprite.Sprite):
 
         key = pygame.key.get_pressed()
 
+# firing the gatling:
+
         self.mousekey = pygame.mouse.get_pressed()
         if self.mousekey[0] and not self.gothit and not self.dying and not self.melee:
             if not gatling.spinning and not self.dying:
                 gatling.spinup()
-            if gatling.spinning and not self.dying:
+            if gatling.spinning and not self.dying and self.ammo[0] > 0:
                 gatling.fire()
         if not self.mousekey[0] and gatling.spinning:
             gatling.winddown()
-        if self.dying or self.gothit and gatling.spinning:
+        if self.dying or self.gothit or self.ammo[0] == 0 and gatling.spinning:
             gatling.winddown()
         # move left and right:
         if key[K_d] and not self.gothit and not self.dying:

@@ -213,7 +213,7 @@ class hitdetector(pygame.sprite.Sprite):
 
 
 class Tracereffect(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, state):
         super().__init__()
         self.orig = tracer
         self.surf = pygame.transform.rotate(self.orig, ref.angle)
@@ -230,6 +230,7 @@ class Tracereffect(pygame.sprite.Sprite):
         self.rect.center = self.pos
         self.impactsite = (0, 0)
         self.rotation = 0
+        self.state = state
 
     def update(self):
 
@@ -249,7 +250,8 @@ class Tracereffect(pygame.sprite.Sprite):
         self.pos.y += (cos(radians(self.angle))) * 100
         self.tick += 1
         self.rect.center = self.pos
-        screen.blit(self.surf, self.rect)
+        if self.state == "visible":
+            screen.blit(self.surf, self.rect)
         hits = pygame.sprite.spritecollide(self, hardblocks, False)
         splut = pygame.sprite.spritecollide(self, enemies, False)
         if hits and not splut:
@@ -331,7 +333,10 @@ class barrels(pygame.sprite.Sprite):
         if self.animtick >= 3:
             self.animtick = 0
         if self.animtick == 0:
-            trace = Tracereffect()
+            trace = Tracereffect("visible")
+            allsprites.add(trace)
+        else:
+            trace = Tracereffect("invisible")
             allsprites.add(trace)
         self.firing = True
         self.barrelstate = self.orig[(self.animtick) + 2]

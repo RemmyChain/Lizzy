@@ -9,17 +9,19 @@ import random
 import FX
 from FX import *
 
+
 # simple placeholder sprite used to gauge level shift to use for saving and reverting during respawn
 
 class yardstick(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.surf = pygame.surface.Surface((10,10))
+        self.surf = pygame.surface.Surface((10, 10))
         self.surf.fill((0, 0, 0))
         self.surf.set_alpha(0)
         self.surf.set_colorkey((0, 0, 0))
         self.rect = self.surf.get_rect()
         self.rect.center = (0, 0)
+
     def update(self):
         pass
 
@@ -34,20 +36,20 @@ class arbiter():
     def __init__(self):
         self.angle = 0
         self.death = False
-        self.virtualposition = vec(0,0)
-        self.scrollmeter = vec(0,0)
+        self.virtualposition = vec(0, 0)
+        self.scrollmeter = vec(0, 0)
         self.xscrolling = False
         self.yscrolling = False
         self.sbleft = int(screensize[0] * 0.4)
         self.sbright = int(screensize[0] * 0.6)
         self.sbtop = int(screensize[1] * 0.4)
         self.sbbottom = int(screensize[1] * 0.7)
-        self.lizpossave = vec(0,0)
-        self.leveloffset = vec(0,0)
-        self.virtpossave = vec(0,0)
+        self.lizpossave = vec(0, 0)
+        self.leveloffset = vec(0, 0)
+        self.virtpossave = vec(0, 0)
         self.savetimer = 0
 
-        self.peiling = vec(0,0)
+        self.peiling = vec(0, 0)
 
     def update(self):
         self.angleget()
@@ -56,7 +58,7 @@ class arbiter():
         self.virtpos()
         self.hud()
 
-# a function for saving and reverting position upon death
+    # a function for saving and reverting position upon death
 
     def save(self):
 
@@ -67,7 +69,7 @@ class arbiter():
 
                 self.virtpossave = vec(self.scrollmeter)
 
-                self.leveloffset = vec(0,0)
+                self.leveloffset = vec(0, 0)
                 self.peiling = vec(schrevel.rect.center)
                 self.savetimer = 0
 
@@ -76,7 +78,7 @@ class arbiter():
 
             self.scrollmeter = vec(self.virtpossave)
 
-            liz.vel = vec(0,0)
+            liz.vel = vec(0, 0)
             leveloffset = vec(schrevel.rect.center - self.peiling)
 
             for i in allsprites:
@@ -105,16 +107,16 @@ class arbiter():
         if self.yscrolling:
             self.scrollmeter.y += int(liz.vel.y)
 
-        self.virtualposition = liz.pos  + self.scrollmeter
+        self.virtualposition = liz.pos + self.scrollmeter
         self.virtualposition.x = int(self.virtualposition.x)
-        #if liz.grounded:
-         #   self.virtualposition.y = int(self.virtualposition.y / 100) * 100
+        # if liz.grounded:
+        #   self.virtualposition.y = int(self.virtualposition.y / 100) * 100
 
         # self.virtualposition.y = int(self.virtualposition.y)
         # self.virtualposition.x = int(self.virtualposition.x)
         # self.virtualposition.y = int(self.virtualposition.y)
 
-# computing angle between Lizzy and the reticle for determining where she points her gatling at.
+    # computing angle between Lizzy and the reticle for determining where she points her gatling at.
 
     def angleget(self):
         lizpos = vec(liz.rect.center)
@@ -124,7 +126,7 @@ class arbiter():
         if self.angle < 0:
             self.angle += 360
 
-# scrolling the level.
+    # scrolling the level.
 
     def scroll(self):
         if (liz.pos.x >= self.sbright and liz.vel.x > 0) or (liz.pos.x <= self.sbleft and liz.vel.x < 0):
@@ -132,23 +134,25 @@ class arbiter():
             for entity in allsprites:
                 position = list(entity.rect.center)
                 position[0] -= int(liz.vel.x)
-            #    self.virtualposition.x += int(liz.vel.x)
+                #    self.virtualposition.x += int(liz.vel.x)
                 entity.rect.center = position
             liz.pos.x -= liz.vel.x
 
         else:
             self.xscrolling = False
-        if (liz.pos.y >= self.sbbottom and liz.vel.y > 0 and self.virtualposition.y <= 800) or (liz.pos.y <= self.sbtop and liz.vel.y < 0 and self.virtualposition.y >= -400):
+        if (liz.pos.y >= self.sbbottom and liz.vel.y > 0 and self.virtualposition.y <= 800) or (
+                liz.pos.y <= self.sbtop and liz.vel.y < 0 and self.virtualposition.y >= -400):
             self.yscrolling = True
             for entity in allsprites:
                 position = list(entity.rect.center)
                 position[1] -= int(liz.vel.y)
-            #    self.virtualposition.y += int(liz.vel.y)
+                #    self.virtualposition.y += int(liz.vel.y)
                 entity.rect.center = position
             liz.pos.y -= liz.vel.y
 
         else:
             self.yscrolling = False
+
 
 class meleehurtbox(pygame.sprite.Sprite):
     def __init__(self, position, orient):
@@ -203,9 +207,10 @@ class meleehurtbox(pygame.sprite.Sprite):
 class hitdetector(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.surf = pygame.Surface((3,3))
+        self.surf = pygame.Surface((3, 3))
         self.surf.set_alpha(0)
         self.rect = self.surf.get_rect()
+
 
 class Tracereffect(pygame.sprite.Sprite):
     def __init__(self):
@@ -223,9 +228,8 @@ class Tracereffect(pygame.sprite.Sprite):
         self.pos.x += (sin(radians(self.angle))) * 50
         self.pos.y += (cos(radians(self.angle))) * 50
         self.rect.center = self.pos
-        self.impactsite = (0,0)
+        self.impactsite = (0, 0)
         self.rotation = 0
-
 
     def update(self):
 
@@ -258,12 +262,12 @@ class Tracereffect(pygame.sprite.Sprite):
                     self.rotation = 180
                 elif abs(self.impactsite[0] - hits[0].rect.right) < 15:
                     self.rotation = 270
-            #    pow = bullitimpact(self.impactsite, self.rotation)
+                #    pow = bullitimpact(self.impactsite, self.rotation)
                 hits[0].gethit(self.impactsite, self.rotation)
                 # pow = spriticle(self.impactsite, self.rotation)
                 # allsprites.add(pow)
             for i in range(len(hits)):
-                screen.blit(hits[i].surf, hits[i].rect,)
+                screen.blit(hits[i].surf, hits[i].rect, )
                 self.kill()
 
         if splut and not hits:
@@ -276,17 +280,20 @@ class Tracereffect(pygame.sprite.Sprite):
         if self.tick > 20:
             self.kill()
 
+
 class Reticle(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.surf = pygame.image.load("reticle.png")
         self.rect = self.surf.get_rect()
-        self.pos = vec(0,0)
+        self.pos = vec(0, 0)
+
     def update(self):
-        x,y = pygame.mouse.get_pos()
-        self.pos = vec(x,y)
+        x, y = pygame.mouse.get_pos()
+        self.pos = vec(x, y)
         self.rect.center = self.pos
         screen.blit(self.surf, self.rect)
+
 
 # The animated spinning barrels for Lizzy's gatling.
 
@@ -305,6 +312,7 @@ class barrels(pygame.sprite.Sprite):
         self.iteration = 0
         self.firing = False
         self.flash = False
+
     def rotate(self):
         self.angle = ref.angle
         if torso.reversed:
@@ -313,6 +321,7 @@ class barrels(pygame.sprite.Sprite):
             self.preimage = self.barrelstate
         self.surf = pygame.transform.rotate(self.preimage, self.angle)
         self.rect = self.surf.get_rect()
+
     def fire(self):
         if not self.flash:
             flash = FX.muzzleflash()
@@ -329,6 +338,7 @@ class barrels(pygame.sprite.Sprite):
         self.animtick += 1
         if self.animtick == 3:
             self.animtick = 0
+
     def spinup(self):
         self.animtick += 1
         if self.animtick == 1:
@@ -345,6 +355,7 @@ class barrels(pygame.sprite.Sprite):
             self.barrelstate = self.orig[0]
             self.animtick = 0
             self.spinning = True
+
     def winddown(self):
         self.firing = False
         self.flash = False
@@ -364,6 +375,7 @@ class barrels(pygame.sprite.Sprite):
             self.animtick = 0
             self.spinning = False
 
+
 # Lizzy's legs, with walking and jumping animation
 
 class Lizlegs(pygame.sprite.Sprite):
@@ -374,6 +386,7 @@ class Lizlegs(pygame.sprite.Sprite):
         self.runtimer = 0
         self.runanim = []
         self.reverse = False
+
     def airborne(self, speed):
         if speed > 0:
             self.reverse = False
@@ -389,6 +402,7 @@ class Lizlegs(pygame.sprite.Sprite):
                 self.surf = Lizlegsaireverse[0]
             else:
                 self.surf = Lizlegsaireverse[1]
+
     def run(self, speed, key):
         if speed > 0 and key != 0:
             self.reverse = False
@@ -413,6 +427,7 @@ class Lizlegs(pygame.sprite.Sprite):
             else:
                 self.surf = Lizlegstill
 
+
 # Lizzy's torso with gatling, which rotates based on angle between Lizzy and reticle
 
 class Liztorso(pygame.sprite.Sprite):
@@ -424,6 +439,7 @@ class Liztorso(pygame.sprite.Sprite):
         self.frame = 0
         self.reversed = False
         self.anglecheck = 0
+
     def update(self):
         theangle = ref.angle
         if self.reversed == False:
@@ -443,18 +459,20 @@ class Liztorso(pygame.sprite.Sprite):
         if self.reversed:
             self.surf = pygame.transform.rotate((self.aim[self.frame]), (rotateangle * -1))
         self.rect = self.surf.get_rect()
+
     def reverse(self, speed, key):
         if speed < 0 and key != 0:
             self.reversed = True
         if speed > 0 and key != 0:
             self.reversed = False
 
+
 # Lizzy's main control sprite with transparant surface and the rect hitbox.
 
 class LizMain(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.orig = pygame.Surface((50,180))
+        self.orig = pygame.Surface((50, 180))
         self.hitsurf = Lizhit
         self.deathsurf = Lizdeath[0]
         self.meleesurf = Lizmelee[0]
@@ -469,7 +487,7 @@ class LizMain(pygame.sprite.Sprite):
         self.pos = vec(200, 200)
         self.fric = 0.2
         self.grounded = False
-        self.recoil = vec(0,0)
+        self.recoil = vec(0, 0)
         self.gothit = False
         self.hittimer = 0
         self.deathtimer = 0
@@ -489,8 +507,7 @@ class LizMain(pygame.sprite.Sprite):
         self.groundpound = False
         self.meleestate = "null"
 
-
-# dying animation controller
+    # dying animation controller
 
     def swansong(self):
 
@@ -514,17 +531,15 @@ class LizMain(pygame.sprite.Sprite):
             self.deathsurf = Lizdeath[2]
             self.yoffset = 50
 
-
         if self.deathtimer == 30:
             self.deathtimer = 0
             self.dying = False
             self.dead = True
 
-# check if dead (due to fall or health depletion)
+    # check if dead (due to fall or health depletion)
 
     def deathcheck(self):
         if self.pos.y > 2000:
-
             ref.death = True
 
         if self.health < 0:
@@ -535,10 +550,9 @@ class LizMain(pygame.sprite.Sprite):
             self.swansong()
 
         if self.dead:
-
             ref.death = True
 
-    # invulnerability timer blink thing for hit and respawn
+        # invulnerability timer blink thing for hit and respawn
 
         if self.immune:
             self.immunetimer += 1
@@ -547,12 +561,10 @@ class LizMain(pygame.sprite.Sprite):
             else:
                 self.blink = False
             if self.immunetimer >= 31:
-
                 self.immunetimer = 0
                 self.immune = False
 
-
-# this checks if Lizzy is on solid ground or in the air
+    # this checks if Lizzy is on solid ground or in the air
 
     def groundcheck(self):
         hits = pygame.sprite.spritecollide(self, platforms, False)
@@ -567,7 +579,7 @@ class LizMain(pygame.sprite.Sprite):
         else:
             self.grounded = False
 
-# check if Lizzy hits a hard block and define what happens if she does
+    # check if Lizzy hits a hard block and define what happens if she does
 
     def hardblockcheck(self):
 
@@ -580,21 +592,22 @@ class LizMain(pygame.sprite.Sprite):
                 if hits[i].rect.center[1] < self.rect.bottom + 10 and hits[i].rect.center[1] > self.rect.top - 10:
                     self.pos.x = revert
                     self.rect.midbottom = self.pos
-                elif (self.pos.y <= (hits[i].rect.top + 50)) and ((self.vel.x <= 0 and self.rect.center[0] - hits[i].rect.center[0] < 50) or (self.vel.x >= 0 and self.rect.center[0] - hits[i].rect.center[0] > -50)):
+                elif (self.pos.y <= (hits[i].rect.top + 50)) and (
+                        (self.vel.x <= 0 and self.rect.center[0] - hits[i].rect.center[0] < 50) or (
+                        self.vel.x >= 0 and self.rect.center[0] - hits[i].rect.center[0] > -50)):
                     self.pos.y = (hits[i].rect.top + 1)
                     self.vel.y = 0
                     self.grounded = True
                 else:
                     self.grounded = False
 
-
                 if self.vel.y < 0:
-                    if (self.vel.x <= 0 and self.rect.center[0] - hits[i].rect.center[0] < 45) or (self.vel.x >= 0 and self.rect.center[0] - hits[i].rect.center[0] > -45):
+                    if (self.vel.x <= 0 and self.rect.center[0] - hits[i].rect.center[0] < 45) or (
+                            self.vel.x >= 0 and self.rect.center[0] - hits[i].rect.center[0] > -45):
                         self.vel.y = 0
                         self.pos.y = reverty
 
-
-# main update routine
+    # main update routine
 
     def update(self):
         if not self.dying and not self.dead:
@@ -609,12 +622,9 @@ class LizMain(pygame.sprite.Sprite):
         torso.update()
         gatling.rotate()
 
-
-
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
         if ouch:
-
             self.pos -= self.vel
 
         if ouch and not self.gothit and self.hittimer == 0 and not self.immune:
@@ -648,22 +658,18 @@ class LizMain(pygame.sprite.Sprite):
             self.gothit = False
             self.hittimer = 0
 
-
-
-
-
-# function for integrating all Lizzy's various sprites
+    # function for integrating all Lizzy's various sprites
 
     def integrate(self):
         legs.rect.midtop = self.rect.center
-        torsooffset = vec(5,0)
+        torsooffset = vec(5, 0)
         if torso.reversed == True:
             torso.rect.center = self.rect.center - torsooffset
         else:
             torso.rect.center = self.rect.center + torsooffset
         gatling.rect.center = torso.rect.center
 
-# render all component sprite to the screen in correct order
+    # render all component sprite to the screen in correct order
 
     def render(self):
         if self.gothit and not self.dying:
@@ -676,13 +682,14 @@ class LizMain(pygame.sprite.Sprite):
             if self.reverse:
                 screen.blit(self.deathsurf, (self.rect.centerx, (self.rect.centery + self.yoffset)))
             if not self.reverse:
-                screen.blit(pygame.transform.flip(self.deathsurf, True, False), (self.rect.centerx, (self.rect.centery + self.yoffset)))
+                screen.blit(pygame.transform.flip(self.deathsurf, True, False),
+                            (self.rect.centerx, (self.rect.centery + self.yoffset)))
 
         elif self.melee:
 
             if not self.meleereverse:
 
-                blitplace = self.rect.center + vec(-140,-90)
+                blitplace = self.rect.center + vec(-140, -90)
                 blitplace += self.blitoffset
                 screen.blit(self.meleesurf, (blitplace))
 
@@ -701,7 +708,7 @@ class LizMain(pygame.sprite.Sprite):
         for entity in flashy:
             entity.update()
 
-# melee strike function:
+    # melee strike function:
 
     def whack(self, direction):
 
@@ -719,7 +726,6 @@ class LizMain(pygame.sprite.Sprite):
             self.meleestate = "up"
         if direction == "down":
             self.meleestate = "down"
-
 
         if self.meleetimer == 0:
 
@@ -815,7 +821,7 @@ class LizMain(pygame.sprite.Sprite):
             elif direction == "down":
                 self.meleetoken[2] -= 1
 
-# controlling movement and actions based on keyboard and mouse input
+    # controlling movement and actions based on keyboard and mouse input
 
     def move(self):
         # setting gravity if not on solid ground
@@ -824,11 +830,9 @@ class LizMain(pygame.sprite.Sprite):
         else:
             self.grav.y = 2
 
-
-# key input:
+        # key input:
 
         key = pygame.key.get_pressed()
-
 
         self.mousekey = pygame.mouse.get_pressed()
         if self.mousekey[0] and not self.gothit and not self.dying and not self.melee:
@@ -840,14 +844,14 @@ class LizMain(pygame.sprite.Sprite):
             gatling.winddown()
         if self.dying or self.gothit and gatling.spinning:
             gatling.winddown()
-# move left and right:
+        # move left and right:
         if key[K_d] and not self.gothit and not self.dying:
             self.vel.x += self.acc.x
 
         if key[K_a] and not self.gothit and not self.dying:
             self.vel.x -= self.acc.x
 
-# setting melee token if grounded and not pressing melee button:
+        # setting melee token if grounded and not pressing melee button:
 
         if self.grounded and not self.mousekey[2]:
             self.meleetoken = [1, 1, 1]
@@ -865,17 +869,29 @@ class LizMain(pygame.sprite.Sprite):
             self.melee = True
 
         if self.melee and self.meleestate == "null":
-            if not key[K_w] and not key[K_s] and self.meleetoken[0] > 0:
+
+            lizpos = vec(liz.rect.center)
+            mousepos = vec(pygame.mouse.get_pos())
+            ydif = lizpos.y - mousepos.y
+            xdif = lizpos.x - mousepos.x
+            virtbut = "x"
+            if ydif <= 0:
+                if abs(ydif) > abs(xdif):
+                    virtbut = "s"
+            elif ydif > 0:
+                if abs(ydif) > abs(xdif):
+                    virtbut = "w"
+
+            if virtbut != "w" and virtbut != "s" and self.meleetoken[0] > 0:
                 self.whack("side")
-            elif key[K_w] and self.meleetoken[1] > 0:
+            elif virtbut == "w" and self.meleetoken[1] > 0:
                 self.whack("up")
-            elif key[K_s] and self.meleetoken[2] > 0:
+            elif virtbut == "s" and self.meleetoken[2] > 0:
                 self.whack("down")
             else:
                 self.melee = False
 
-
-# jump:
+        # jump:
         if self.grounded and key[K_SPACE] and not self.gothit and not self.dying:
             self.vel.y = -25
 
@@ -888,10 +904,10 @@ class LizMain(pygame.sprite.Sprite):
         else:
             legs.airborne(int(self.vel.x))
         torso.reverse(int(self.vel.x), key)
-# adding velocity based on gravity and friction forces
+        # adding velocity based on gravity and friction forces
         self.vel.x -= self.vel.x * self.fric
         self.vel += self.grav
-# gatling recoil force:
+        # gatling recoil force:
         if gatling.firing:
             self.recoil.x = cos(radians(ref.angle)) * 1.5
 
@@ -905,11 +921,11 @@ class LizMain(pygame.sprite.Sprite):
                 self.recoil.y = 0
             self.vel -= self.recoil
         else:
-            self.recoil = vec(0,0)
+            self.recoil = vec(0, 0)
 
         if self.pos.y <= 0:
             self.vel.y = 1
-# position change based on velocity
+        # position change based on velocity
         self.pos += self.vel
         self.rect.midbottom = self.pos
         if self.vel.x < 0.1 and self.vel.x > -0.1:
@@ -920,6 +936,7 @@ class LizMain(pygame.sprite.Sprite):
         if self.vel.x < 0:
             self.reverse = True
 
+
 # creating instances of all the stuff
 
 ref = arbiter()
@@ -928,4 +945,3 @@ legs = Lizlegs()
 torso = Liztorso()
 gatling = barrels()
 # cursor = Reticle()
-

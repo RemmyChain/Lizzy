@@ -68,6 +68,7 @@ while running:
     if key[K_ESCAPE]:
         running = False
 
+
 #    if ref.death == True:
 #        running = False
 

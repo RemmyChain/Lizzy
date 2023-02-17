@@ -48,7 +48,7 @@ class arbiter():
         self.leveloffset = vec(0, 0)
         self.virtpossave = vec(0, 0)
         self.savetimer = 0
-
+        self.ammoselect = 155
         self.peiling = vec(0, 0)
 
     def update(self):
@@ -102,8 +102,14 @@ class arbiter():
     def hud(self):
         lizhealth = pygame.Rect(20, 120, liz.health * 5, 5)
         pygame.draw.rect(screen, ("red"), lizhealth)
-        ammocount = font.render("AMMO: " + str(liz.ammo[0]), True, ("black"))
-        screen.blit(ammocount, (20, 140))
+        normalammocount = font.render("regular ammo: " + str(liz.ammo[0]), True, ("black"))
+        hvammocount = font.render("hyper velocity ammo: " + str(liz.ammo[1]), True, ("black"))
+        explosiveammocount = font.render("explosive ammo: " + str(liz.ammo[2]), True, ("black"))
+        screen.blit(normalammocount, (40, 140))
+        screen.blit(hvammocount, (40, 160))
+        screen.blit(explosiveammocount, (40, 180))
+        self.ammoselect = 155 + (liz.ammotype * 20)
+        pygame.draw.circle(screen, (255, 255, 255), (20, self.ammoselect), 5)
 
 
     def virtpos(self):
@@ -330,7 +336,7 @@ class barrels(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
 
     def fire(self):
-        liz.ammo[0] -= 1
+        liz.ammo[liz.ammotype] -= 1
         if not self.flash:
             flash = FX.muzzleflash()
             flashy.add(flash)
@@ -518,6 +524,9 @@ class LizMain(pygame.sprite.Sprite):
         self.groundpound = False
         self.meleestate = "null"
         self.ammo = [200, 0, 0]
+        self.ammotype = 0
+        self.ammoswitchpressed = False
+
 
     # dying animation controller
 
@@ -845,18 +854,39 @@ class LizMain(pygame.sprite.Sprite):
         # key input:
 
         key = pygame.key.get_pressed()
+        self.mousekey = pygame.mouse.get_pressed()
+
+        # select ammo type:
+
+        if not self.ammoswitchpressed:
+            ammoselect = self.ammotype
+            if key[K_q]:
+                ammoselect -= 1
+            if key[K_e]:
+                ammoselect += 1
+            if ammoselect > 2:
+                ammoselect = 0
+            if ammoselect < 0:
+                ammoselect = 2
+            if ammoselect != self.ammotype:
+                self.ammotype = ammoselect
+                self.ammoswitchpressed = True
+
+        if self.ammoswitchpressed:
+            if not key[K_q] and not key[K_e]:
+                self.ammoswitchpressed = False
+
 
 # firing the gatling:
 
-        self.mousekey = pygame.mouse.get_pressed()
         if self.mousekey[0] and not self.gothit and not self.dying and not self.melee:
             if not gatling.spinning and not self.dying:
                 gatling.spinup()
-            if gatling.spinning and not self.dying and self.ammo[0] > 0:
+            if gatling.spinning and not self.dying and self.ammo[self.ammotype] > 0:
                 gatling.fire()
         if not self.mousekey[0] and gatling.spinning:
             gatling.winddown()
-        if self.dying or self.gothit or self.ammo[0] == 0 and gatling.spinning:
+        if self.dying or self.gothit or self.ammo[self.ammotype] == 0 and gatling.spinning:
             gatling.winddown()
         # move left and right:
         if key[K_d] and not self.gothit and not self.dying:
@@ -864,6 +894,8 @@ class LizMain(pygame.sprite.Sprite):
 
         if key[K_a] and not self.gothit and not self.dying:
             self.vel.x -= self.acc.x
+
+
 
         # setting melee token if grounded and not pressing melee button:
 

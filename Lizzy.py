@@ -859,22 +859,28 @@ class LizMain(pygame.sprite.Sprite):
         # select ammo type:
 
         if not self.ammoswitchpressed:
-            ammoselect = self.ammotype
-            if key[K_q]:
-                ammoselect -= 1
-            if key[K_e]:
-                ammoselect += 1
-            if ammoselect > 2:
-                ammoselect = 0
-            if ammoselect < 0:
-                ammoselect = 2
-            if ammoselect != self.ammotype:
-                self.ammotype = ammoselect
-                self.ammoswitchpressed = True
+            for event in pygame.event.get():
+                if event.type == MOUSEWHEEL:
+                    ammoselect = self.ammotype
+                    if event.y < 0:
+                        ammoselect -= 1
+                    if event.y > 0:
+                        ammoselect += 1
+                    if ammoselect > 2:
+                        ammoselect = 0
+                    if ammoselect < 0:
+                        ammoselect = 2
+                    if ammoselect != self.ammotype:
+                        self.ammotype = ammoselect
+                        self.ammoswitchpressed = True
 
         if self.ammoswitchpressed:
-            if not key[K_q] and not key[K_e]:
-                self.ammoswitchpressed = False
+            for event in pygame.event.get():
+                wheely = False
+                if event.type == MOUSEWHEEL:
+                    wheely = True
+                if not wheely:
+                    self.ammoswitchpressed = False
 
 
 # firing the gatling:

@@ -89,8 +89,9 @@ class arbiter():
             gatling.animtick = 0
 
             liz.health = 100
-            if liz.ammo[0] < 100:
-                liz.ammo[0] = 100
+            for amount in range(3):
+                if liz.ammo[amount] < 100:
+                    liz.ammo[amount] = 100
             liz.dead = False
             liz.gothit = False
             liz.dying = False
@@ -224,9 +225,9 @@ class hitdetector(pygame.sprite.Sprite):
 
 
 class Tracereffect(pygame.sprite.Sprite):
-    def __init__(self, state):
+    def __init__(self, state, type):
         super().__init__()
-        self.orig = tracer
+        self.orig = tracer[type]
         self.surf = pygame.transform.rotate(self.orig, ref.angle)
         self.rect = self.surf.get_rect()
         self.pos = vec(liz.rect.center)
@@ -345,10 +346,10 @@ class barrels(pygame.sprite.Sprite):
         if self.animtick >= 3:
             self.animtick = 0
         if self.animtick == 0:
-            trace = Tracereffect("visible")
+            trace = Tracereffect("visible", liz.ammotype)
             allsprites.add(trace)
         else:
-            trace = Tracereffect("invisible")
+            trace = Tracereffect("invisible", liz.ammotype)
             allsprites.add(trace)
         self.firing = True
         self.barrelstate = self.orig[(self.animtick) + 2]
@@ -523,7 +524,7 @@ class LizMain(pygame.sprite.Sprite):
         self.meleetoken = [1, 1, 1]
         self.groundpound = False
         self.meleestate = "null"
-        self.ammo = [200, 0, 0]
+        self.ammo = [200, 100, 100]
         self.ammotype = 0
         self.ammoswitchpressed = False
 

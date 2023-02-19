@@ -27,7 +27,17 @@ kamakertail = pygame.image.load(os.path.join('images', 'kamakertail.png')).conve
 
 rocktile = pygame.image.load(os.path.join('images', 'rockblock.png')).convert_alpha()
 
-tracer = pygame.image.load(os.path.join('images', 'tracer.png')).convert_alpha()
+tracer = [
+    pygame.image.load(os.path.join('images', 'tracer.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'tracerblue.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'tracerred.png')).convert_alpha(),
+]
+
+ammoboxes = [
+    pygame.image.load(os.path.join('images', 'ammoyellow.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'ammoblue.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'ammored.png')).convert_alpha(),
+]
 
 hitpix = [
     pygame.image.load(os.path.join('images', 'hit1.png')).convert_alpha(),

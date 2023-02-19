@@ -81,7 +81,7 @@ class particle():
         self.center.y += self.yvel
 
 class muzzleflash(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, color):
         super().__init__()
         self.orig = pygame.surface.Surface((100,50))
         self.orig.set_colorkey((0,0,0))
@@ -92,18 +92,28 @@ class muzzleflash(pygame.sprite.Sprite):
         self.angle = ref.angle
         self.offangle = ref.angle
         self.pos = vec(liz.rect.center)
+        self.color = color
 
     def update(self):
 
         self.timer += 1
         self.orig.fill((0,0,0))
+        if self.color == 0:
+            colorchange = (-15, -25, -60)
+            color = (255, 255, 240)
+        elif self.color == 1:
+            colorchange = (-45, -45, -10)
+            color = (240, 240, 255)
+        else:
+            colorchange = (-10, -45, -45)
+            color = (255, 240, 240)
         if self.timer > 2:
             for i in range(12):
                 random1 = random.randrange(23, 27)
                 random2 = random.randrange(0, 50)
                 random3 = random.randrange(-5, 5)
                 random4 = random.randrange(5, 15)
-                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 5, -1, (255,255,255), self.orig, (-10,-40,-60))
+                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 5, -1, color, self.orig, colorchange)
                 self.list.append(part)
         for i in self.list:
             i.draw()

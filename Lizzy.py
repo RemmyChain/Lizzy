@@ -339,7 +339,7 @@ class barrels(pygame.sprite.Sprite):
     def fire(self):
         liz.ammo[liz.ammotype] -= 1
         if not self.flash:
-            flash = FX.muzzleflash()
+            flash = FX.muzzleflash(liz.ammotype)
             flashy.add(flash)
             self.flash = True
 
@@ -962,9 +962,14 @@ class LizMain(pygame.sprite.Sprite):
         self.vel += self.grav
         # gatling recoil force:
         if gatling.firing:
-            self.recoil.x = cos(radians(ref.angle)) * 1.5
+            recoil = 0
+            if self.ammotype == 0:
+                recoil = 1
+            else:
+                recoil = 2.5
+            self.recoil.x = cos(radians(ref.angle)) * 0.75 * recoil
 
-            self.recoil.y = sin(radians(ref.angle)) * -2.5
+            self.recoil.y = sin(radians(ref.angle)) * -1 * recoil
             if self.grounded:
                 if self.recoil.y < 2:
                     self.recoil.y = 0

@@ -262,6 +262,8 @@ class Tracereffect(pygame.sprite.Sprite):
                 self.internal = True
                 if liz.ammotype != 1:
                     ping.kill()
+                elif i == 100:
+                    ping.kill()
             if self.internal and not (knal or pats):
                 exity = hitdetector()
                 exity.rect.center = ping.rect.center

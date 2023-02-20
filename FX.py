@@ -5,7 +5,7 @@ from images import *
 from Lizzy import *
 from enemies import *
 import math
-from math import atan2, degrees, floor, sin, cos, radians, pi
+from math import atan2, degrees, floor, sin, cos, radians, pi, sqrt
 import random
 
 class crash(pygame.sprite.Sprite):
@@ -44,6 +44,35 @@ class crash(pygame.sprite.Sprite):
         if self.timer > 10:
             self.kill()
 
+class blasticle():
+    def __init__(self, pos, vel, acc, size, dsize, ddsize, color, surface, colorchange):
+        self.pos = vec(pos)
+        self.vel = vec(vel)
+        self.acc = vec(acc)
+        self.size = size
+        self.dsize = dsize
+        self.ddsize = ddsize
+        self.color = color
+        self.surface = surface
+        self.colorchange = colorchange
+        self.red = self.color[0]
+        self.blue = self.color[2]
+        self.green = self.color[1]
+
+    def draw(self):
+        pygame.draw.circle(self.surface, self.color, self.pos, self.size, 0)
+
+        self.red += self.colorchange[0]
+        self.green += self.colorchange[1]
+        self.blue += self.colorchange[2]
+        self.color = (self.red, self.green, self.blue)
+
+        self.pos += self.vel
+        self.vel += self.acc
+
+        self.size += self.dsize
+        self.dsize += self.ddsize
+
 
 
 class particle():
@@ -79,6 +108,48 @@ class particle():
         self.size += self.dsize
         self.center.x += self.xvel
         self.center.y += self.yvel
+
+class explosive(pygame.sprite.Sprite):
+    def __init__(self, coords):
+        super().__init__()
+        self.surf = pygame.surface.Surface((200, 200))
+        self.rect = self.surf.get_rect()
+        self.rect.center = vec(coords)
+        self.timer = 0
+        self.list = []
+        self.surf.set_alpha(255)
+        self.surf.set_colorkey((0, 0, 0))
+        self.alpha = 255
+        self.fade = 30
+
+        for i in range(30):
+            x = random.random()
+            y = sqrt(1 - (x * x))
+            rando1 = random.randint(0, 1)
+            if rando1 == 0:
+                rando1 = -1
+            rando2 = random.randint(0, 1)
+            if rando2 == 0:
+                rando2 = -1
+            x *= rando1
+            y *= rando2
+            vel = vec(x, y)
+            vel *= 10
+            acc = vel * -0.1
+            part = blasticle((100, 100), vel, acc, 1, 2, -0.3, (255, 255, 255), self.surf, (-5, -10, -15))
+            self.list.append(part)
+
+    def update(self):
+        self.surf.fill((0,0,0))
+        for thing in self.list:
+            thing.draw()
+        self.surf.set_alpha(self.alpha)
+        self.alpha -= self.fade
+        self.timer += 1
+        screen.blit(self.surf, self.rect)
+        if self.timer == 10:
+            self.kill()
+
 
 class muzzleflash(pygame.sprite.Sprite):
     def __init__(self, color):

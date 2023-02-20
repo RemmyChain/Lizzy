@@ -75,11 +75,17 @@ class hardblock(pygame.sprite.Sprite):
     def gethit(self, impactsite, rotation):
         if liz.ammotype == 1:
             chance = random.randint(0, 4)
-        else:
+        elif liz.ammotype == 2:
+            chance = 0
+        elif liz.ammotype == 0:
             chance = random.randint(0, 2)
         if chance == 0:
-            pow = spriticle(impactsite, rotation)
-            allsprites.add(pow)
+            if liz.ammotype != 2:
+                pow = spriticle(impactsite, rotation)
+                allsprites.add(pow)
+            elif liz.ammotype == 2:
+                poef = explosive(impactsite)
+                allsprites.add(poef)
 
 def hardblockplacement(hbcoords, image):
     for i in range(len(hbcoords)):

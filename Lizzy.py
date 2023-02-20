@@ -245,32 +245,26 @@ class Tracereffect(pygame.sprite.Sprite):
         self.rotation = 0
         self.state = state
         self.internal = False
-        self.pingdict = {
-            0: "ping0",
-            1: "ping1",
-            2:  "ping2"
-        }
-
 
     def update(self):
 
-        self.pingdict[self.cycle] = hitdetector()
-        self.pingdict[self.cycle].rect.center = self.pos
+        ping = hitdetector()
+        ping.rect.center = self.pos
         for i in range(100):
-            self.pingdict[self.cycle].rect.centerx += (sin(radians(self.angle))) * 10
-            self.pingdict[self.cycle].rect.centery += (cos(radians(self.angle))) * 10
-            knal = pygame.sprite.spritecollide(self.pingdict[self.cycle], hardblocks, False)
-            pats = pygame.sprite.spritecollide(self.pingdict[self.cycle], enemies, False)
+            ping.rect.centerx += (sin(radians(self.angle))) * 10
+            ping.rect.centery += (cos(radians(self.angle))) * 10
+            knal = pygame.sprite.spritecollide(ping, hardblocks, False)
+            pats = pygame.sprite.spritecollide(ping, enemies, False)
             if (knal or pats) and not self.internal:
                 impact = hitdetector()
-                impact.rect.center = self.pingdict[self.cycle].rect.center
+                impact.rect.center = ping.rect.center
                 impacts.add(impact)
                 self.internal = True
                 if liz.ammotype != 1:
-                    self.pingdict[self.cycle].kill()
+                    ping.kill()
             if self.internal and not (knal or pats):
                 exity = hitdetector()
-                exity.rect.center = self.pingdict[self.cycle].rect.center
+                exity.rect.center = ping.rect.center
                 exits.add(exity)
                 self.internal = False
 

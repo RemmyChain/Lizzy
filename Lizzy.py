@@ -240,23 +240,33 @@ class Tracereffect(pygame.sprite.Sprite):
         self.pos.x += (sin(radians(self.angle))) * 50
         self.pos.y += (cos(radians(self.angle))) * 50
         self.rect.center = self.pos
-        self.impactsite = (0, 0)
+        self.impactsite = []
+        self.exitsite = []
         self.rotation = 0
         self.state = state
-
-    def update(self):
+        self.internal = False
 
         ping = hitdetector()
         ping.rect.center = self.pos
         for i in range(100):
+            ping.rect.centerx += (sin(radians(self.angle))) * 10
+            ping.rect.centery += (cos(radians(self.angle))) * 10
             knal = pygame.sprite.spritecollide(ping, hardblocks, False)
             pats = pygame.sprite.spritecollide(ping, enemies, False)
-            if not knal and not pats:
-                ping.rect.centerx += (sin(radians(self.angle))) * 10
-                ping.rect.centery += (cos(radians(self.angle))) * 10
-                self.impactsite = vec(ping.rect.center)
-            else:
-                ping.kill()
+            if (knal or pats) and not self.internal:
+                impact = hitdetector()
+                impact.rect.center = ping.rect.center
+                impacts.add(impact)
+                self.internal = True
+                if liz.ammotype != 1:
+                    ping.kill()
+            if self.internal and not (knal or pats):
+                exity = hitdetector()
+                exity.rect.center = ping.rect.center
+                exits.add(exity)
+                self.internal = False
+
+    def update(self):
 
         self.pos.x += (sin(radians(self.angle))) * 100
         self.pos.y += (cos(radians(self.angle))) * 100
@@ -266,30 +276,44 @@ class Tracereffect(pygame.sprite.Sprite):
             screen.blit(self.surf, self.rect)
         hits = pygame.sprite.spritecollide(self, hardblocks, False)
         splut = pygame.sprite.spritecollide(self, enemies, False)
+        impactss = pygame.sprite.spritecollide(self, impacts, True)
+        exitss = pygame.sprite.spritecollide(self, exits, True)
         if hits and not splut:
-            if (abs(self.rect.center[0] - self.impactsite[0]) < 50):
-                if abs(self.impactsite[1] - hits[0].rect.top) < 15:
-                    self.rotation = 0
-                elif abs(self.impactsite[0] - hits[0].rect.left) < 15:
-                    self.rotation = 90
-                elif abs(self.impactsite[1] - hits[0].rect.bottom) < 15:
-                    self.rotation = 180
-                elif abs(self.impactsite[0] - hits[0].rect.right) < 15:
-                    self.rotation = 270
-                #    pow = bullitimpact(self.impactsite, self.rotation)
-                hits[0].gethit(self.impactsite, self.rotation)
-                # pow = spriticle(self.impactsite, self.rotation)
-                # allsprites.add(pow)
             for i in range(len(hits)):
+                if impactss:
+                    if abs(impactss[0].rect.centery - hits[i].rect.top) < 15:
+                        self.rotation = 0
+                    elif abs(impactss[0].rect.centerx - hits[i].rect.left) < 15:
+                        self.rotation = 90
+                    elif abs(impactss[0].rect.centery - hits[i].rect.bottom) < 15:
+                        self.rotation = 180
+                    elif abs(impactss[0].rect.centerx - hits[i].rect.right) < 15:
+                        self.rotation = 270
+                        #    pow = bullitimpact(self.impactsite, self.rotation)
+                    hits[i].gethit(impactss[0].rect.center, self.rotation)
+
+                if exitss:
+                    self.rotation += 180
+                    if self.rotation > 360:
+                        self.rotation -= 360
+                    # pow = spriticle(self.impactsite, self.rotation)
+                    # allsprites.add(pow)
+                    hits[i].gethit(exitss[0].rect.center, self.rotation)
+
                 screen.blit(hits[i].surf, hits[i].rect, )
-                self.kill()
+                if liz.ammotype != 1:
+                    self.kill()
 
         if splut and not hits:
 
             for i in splut:
-                i.gethit(self.impactsite, 1)
+                if impactss:
+                    i.gethit(impactss[0].rect.center, 1)
                 screen.blit(i.surf, i.rect)
-                self.kill()
+                if liz.ammotype != 1:
+                    self.kill()
+                if exitss:
+                    i.gethit(exitss[0].rect.center, 0)
 
         if self.tick > 20:
             self.kill()
@@ -524,7 +548,7 @@ class LizMain(pygame.sprite.Sprite):
         self.meleetoken = [1, 1, 1]
         self.groundpound = False
         self.meleestate = "null"
-        self.ammo = [200, 100, 100]
+        self.ammo = [200, 200, 200]
         self.ammotype = 0
         self.ammoswitchpressed = False
 

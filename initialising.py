@@ -22,6 +22,8 @@ pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
 # sprite groups
 
 allsprites = pygame.sprite.Group()
+impacts = pygame.sprite.Group()
+exits = pygame.sprite.Group()
 flashy = pygame.sprite.Group()
 platforms = pygame.sprite.Group()
 hardblocks = pygame.sprite.Group()

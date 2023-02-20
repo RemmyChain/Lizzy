@@ -74,9 +74,10 @@ class hardblock(pygame.sprite.Sprite):
         screen.blit(self.surf, self.rect)
     def gethit(self, impactsite, rotation):
 
-
-        pow = spriticle(impactsite, rotation)
-        allsprites.add(pow)
+        chance = random.randint(0, 2)
+        if chance == 0:
+            pow = spriticle(impactsite, rotation)
+            allsprites.add(pow)
 
 def hardblockplacement(hbcoords, image):
     for i in range(len(hbcoords)):

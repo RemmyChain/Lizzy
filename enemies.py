@@ -47,8 +47,10 @@ class kamaker(pygame.sprite.Sprite):
 
         self.gothit = True
         self.health -= damage
-        hitfx = organichit(hitcoords)
-        allsprites.add(hitfx)
+        chance = random.randint(0, 2)
+        if chance == 0:
+            hitfx = organichit(hitcoords)
+            allsprites.add(hitfx)
         copysurf = self.surf
         if not self.killed:
             self.surf.blit(copysurf, (100, 50), special_flags=BLEND_RGB_ADD)

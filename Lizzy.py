@@ -225,7 +225,7 @@ class hitdetector(pygame.sprite.Sprite):
 
 
 class Tracereffect(pygame.sprite.Sprite):
-    def __init__(self, state, type):
+    def __init__(self, state, type, cycle):
         super().__init__()
         self.orig = tracer[type]
         self.surf = pygame.transform.rotate(self.orig, ref.angle)
@@ -233,40 +233,46 @@ class Tracereffect(pygame.sprite.Sprite):
         self.pos = vec(liz.rect.center)
         self.error = random.randint(-1, 1) // 2
         self.tick = 0
-        self.scantick = 0
+        self.cycle = cycle
+
         self.angle = ref.angle + 90 + self.error
         if self.angle > 360:
             self.angle -= 360
         self.pos.x += (sin(radians(self.angle))) * 50
         self.pos.y += (cos(radians(self.angle))) * 50
         self.rect.center = self.pos
-        self.impactsite = []
-        self.exitsite = []
+
         self.rotation = 0
         self.state = state
         self.internal = False
+        self.pingdict = {
+            0: "ping0",
+            1: "ping1",
+            2:  "ping2"
+        }
 
-        ping = hitdetector()
-        ping.rect.center = self.pos
+
+    def update(self):
+
+        self.pingdict[self.cycle] = hitdetector()
+        self.pingdict[self.cycle].rect.center = self.pos
         for i in range(100):
-            ping.rect.centerx += (sin(radians(self.angle))) * 10
-            ping.rect.centery += (cos(radians(self.angle))) * 10
-            knal = pygame.sprite.spritecollide(ping, hardblocks, False)
-            pats = pygame.sprite.spritecollide(ping, enemies, False)
+            self.pingdict[self.cycle].rect.centerx += (sin(radians(self.angle))) * 10
+            self.pingdict[self.cycle].rect.centery += (cos(radians(self.angle))) * 10
+            knal = pygame.sprite.spritecollide(self.pingdict[self.cycle], hardblocks, False)
+            pats = pygame.sprite.spritecollide(self.pingdict[self.cycle], enemies, False)
             if (knal or pats) and not self.internal:
                 impact = hitdetector()
-                impact.rect.center = ping.rect.center
+                impact.rect.center = self.pingdict[self.cycle].rect.center
                 impacts.add(impact)
                 self.internal = True
                 if liz.ammotype != 1:
-                    ping.kill()
+                    self.pingdict[self.cycle].kill()
             if self.internal and not (knal or pats):
                 exity = hitdetector()
-                exity.rect.center = ping.rect.center
+                exity.rect.center = self.pingdict[self.cycle].rect.center
                 exits.add(exity)
                 self.internal = False
-
-    def update(self):
 
         self.pos.x += (sin(radians(self.angle))) * 100
         self.pos.y += (cos(radians(self.angle))) * 100
@@ -370,10 +376,10 @@ class barrels(pygame.sprite.Sprite):
         if self.animtick >= 3:
             self.animtick = 0
         if self.animtick == 0:
-            trace = Tracereffect("visible", liz.ammotype)
+            trace = Tracereffect("visible", liz.ammotype, self.animtick)
             allsprites.add(trace)
         else:
-            trace = Tracereffect("invisible", liz.ammotype)
+            trace = Tracereffect("invisible", liz.ammotype, self.animtick)
             allsprites.add(trace)
         self.firing = True
         self.barrelstate = self.orig[(self.animtick) + 2]

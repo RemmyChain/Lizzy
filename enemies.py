@@ -43,28 +43,32 @@ class kamaker(pygame.sprite.Sprite):
         self.partlist2 = []
         self.attack = 20
 
-    def gethit(self, hitcoords, damage):
+    def gethit(self, hitcoords, damage, type):
 
         self.gothit = True
         self.health -= damage
         chance = random.randint(0, 2)
-        if chance == 0:
-            hitfx = organichit(hitcoords)
-            allsprites.add(hitfx)
+        if type == "bullet" or type == "melee":
+            if chance == 0:
+                hitfx = organichit(hitcoords)
+                allsprites.add(hitfx)
+        elif type == "explosive":
+            blast = explosive(hitcoords)
+            allsprites.add(blast)
         copysurf = self.surf
         if not self.killed:
             self.surf.blit(copysurf, (100, 50), special_flags=BLEND_RGB_ADD)
-
-        if hitcoords[0] < self.rect.centerx:
-            if not self.hardblocked:
-                self.rect.centerx += 10
-            else:
-                self.rect.centerx -= 10
-        if hitcoords[0] > self.rect.centerx:
-            if not self.hardblocked:
-                self.rect.centerx -= 10
-            else:
-                self.rect.centerx += 5
+        if type != "explosive":
+            if hitcoords[0] < self.rect.centerx:
+                if not self.hardblocked:
+                    self.rect.centerx += 10
+                else:
+                    self.rect.centerx -= 10
+            if hitcoords[0] > self.rect.centerx:
+                if not self.hardblocked:
+                    self.rect.centerx -= 10
+                else:
+                    self.rect.centerx += 5
 
         if self.health <= 0:
             self.killed = True

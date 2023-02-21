@@ -116,6 +116,28 @@ class particle():
         self.center.x += self.xvel
         self.center.y += self.yvel
 
+class explosionhitbox(pygame.sprite.Sprite):
+    def __init__(self, position):
+        super().__init__()
+        self.surf = pygame.surface.Surface((100, 100))
+        self.surf.fill((0, 0, 0))
+        self.surf.set_alpha(100)
+        self.rect = self.surf.get_rect()
+        self.rect.center = position
+        self.expire = False
+        self.damage = 3
+    def update(self):
+        enemieshit = pygame.sprite.spritecollide(self, enemies, False)
+        if enemieshit:
+            for beast in enemieshit:
+                beast.gethit(self.rect.center, 3, "explosion")
+
+        if self.expire:
+            self.kill()
+        else:
+            self.expire = True
+
+
 class explosive(pygame.sprite.Sprite):
     def __init__(self, coords):
         super().__init__()
@@ -165,6 +187,11 @@ class explosive(pygame.sprite.Sprite):
             self.list.append(part)
 
     def update(self):
+        if self.timer == 0:
+            explo = explosionhitbox(self.rect.center)
+            hazards.add(explo)
+            allsprites.add(explo)
+
         self.surf.fill((0, 0, 0))
         for thing in self.list:
             thing.draw()

@@ -188,7 +188,7 @@ class meleehurtbox(pygame.sprite.Sprite):
         if whackedbeast:
 
             for i in whackedbeast:
-                i.gethit(self.rect.center, 10)
+                i.gethit(self.rect.center, 10, "melee")
                 if self.orient == "left":
                     i.rect.centerx -= 30
                     liz.vel.x += 10
@@ -310,12 +310,15 @@ class Tracereffect(pygame.sprite.Sprite):
 
             for i in splut:
                 if impactss:
-                    i.gethit(impactss[0].rect.center, 1)
+                    if liz.ammotype != 2:
+                        i.gethit(impactss[0].rect.center, 1, "bullet")
+                    elif liz.ammotype == 2:
+                        i.gethit(impactss[0].rect.center, 0, "explosive")
                 screen.blit(i.surf, i.rect)
                 if liz.ammotype != 1:
                     self.kill()
                 if exitss:
-                    i.gethit(exitss[0].rect.center, 0)
+                    i.gethit(exitss[0].rect.center, 0, "bullet")
 
         if self.tick > 20:
             self.kill()
@@ -672,7 +675,8 @@ class LizMain(pygame.sprite.Sprite):
 
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
-        if ouch:
+        yikes = pygame.sprite.spritecollide(self, hazards, False)
+        if ouch or yikes:
             self.pos -= self.vel
 
         if ouch and not self.gothit and self.hittimer == 0 and not self.immune:
@@ -702,7 +706,30 @@ class LizMain(pygame.sprite.Sprite):
         if self.hittimer >= 24:
             self.hittimer = 0
 
-        if not ouch:
+        elif yikes and not self.gothit and self.hittimer == 0 and not self.immune:
+
+            self.health -= 20
+
+            self.gothit = True
+            self.immune = True
+            if abs(self.vel.x) > 15:
+                self.vel.x *= -1
+            elif abs(self.vel.x) < 15:
+                if yikes[0].rect.centerx < self.rect.centerx:
+                    self.vel.x = 15
+                if yikes[0].rect.centerx > self.rect.centerx:
+                    self.vel.x = -15
+            if self.vel.y > 20:
+                self.vel.y = 20
+            self.vel.y *= -1.1
+        if self.gothit or self.hittimer > 1:
+            self.hittimer += 2
+        if self.hittimer >= 10:
+            self.gothit = False
+        if self.hittimer >= 24:
+            self.hittimer = 0
+
+        if not ouch and not yikes:
             self.gothit = False
             self.hittimer = 0
 

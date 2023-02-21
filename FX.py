@@ -45,7 +45,7 @@ class crash(pygame.sprite.Sprite):
             self.kill()
 
 class blasticle():
-    def __init__(self, pos, vel, acc, size, dsize, ddsize, color, surface, colorchange):
+    def __init__(self, pos, vel, acc, size, dsize, ddsize, color, surface, colorchange, dcolorchange):
         self.pos = vec(pos)
         self.vel = vec(vel)
         self.acc = vec(acc)
@@ -55,6 +55,7 @@ class blasticle():
         self.color = color
         self.surface = surface
         self.colorchange = colorchange
+        self.dcolorchange = dcolorchange
         self.red = self.color[0]
         self.blue = self.color[2]
         self.green = self.color[1]
@@ -62,9 +63,15 @@ class blasticle():
     def draw(self):
         pygame.draw.circle(self.surface, self.color, self.pos, self.size, 0)
 
-        self.red += self.colorchange[0]
-        self.green += self.colorchange[1]
-        self.blue += self.colorchange[2]
+        self.red += (self.colorchange[0] * self.dcolorchange)
+        if self.red < 10:
+            self.red = 10
+        self.green += (self.colorchange[1] * self.dcolorchange)
+        if self.green < 10:
+            self.green = 10
+        self.blue += (self.colorchange[2] * self.dcolorchange)
+        if self.blue < 10:
+            self.blue = 10
         self.color = (self.red, self.green, self.blue)
 
         self.pos += self.vel
@@ -112,7 +119,15 @@ class particle():
 class explosive(pygame.sprite.Sprite):
     def __init__(self, coords):
         super().__init__()
+        self.circleseedzise = 20
+        self.circle2size = 5
         self.surf = pygame.surface.Surface((200, 200))
+        self.blastsurf = pygame.surface.Surface((200, 200))
+
+        self.blastsurf.set_colorkey((0, 0, 0))
+
+        self.blastsurf.set_alpha(50)
+
         self.rect = self.surf.get_rect()
         self.rect.center = vec(coords)
         self.timer = 0
@@ -120,9 +135,16 @@ class explosive(pygame.sprite.Sprite):
         self.surf.set_alpha(255)
         self.surf.set_colorkey((0, 0, 0))
         self.alpha = 255
-        self.fade = 30
+        self.fade = 10
+        self.faderate = 1.5
 
-        for i in range(30):
+    def circly(self, size, expand, color,):
+        # self.blastsurf.fill((0, 0, 0))
+        pygame.draw.circle(self.blastsurf, color, (100, 100), size)
+        self.circleseedzise += expand
+        self.circle2size += expand
+
+        for i in range(25):
             x = random.random()
             y = sqrt(1 - (x * x))
             rando1 = random.randint(0, 1)
@@ -131,22 +153,32 @@ class explosive(pygame.sprite.Sprite):
             rando2 = random.randint(0, 1)
             if rando2 == 0:
                 rando2 = -1
+            x += random.random() / 2
+            y += random.random() / 2
             x *= rando1
             y *= rando2
+            size = random.random() * 2
             vel = vec(x, y)
             vel *= 10
             acc = vel * -0.1
-            part = blasticle((100, 100), vel, acc, 1, 2, -0.3, (255, 255, 255), self.surf, (-5, -10, -15))
+            part = blasticle((100, 100), vel, acc, size, 2.2, -0.8, (255, 255, 255), self.surf, (-5, -20, -30), 1.5)
             self.list.append(part)
 
     def update(self):
-        self.surf.fill((0,0,0))
+        self.surf.fill((0, 0, 0))
         for thing in self.list:
             thing.draw()
         self.surf.set_alpha(self.alpha)
         self.alpha -= self.fade
+        self.fade *= self.faderate
         self.timer += 1
+        if self.timer < 8:
+            self.circly(self.circleseedzise, 4, (10, 10, 10))
+        if self.timer > 4:
+            self.circly(self.circle2size, 8, (0, 0, 0))
         screen.blit(self.surf, self.rect)
+        screen.blit(self.blastsurf, self.rect, special_flags=BLEND_RGB_ADD)
+
         if self.timer == 10:
             self.kill()
 

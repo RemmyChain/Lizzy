@@ -75,12 +75,12 @@ class hardblock(pygame.sprite.Sprite):
         screen.blit(self.surf, self.rect)
     def gethit(self, impactsite, rotation):
         if liz.ammotype == 1:
-            chance = random.randint(0, 4)
+            chance = random.randint(0, 3)
         elif liz.ammotype == 2:
             chance = 0
         elif liz.ammotype == 0:
-            chance = random.randint(0, 1)
-        if chance == 0:
+            chance = random.randint(0, 2)
+        if chance != 0:
             if liz.ammotype != 2:
                 pow = spriticle(impactsite, rotation)
                 allsprites.add(pow)

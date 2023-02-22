@@ -292,7 +292,12 @@ class Tracereffect(pygame.sprite.Sprite):
                     elif abs(impactss[0].rect.centerx - hits[i].rect.right) < 15:
                         self.rotation = 270
                         #    pow = bullitimpact(self.impactsite, self.rotation)
-                    hits[i].gethit(impactss[0].rect.center, self.rotation)
+                    if liz.ammotype == 2:
+                        boem = FX.explosive(impactss[0].rect.center)
+                        hazards.add(boem)
+                        allsprites.add(boem)
+                    else:
+                        hits[i].gethit(impactss[0].rect.center, self.rotation)
 
                 if exitss:
                     self.rotation += 180
@@ -313,11 +318,14 @@ class Tracereffect(pygame.sprite.Sprite):
                     if liz.ammotype != 2:
                         i.gethit(impactss[0].rect.center, 1, "bullet")
                     elif liz.ammotype == 2:
-                        i.gethit(impactss[0].rect.center, 0, "explosive")
+                        boem = FX.explosive(impactss[0].rect.center)
+                        hazards.add(boem)
+                        allsprites.add(boem)
                 screen.blit(i.surf, i.rect)
                 if liz.ammotype != 1:
                     self.kill()
                 if exitss:
+
                     i.gethit(exitss[0].rect.center, 0, "bullet")
 
         if self.tick > 20:

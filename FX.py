@@ -119,7 +119,7 @@ class particle():
 class explosionhitbox(pygame.sprite.Sprite):
     def __init__(self, position):
         super().__init__()
-        self.surf = pygame.surface.Surface((100, 100))
+        self.surf = pygame.surface.Surface((150, 150))
         self.surf.fill((0, 0, 0))
         self.surf.set_alpha(100)
         self.rect = self.surf.get_rect()

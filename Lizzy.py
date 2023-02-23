@@ -299,6 +299,15 @@ class Tracereffect(pygame.sprite.Sprite):
                     else:
                         hits[i].gethit(impactss[0].rect.center, self.rotation)
 
+                if not impactss and liz.ammotype == 2:
+                    if 90 < ref.angle < 270:
+                        boem = FX.explosive(hits[0].rect.midright)
+                        allsprites.add(boem)
+                    else:
+                        boem = FX.explosive(hits[0].rect.midleft)
+                        allsprites.add(boem)
+
+
                 if exitss:
                     self.rotation += 180
                     if self.rotation > 360:
@@ -307,6 +316,7 @@ class Tracereffect(pygame.sprite.Sprite):
                     # allsprites.add(pow)
                     hits[i].gethit(exitss[0].rect.center, self.rotation)
                 if liz.ammotype != 2:
+
                     screen.blit(hits[i].surf, hits[i].rect, )
                 if liz.ammotype != 1:
                     self.kill()

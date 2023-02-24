@@ -219,7 +219,7 @@ class meleehurtbox(pygame.sprite.Sprite):
 class hitdetector(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.surf = pygame.Surface((3, 3))
+        self.surf = pygame.Surface((1, 1))
         self.surf.set_alpha(0)
         self.rect = self.surf.get_rect()
 
@@ -250,9 +250,10 @@ class Tracereffect(pygame.sprite.Sprite):
 
         ping = hitdetector()
         ping.rect.center = self.pos
-        for i in range(75):
-            ping.rect.centerx += (sin(radians(self.angle))) * 10
-            ping.rect.centery += (cos(radians(self.angle))) * 10
+        for i in range(50):
+
+            ping.rect.centerx += (sin(radians(self.angle))) * 20
+            ping.rect.centery += (cos(radians(self.angle))) * 20
             knal = pygame.sprite.spritecollide(ping, hardblocks, False)
             pats = pygame.sprite.spritecollide(ping, enemies, False)
             if (knal or pats) and not self.internal:

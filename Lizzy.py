@@ -250,7 +250,7 @@ class Tracereffect(pygame.sprite.Sprite):
 
         ping = hitdetector()
         ping.rect.center = self.pos
-        for i in range(50):
+        for i in range(20):
 
             ping.rect.centerx += (sin(radians(self.angle))) * 20
             ping.rect.centery += (cos(radians(self.angle))) * 20
@@ -263,7 +263,7 @@ class Tracereffect(pygame.sprite.Sprite):
                 self.internal = True
                 if liz.ammotype != 1:
                     ping.kill()
-                elif i == 75:
+                elif i == 20:
                     ping.kill()
             if self.internal and not (knal or pats):
                 exity = hitdetector()

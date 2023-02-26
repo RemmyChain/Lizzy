@@ -281,7 +281,7 @@ class Tracereffect(pygame.sprite.Sprite):
         splut = pygame.sprite.spritecollide(self, enemies, False)
         impactss = pygame.sprite.spritecollide(self, impacts, True)
         exitss = pygame.sprite.spritecollide(self, exits, True)
-        if hits and not splut:
+        if knal and not pats:
             for i in range(len(hits)):
                 if impactss:
                     if abs(impactss[0].rect.centery - hits[i].rect.top) < 15:
@@ -322,7 +322,7 @@ class Tracereffect(pygame.sprite.Sprite):
                 if liz.ammotype != 1:
                     self.kill()
 
-        if splut and not hits:
+        if pats and not knal:
 
             for i in splut:
                 if impactss:

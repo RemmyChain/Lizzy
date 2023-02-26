@@ -821,24 +821,24 @@ class LizMain(pygame.sprite.Sprite):
         if direction == "down":
             self.meleestate = "down"
 
-        if self.meleetimer == 0:
+        if self.meleetimer < 3:
 
             if not self.grounded:
                 if direction == "up":
-                    liz.vel.y -= 30
+                    liz.vel.y -= 10
                 elif direction == "down":
                     liz.vel.y -= 10
 
                 elif self.meleereverse:
-                    liz.vel.x -= 40
+                    liz.vel.x -= 15
                 elif not self.meleereverse:
-                    liz.vel.x += 40
-        if self.meleetimer == 10:
+                    liz.vel.x += 15
+        if 8 > self.meleetimer < 12:
             if not self.grounded:
                 if direction == "down":
 
                     liz.vel.x = 0
-                    liz.vel.y += 40
+                    liz.vel.y += 5
                     if liz.vel.y > 45:
                         liz.vel.y = 45
 

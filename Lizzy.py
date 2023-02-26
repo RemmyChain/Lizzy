@@ -839,6 +839,8 @@ class LizMain(pygame.sprite.Sprite):
 
                     liz.vel.x = 0
                     liz.vel.y += 40
+                    if liz.vel.y > 45:
+                        liz.vel.y = 45
 
         if self.blink:
             self.blink = False

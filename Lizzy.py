@@ -827,14 +827,18 @@ class LizMain(pygame.sprite.Sprite):
                 if direction == "up":
                     liz.vel.y -= 30
                 elif direction == "down":
-
-                    liz.vel.x = 0
                     liz.vel.y -= 10
 
                 elif self.meleereverse:
                     liz.vel.x -= 40
                 elif not self.meleereverse:
                     liz.vel.x += 40
+        if self.meleetimer == 10:
+            if not self.grounded:
+                if direction == "down":
+
+                    liz.vel.x = 0
+                    liz.vel.y += 40
 
         if self.blink:
             self.blink = False
@@ -919,7 +923,7 @@ class LizMain(pygame.sprite.Sprite):
 
     def move(self):
         # setting gravity if not on solid ground
-        if self.grounded or self.vel.y > 40:
+        if self.grounded or self.vel.y > 45:
             self.grav.y = 0
         else:
             self.grav.y = 2

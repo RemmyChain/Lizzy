@@ -341,7 +341,9 @@ class Tracereffect(pygame.sprite.Sprite):
 
         if self.tick > 20:
             self.kill()
-
+        if splut and not pats:
+            for i in splut:
+                i.gethit(i.rect.center, 1, "bullet")
 
 class Reticle(pygame.sprite.Sprite):
     def __init__(self):

@@ -250,7 +250,7 @@ class Tracereffect(pygame.sprite.Sprite):
 
         ping = hitdetector()
         ping.rect.center = self.pos
-        for i in range(20):
+        for i in range(5):
 
             ping.rect.centerx += (sin(radians(self.angle))) * 20
             ping.rect.centery += (cos(radians(self.angle))) * 20

@@ -35,7 +35,7 @@ from enemies import *
 while running:
 
     screen.blit(background, (0, 0))
-
+    depth.update()
     ref.update()
     for entity in allsprites:
         entity.update()

@@ -8,6 +8,7 @@ from Lizzy import *
 
 # a simple construction function building square platforms out of 100 x 100 sprite blocks
 
+
 def basicplatformconstructor(position, size):
     size -= 2
     if size < 0:
@@ -126,3 +127,6 @@ enemies.add(kamaker1)
 enemies.add(kamaker2)
 allsprites.add(kamaker1)
 allsprites.add(kamaker2)
+
+depthcenter = vec(screen.get_size()) / 2
+depth = depthbg(depthcenter)

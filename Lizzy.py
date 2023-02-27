@@ -83,6 +83,7 @@ class arbiter():
 
             for i in allsprites:
                 i.rect.center -= leveloffset
+            depth.pos -= leveloffset / 2
 
             gatling.firing = False
             gatling.spinning = False
@@ -148,6 +149,7 @@ class arbiter():
                 position[0] -= int(liz.vel.x)
                 #    self.virtualposition.x += int(liz.vel.x)
                 entity.rect.center = position
+            depth.pos.x -= liz.vel.x / 2
             liz.pos.x -= liz.vel.x
 
         else:
@@ -160,6 +162,7 @@ class arbiter():
                 position[1] -= int(liz.vel.y)
                 #    self.virtualposition.y += int(liz.vel.y)
                 entity.rect.center = position
+            depth.pos.y -= liz.vel.y / 2
             liz.pos.y -= liz.vel.y
 
         else:

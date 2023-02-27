@@ -29,3 +29,20 @@ platforms = pygame.sprite.Group()
 hardblocks = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 hazards = pygame.sprite.Group()
+
+depthlayer = pygame.image.load(os.path.join('images', 'depthlayer.png')).convert_alpha()
+
+class depthbg(pygame.sprite.Sprite):
+    def __init__(self, coords):
+        super().__init__()
+        self.pos = vec(coords)
+        self.image = depthlayer
+        self.rect = self.image.get_rect()
+        self.rect.center = self.pos
+    def update(self):
+        self.rect.center = self.pos
+        screen.blit(self.image, self.rect)
+
+
+depthcenter = vec(1300, 700)
+depth = depthbg(depthcenter)

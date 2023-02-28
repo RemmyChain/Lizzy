@@ -241,8 +241,8 @@ class Tracereffect(pygame.sprite.Sprite):
         self.angle = ref.angle + 90 + self.error
         if self.angle > 360:
             self.angle -= 360
-        self.pos.x += (sin(radians(self.angle))) * 50
-        self.pos.y += (cos(radians(self.angle))) * 50
+        self.pos.x += (sin(radians(self.angle))) * 20
+        self.pos.y += (cos(radians(self.angle))) * 20
         self.rect.center = self.pos
 
         self.rotation = 0
@@ -255,8 +255,6 @@ class Tracereffect(pygame.sprite.Sprite):
         ping.rect.center = self.pos
         for i in range(5):
 
-            ping.rect.centerx += (sin(radians(self.angle))) * 20
-            ping.rect.centery += (cos(radians(self.angle))) * 20
             knal = pygame.sprite.spritecollide(ping, hardblocks, False)
             pats = pygame.sprite.spritecollide(ping, enemies, False)
             if (knal or pats) and not self.internal:
@@ -273,6 +271,8 @@ class Tracereffect(pygame.sprite.Sprite):
                 exity.rect.center = ping.rect.center
                 exits.add(exity)
                 self.internal = False
+            ping.rect.centerx += (sin(radians(self.angle))) * 20
+            ping.rect.centery += (cos(radians(self.angle))) * 20
 
         self.pos.x += (sin(radians(self.angle))) * 100
         self.pos.y += (cos(radians(self.angle))) * 100

@@ -253,7 +253,7 @@ class Tracereffect(pygame.sprite.Sprite):
 
         ping = hitdetector()
         ping.rect.center = self.pos
-        for i in range(5):
+        for i in range(10):
 
             knal = pygame.sprite.spritecollide(ping, hardblocks, False)
             pats = pygame.sprite.spritecollide(ping, enemies, False)
@@ -271,8 +271,8 @@ class Tracereffect(pygame.sprite.Sprite):
                 exity.rect.center = ping.rect.center
                 exits.add(exity)
                 self.internal = False
-            ping.rect.centerx += (sin(radians(self.angle))) * 20
-            ping.rect.centery += (cos(radians(self.angle))) * 20
+            ping.rect.centerx += (sin(radians(self.angle))) * 10
+            ping.rect.centery += (cos(radians(self.angle))) * 10
 
         self.pos.x += (sin(radians(self.angle))) * 100
         self.pos.y += (cos(radians(self.angle))) * 100

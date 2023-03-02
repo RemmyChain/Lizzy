@@ -134,6 +134,29 @@ class hardblock(pygame.sprite.Sprite):
                 poef = explosive(impactsite)
                 allsprites.add(poef)
 
+class groundblock(pygame.sprite.Sprite):
+    def __init__(self, orient, pos):
+        super().__init__()
+        self.type = orient
+        if self.type == "top":
+            self.image = groundblocks[0]
+        elif self.type == "mid":
+            self.image = groundblocks[1]
+        elif self.type == "startramp":
+            self.image = groundblocks[2]
+        elif self.type == "slant":
+            self.image = groundblocks[3]
+        elif self.type == "stopramp":
+            self.image = groundblocks[4]
+        elif self.type == "startrampreverse":
+            self.image = groundblocks[5]
+        elif self.type == "slantreverse":
+            self.image = groundblocks[6]
+        elif self.type == "stoprampreverse":
+            self.image = groundblocks[7]
+        self.rect = self.image.get_rect()
+        self.rect.center = pos
+
 def hardblockplacement(hbcoords, image):
     for i in range(len(hbcoords)):
         hblock = hardblock(image, hbcoords[i])

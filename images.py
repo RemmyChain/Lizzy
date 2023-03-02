@@ -3,6 +3,20 @@ import os
 
 Lizhit = pygame.image.load(os.path.join('images', 'lizhit.png')).convert_alpha()
 
+groundblocks = [
+    pygame.image.load(os.path.join('images', 'groundboxstraight.png')).convert(),
+    pygame.image.load(os.path.join('images', 'groundboxstraightmid.png')).convert(),
+    pygame.image.load(os.path.join('images', 'groundboxupramp.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'groundboxstraightramp.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'groundboxdownramp.png')).convert_alpha(),
+    pygame.transform.flip((pygame.image.load(os.path.join('images', 'groundboxupramp.png')).convert_alpha()), True, False),
+    pygame.transform.flip((pygame.image.load(os.path.join('images', 'groundboxstraightramp.png')).convert_alpha()), True,
+                          False),
+    pygame.transform.flip((pygame.image.load(os.path.join('images', 'groundboxdownramp.png')).convert_alpha()), True,
+                          False),
+
+]
+
 Lizmelee = [
     pygame.image.load(os.path.join('images', 'melee01.png')).convert_alpha(),
     pygame.image.load(os.path.join('images', 'melee02.png')).convert_alpha(),

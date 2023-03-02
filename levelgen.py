@@ -61,8 +61,24 @@ class basicplatformblock(pygame.sprite.Sprite):
         self.hole.set_alpha(0)
         self.surf.blit(self.image, (0, 0))
     def update(self):
+        if self.hardtop:
+            self.playercheck()
         self.surf.blit(self.hole, (20,20))
         screen.blit(self.surf, self.rect)
+
+    # check if player is standing on block
+    def playercheck(self):
+
+        hits = pygame.sprite.collide_rect(self, liz)
+
+        if hits:
+            if liz.pos.y <= (self.rect.top + 50):
+                liz.pos.y = (self.rect.top + 1)
+                liz.vel.y = 0
+                liz.grounded = True
+            else:
+                liz.grounded = False
+
 
 # hard block class (blocks player movement and normal attacks, also is a platform)
 
@@ -73,7 +89,36 @@ class hardblock(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.rect.topleft = position
     def update(self):
+        self.playercheck()
         screen.blit(self.surf, self.rect)
+
+    # check if player is standing on block
+    def playercheck(self):
+
+        hits = pygame.sprite.collide_rect(self, liz)
+
+        if hits:
+            revert = liz.pos.x - liz.vel.x
+            reverty = liz.pos.y - liz.vel.y
+
+            if self.rect.center[1] < liz.rect.bottom + 10 and self.rect.center[1] > liz.rect.top - 10:
+                liz.pos.x = revert
+                liz.rect.midbottom = liz.pos
+            elif (liz.pos.y <= (self.rect.top + 50)) and (
+                    (liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 50) or (
+                    liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -50)):
+                liz.pos.y = (self.rect.top + 1)
+                liz.vel.y = 0
+                liz.grounded = True
+            else:
+                liz.grounded = False
+
+            if liz.vel.y < 0:
+                if (liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 45) or (
+                        liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -45):
+                    liz.vel.y = 0
+                    liz.pos.y = reverty
+
     def gethit(self, impactsite, rotation):
         if liz.ammotype == 1:
             chance = random.randint(0, 3)

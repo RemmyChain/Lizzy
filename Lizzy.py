@@ -52,6 +52,10 @@ class arbiter():
         self.peiling = vec(0, 0)
 
     def update(self):
+        # added this so liz is airborn if not in contact with any platform/hard blocks
+        if liz.grounded:
+            liz.grounded = False
+
         self.angleget()
         self.save()
         self.scroll()
@@ -639,57 +643,13 @@ class LizMain(pygame.sprite.Sprite):
                 self.immunetimer = 0
                 self.immune = False
 
-    # this checks if Lizzy is on solid ground or in the air
-
-    def groundcheck(self):
-        hits = pygame.sprite.spritecollide(self, platforms, False)
-        if hits:
-            for i in range(len(hits)):
-                if self.pos.y <= (hits[i].rect.top + 50):
-                    self.pos.y = (hits[i].rect.top + 1)
-                    self.vel.y = 0
-                    self.grounded = True
-                else:
-                    self.grounded = False
-        else:
-            self.grounded = False
-
-    # check if Lizzy hits a hard block and define what happens if she does
-
-    def hardblockcheck(self):
-
-        hits = pygame.sprite.spritecollide(self, hardblocks, False)
-
-        if hits:
-            revert = self.pos.x - self.vel.x
-            reverty = self.pos.y - self.vel.y
-            for i in range(len(hits)):
-                if hits[i].rect.center[1] < self.rect.bottom + 10 and hits[i].rect.center[1] > self.rect.top - 10:
-                    self.pos.x = revert
-                    self.rect.midbottom = self.pos
-                elif (self.pos.y <= (hits[i].rect.top + 50)) and (
-                        (self.vel.x <= 0 and self.rect.center[0] - hits[i].rect.center[0] < 50) or (
-                        self.vel.x >= 0 and self.rect.center[0] - hits[i].rect.center[0] > -50)):
-                    self.pos.y = (hits[i].rect.top + 1)
-                    self.vel.y = 0
-                    self.grounded = True
-                else:
-                    self.grounded = False
-
-                if self.vel.y < 0:
-                    if (self.vel.x <= 0 and self.rect.center[0] - hits[i].rect.center[0] < 45) or (
-                            self.vel.x >= 0 and self.rect.center[0] - hits[i].rect.center[0] > -45):
-                        self.vel.y = 0
-                        self.pos.y = reverty
-
     # main update routine
 
     def update(self):
         if not self.dying and not self.dead:
             self.gethit()
         self.move()
-        self.groundcheck()
-        self.hardblockcheck()
+
         self.integrate()
         if not self.blink:
             self.render()

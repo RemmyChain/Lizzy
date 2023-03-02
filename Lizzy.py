@@ -52,9 +52,6 @@ class arbiter():
         self.peiling = vec(0, 0)
 
     def update(self):
-        # added this so liz is airborn if not in contact with any platform/hard blocks
-        if liz.grounded:
-            liz.grounded = False
 
         self.angleget()
         self.save()
@@ -104,6 +101,10 @@ class arbiter():
             liz.deathtimer = 0
             liz.immune = True
             self.death = False
+
+            # added this so liz is airborn if not in contact with any platform/hard blocks
+        if liz.grounded:
+            liz.grounded = False
 
     def hud(self):
         lizhealth = pygame.Rect(20, 120, liz.health * 5, 5)

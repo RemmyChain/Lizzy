@@ -156,6 +156,15 @@ class groundblock(pygame.sprite.Sprite):
             self.image = groundblocks[7]
         self.rect = self.image.get_rect()
         self.rect.center = pos
+        self.towerstart = vec(pos)
+        while self.towerstart.y < 1024:
+            self.towerstart.y += 100
+            fillblock = groundblock("mid", self.towerstart)
+            hardblocks.add(fillblock)
+            allsprites.add(fillblock)
+
+    def update(self):
+        screen.blit(self.image, self.rect)
 
 def hardblockplacement(hbcoords, image):
     for i in range(len(hbcoords)):

@@ -142,7 +142,15 @@ class groundblock(pygame.sprite.Sprite):
         if self.type == "top":
             self.surf = groundblocks[0]
         elif self.type == "mid":
-            self.surf = groundblocks[1]
+            rando = random.randint(0, 3)
+            if rando == 0:
+                self.surf = groundblocks[1]
+            elif rando == 1:
+                self.surf = pygame.transform.flip(groundblocks[1], True, False)
+            elif rando == 2:
+                self.surf = pygame.transform.flip(groundblocks[1], False, True)
+            elif rando == 3:
+                self.surf = pygame.transform.flip(groundblocks[1], True, True)
         elif self.type == "startramp":
             self.surf = groundblocks[2]
         elif self.type == "slant":

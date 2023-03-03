@@ -191,7 +191,8 @@ class groundblock(pygame.sprite.Sprite):
 
                 liz.rect.bottom = threshold + 1
                 liz.pos.y = liz.rect.bottom
-                liz.vel.y = 0
+                if not gatling.firing:
+                    liz.vel.y = 10
                 liz.grounded = True
                 self.treaded = True
 

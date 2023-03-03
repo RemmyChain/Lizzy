@@ -137,34 +137,105 @@ class hardblock(pygame.sprite.Sprite):
 class groundblock(pygame.sprite.Sprite):
     def __init__(self, orient, pos):
         super().__init__()
+        self.treaded = False
         self.type = orient
         if self.type == "top":
-            self.image = groundblocks[0]
+            self.surf = groundblocks[0]
         elif self.type == "mid":
-            self.image = groundblocks[1]
+            self.surf = groundblocks[1]
         elif self.type == "startramp":
-            self.image = groundblocks[2]
+            self.surf = groundblocks[2]
         elif self.type == "slant":
-            self.image = groundblocks[3]
+            self.surf = groundblocks[3]
         elif self.type == "stopramp":
-            self.image = groundblocks[4]
+            self.surf = groundblocks[4]
         elif self.type == "startrampreverse":
-            self.image = groundblocks[5]
+            self.surf = groundblocks[5]
         elif self.type == "slantreverse":
-            self.image = groundblocks[6]
+            self.surf = groundblocks[6]
         elif self.type == "stoprampreverse":
-            self.image = groundblocks[7]
-        self.rect = self.image.get_rect()
-        self.rect.center = pos
+            self.surf = groundblocks[7]
+        self.rect = self.surf.get_rect()
+        self.rect.midbottom = pos
         self.towerstart = vec(pos)
-        while self.towerstart.y < 1024:
+        while self.towerstart.y < 1200:
             self.towerstart.y += 100
             fillblock = groundblock("mid", self.towerstart)
             hardblocks.add(fillblock)
             allsprites.add(fillblock)
 
+    def gethit(self, impact, rotation):
+        pass
+
+    def topcheck(self, type):
+        xcor = liz.rect.centerx - self.rect.left
+        degree = pi / 400
+        degreecor = xcor * degree + pi
+        if type == "flattop":
+            threshold = self.rect.top
+        elif type == "startramp":
+
+            threshold = self.rect.bottom - (cos(degreecor) + 1) * 100
+
+        elif type == "slant":
+            threshold = self.rect.bottom - xcor / 2
+
+        elif type == "stopramp":
+            threshold = self.rect.bottom - (cos(degreecor + pi / 2)) * 100
+
+        tik = pygame.sprite.collide_rect(self, liz)
+        if tik:
+            origin = vec(liz.rect.center - liz.vel)
+            if liz.rect.bottom > threshold and \
+                    (abs(origin.y - self.rect.centery) > abs(origin.x - self.rect.centerx) or self.treaded):
+
+                liz.rect.bottom = threshold + 1
+                liz.pos.y = liz.rect.bottom
+                liz.vel.y = 0
+                liz.grounded = True
+                self.treaded = True
+
+    def leftcheck(self):
+
+        tik = pygame.sprite.collide_rect(self, liz)
+        if tik and not self.treaded:
+            origin = vec(liz.rect.center - liz.vel)
+            if liz.rect.right < self.rect.centerx and \
+                    abs(origin.y - self.rect.centery) < abs(origin.x - self.rect.centerx) and \
+                    liz.rect.bottom > self.rect.top:
+                liz.pos -= liz.vel
+                liz.vel.x = 0
+
+
+    def rightcheck(self):
+        tik = pygame.sprite.collide_rect(self, liz)
+        if tik and not self.treaded:
+            origin = vec(liz.rect.center - liz.vel)
+            if liz.rect.right < self.rect.centerx and \
+                    abs(origin.y - self.rect.centery) < abs(origin.x - self.rect.centerx) and \
+                    liz.rect.bottom > self.rect.top:
+                liz.pos -= liz.vel
+                liz.vel.x = 0
+
     def update(self):
-        screen.blit(self.image, self.rect)
+        tik = pygame.sprite.collide_rect(self, liz)
+        if not tik:
+            self.treaded = False
+        screen.blit(self.surf, self.rect)
+        if self.type == "top" or self.type == "mid":
+            self.topcheck("flattop")
+            self.leftcheck()
+            self.rightcheck()
+        elif self.type == "startramp":
+            self.topcheck("startramp")
+
+        elif self.type == "slant":
+            self.topcheck("slant")
+
+        elif self.type == "stopramp":
+            self.topcheck("stopramp")
+
+            # self.rightcheck()
 
 def hardblockplacement(hbcoords, image):
     for i in range(len(hbcoords)):
@@ -195,6 +266,23 @@ basicplatformconstructor((2400,600), 3)
 basicplatformconstructor((2200,800), 5)
 basicplatformconstructor((0,1000), 15)
 basicplatformconstructor((2000,1000), 10)
+
+ground = groundblock("top", (3300, 1100))
+allsprites.add(ground)
+hardblocks.add(ground)
+ground1 = groundblock("startramp", (3500, 1000))
+allsprites.add(ground1)
+hardblocks.add(ground1)
+ground2 = groundblock("slant", (3700, 900))
+allsprites.add(ground2)
+hardblocks.add(ground2)
+ground3 = groundblock("stopramp", (3900, 800))
+allsprites.add(ground3)
+hardblocks.add(ground3)
+ground4 = groundblock("top", (4100, 800))
+allsprites.add(ground4)
+hardblocks.add(ground4)
+
 
 hardblockplacement(hardblocklist, rocktile)
 

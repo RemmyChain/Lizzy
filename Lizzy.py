@@ -102,10 +102,6 @@ class arbiter:
             liz.immune = True
             self.death = False
 
-            # added this so liz is airborn if not in contact with any platform/hard blocks
-        if liz.grounded:
-            liz.grounded = False
-
     def hud(self):
         lizhealth = pygame.Rect(20, 120, liz.health * 5, 5)
         pygame.draw.rect(screen, ("red"), lizhealth)
@@ -904,6 +900,11 @@ class LizMain(pygame.sprite.Sprite):
     # controlling movement and actions based on keyboard and mouse input
 
     def move(self):
+        # testing if Liz is touching any platforms and if not, setting grounded to false
+        footing = pygame.sprite.spritecollide(self, platforms, False)
+        standing = pygame.sprite.spritecollide(self, hardblocks, False)
+        if self.grounded and not footing and not standing:
+            self.grounded = False
         # setting gravity if not on solid ground
         if self.grounded or self.vel.y > 45:
             self.grav.y = 0

@@ -6,7 +6,7 @@ Lizhit = pygame.image.load(os.path.join('images', 'lizhit.png')).convert_alpha()
 groundblocks = [
     pygame.image.load(os.path.join('images', 'groundboxstraight.png')).convert(),
     pygame.image.load(os.path.join('images', 'groundboxstraightmid.png')).convert(),
-    pygame.image.load(os.path.join('images', 'groundboxdownramp.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'groundboxupramp.png')).convert_alpha(),
     pygame.image.load(os.path.join('images', 'groundboxstraightramp.png')).convert_alpha(),
 
 

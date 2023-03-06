@@ -163,14 +163,23 @@ class groundblock(pygame.sprite.Sprite):
             self.surf = groundblocks[6]
         elif self.type == "stoprampreverse":
             self.surf = groundblocks[7]
+        elif self.type == "corner":
+            self.surf = groundblocks[8]
+        elif self.type == "edge":
+            self.surf = groundblocks[9]
         self.rect = self.surf.get_rect()
         self.rect.midbottom = pos
         self.towerstart = vec(pos)
         while self.towerstart.y < 1200:
             self.towerstart.y += 100
-            fillblock = groundblock("mid", self.towerstart)
-            hardblocks.add(fillblock)
-            allsprites.add(fillblock)
+            if self.type != "corner":
+                fillblock = groundblock("mid", self.towerstart)
+                hardblocks.add(fillblock)
+                allsprites.add(fillblock)
+            elif self.type == "corner":
+                fillblock = groundblock("edge", self.towerstart)
+                hardblocks.add(fillblock)
+                allsprites.add(fillblock)
 
     def gethit(self, impact, rotation):
         pass
@@ -213,7 +222,7 @@ class groundblock(pygame.sprite.Sprite):
                     abs(origin.y - self.rect.centery) < abs(origin.x - self.rect.centerx) and \
                     liz.rect.bottom > self.rect.top:
                 liz.pos -= liz.vel
-                liz.vel.x = 0
+                liz.vel.x *= -1
 
 
     def rightcheck(self):
@@ -231,10 +240,11 @@ class groundblock(pygame.sprite.Sprite):
         if not tik:
             self.treaded = False
         screen.blit(self.surf, self.rect)
-        if self.type == "top" or self.type == "mid":
+        if self.type == "top" or self.type == "mid" or self.type == "corner":
             self.topcheck("flattop")
-            self.leftcheck()
-            self.rightcheck()
+            if self.type == "corner":
+                self.leftcheck()
+
         elif self.type == "startramp":
             self.topcheck("startramp")
 
@@ -284,6 +294,7 @@ basicplatformconstructor((0,1000), 15)
 basicplatformconstructor((2000,1000), 10)
 
 groundlist = [
+    ["corner", (3150, 1100)],
     ["top", (3300, 1100)],
     ["startramp", (3500, 1000)],
     ["slant", (3700, 900)],

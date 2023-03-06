@@ -20,17 +20,17 @@ def basicplatformconstructor(position, size):
 
     for i in range(size):
         blockpos.x += 100
-        midblock = basicplatformblock(groundtiles, 1, blockpos, True)
+        midblock = basicplatformblock(groundtiles, 1, blockpos , True)
         allsprites.add(midblock)
         platforms.add(midblock)
 
     blockpos.x += 100
-    rightcorner = basicplatformblock(groundtiles, 4, blockpos, True)
+    rightcorner = basicplatformblock(groundtiles, 4, blockpos , True)
     allsprites.add(rightcorner)
     platforms.add(rightcorner)
 
     while blockpos.y < 1024:
-        blockpos.x -= (size + 1) * 100
+        blockpos.x -= ((size + 1) * 100)
         blockpos.y += 100
 
         leftwall = basicplatformblock(groundtiles, 2, blockpos, False)
@@ -45,37 +45,35 @@ def basicplatformconstructor(position, size):
         rightwall = basicplatformblock(groundtiles, 5, blockpos, False)
         allsprites.add(rightwall)
 
-
 # a constructor for sprite level building blocks used in the above constructor
-
 
 class basicplatformblock(pygame.sprite.Sprite):
     def __init__(self, imageset, index, position, hardtop):
         super().__init__()
-        self.image = imageset[index]
-        self.surf = pygame.surface.Surface((100, 100), pygame.SRCALPHA)
-
+        self.image = (imageset[index])
+        self.surf = pygame.surface.Surface ((100,100), pygame.SRCALPHA)
+        
         self.rect = self.surf.get_rect()
         self.rect.topleft = position
         self.hardtop = hardtop
-        self.hole = pygame.surface.Surface((20, 20))
+        self.hole = pygame.surface.Surface ((20,20))
         self.hole.fill(("black"))
         self.hole.set_alpha(0)
         self.surf.blit(self.image, (0, 0))
-
     def update(self):
         if self.hardtop:
             self.playercheck()
-        self.surf.blit(self.hole, (20, 20))
+        self.surf.blit(self.hole, (20,20))
         screen.blit(self.surf, self.rect)
 
     # check if player is standing on block
     def playercheck(self):
+
         hits = pygame.sprite.collide_rect(self, liz)
 
         if hits:
             if liz.pos.y <= (self.rect.top + 50):
-                liz.pos.y = self.rect.top + 1
+                liz.pos.y = (self.rect.top + 1)
                 liz.vel.y = 0
                 liz.grounded = True
             else:
@@ -84,48 +82,40 @@ class basicplatformblock(pygame.sprite.Sprite):
 
 # hard block class (blocks player movement and normal attacks, also is a platform)
 
-
 class hardblock(pygame.sprite.Sprite):
     def __init__(self, image, position):
         super().__init__()
         self.surf = image
         self.rect = self.surf.get_rect()
         self.rect.topleft = position
-
     def update(self):
         self.playercheck()
         screen.blit(self.surf, self.rect)
 
     # check if player is standing on block
     def playercheck(self):
+
         hits = pygame.sprite.collide_rect(self, liz)
 
         if hits:
             revert = liz.pos.x - liz.vel.x
             reverty = liz.pos.y - liz.vel.y
 
-            if (
-                self.rect.center[1] < liz.rect.bottom + 10
-                and self.rect.center[1] > liz.rect.top - 10
-            ):
+            if self.rect.center[1] < liz.rect.bottom + 10 and self.rect.center[1] > liz.rect.top - 10:
                 liz.pos.x = revert
                 liz.rect.midbottom = liz.pos
             elif (liz.pos.y <= (self.rect.top + 50)) and (
-                (liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 50)
-                or (liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -50)
-            ):
-                liz.pos.y = self.rect.top + 1
+                    (liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 50) or (
+                    liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -50)):
+                liz.pos.y = (self.rect.top + 1)
                 liz.vel.y = 0
                 liz.grounded = True
             else:
                 liz.grounded = False
 
             if liz.vel.y < 0:
-                if (
-                    liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 45
-                ) or (
-                    liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -45
-                ):
+                if (liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 45) or (
+                        liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -45):
                     liz.vel.y = 0
                     liz.pos.y = reverty
 
@@ -143,7 +133,6 @@ class hardblock(pygame.sprite.Sprite):
             elif liz.ammotype == 2:
                 poef = explosive(impactsite)
                 allsprites.add(poef)
-
 
 class groundblock(pygame.sprite.Sprite):
     def __init__(self, orient, pos):
@@ -193,6 +182,7 @@ class groundblock(pygame.sprite.Sprite):
         if type == "flattop":
             threshold = self.rect.top
         elif type == "startramp":
+
             threshold = self.rect.bottom - (cos(degreecor) + 1) * 100
 
         elif type == "slant":
@@ -204,10 +194,9 @@ class groundblock(pygame.sprite.Sprite):
         tik = pygame.sprite.collide_rect(self, liz)
         if tik:
             origin = vec(liz.rect.center - liz.vel)
-            if liz.rect.bottom > threshold and (
-                abs(origin.y - self.rect.centery) > abs(origin.x - self.rect.centerx)
-                or self.treaded
-            ):
+            if liz.rect.bottom > threshold and \
+                    (abs(origin.y - self.rect.centery) > abs(origin.x - self.rect.centerx) or self.treaded):
+
                 liz.rect.bottom = threshold + 1
                 liz.pos.y = liz.rect.bottom
                 if not gatling.firing:
@@ -216,28 +205,24 @@ class groundblock(pygame.sprite.Sprite):
                 self.treaded = True
 
     def leftcheck(self):
+
         tik = pygame.sprite.collide_rect(self, liz)
         if tik and not self.treaded:
             origin = vec(liz.rect.center - liz.vel)
-            if (
-                liz.rect.right < self.rect.centerx
-                and abs(origin.y - self.rect.centery)
-                < abs(origin.x - self.rect.centerx)
-                and liz.rect.bottom > self.rect.top
-            ):
+            if liz.rect.right < self.rect.centerx and \
+                    abs(origin.y - self.rect.centery) < abs(origin.x - self.rect.centerx) and \
+                    liz.rect.bottom > self.rect.top:
                 liz.pos -= liz.vel
                 liz.vel.x = 0
+
 
     def rightcheck(self):
         tik = pygame.sprite.collide_rect(self, liz)
         if tik and not self.treaded:
             origin = vec(liz.rect.center - liz.vel)
-            if (
-                liz.rect.right < self.rect.centerx
-                and abs(origin.y - self.rect.centery)
-                < abs(origin.x - self.rect.centerx)
-                and liz.rect.bottom > self.rect.top
-            ):
+            if liz.rect.right < self.rect.centerx and \
+                    abs(origin.y - self.rect.centery) < abs(origin.x - self.rect.centerx) and \
+                    liz.rect.bottom > self.rect.top:
                 liz.pos -= liz.vel
                 liz.vel.x = 0
 
@@ -261,7 +246,6 @@ class groundblock(pygame.sprite.Sprite):
 
             # self.rightcheck()
 
-
 def hardblockplacement(hbcoords, image):
     for i in range(len(hbcoords)):
         hblock = hardblock(image, hbcoords[i])
@@ -269,45 +253,46 @@ def hardblockplacement(hbcoords, image):
         hardblocks.add(hblock)
         allsprites.add(hblock)
 
+def groundconstructor(list):
+    for block in list:
+        ground = groundblock(block[0], block[1])
+        allsprites.add(ground)
+        hardblocks.add(ground)
+
 
 # generating a level
 
 hardblocklist = [
-    (200, 600),
-    (300, 600),
-    (0, 900),
-    (0, 800),
-    (0, 700),
-    (0, 600),
-    (100, 600),
-    (600, 700),
+    (200,600),
+    (300,600),
+    (0,900),
+    (0,800),
+    (0,700),
+    (0,600),
+    (100,600),
+    (600,700)
 ]
 
-basicplatformconstructor((400, 800), 5)
-basicplatformconstructor((1000, 900), 2)
-basicplatformconstructor((1700, 900), 2)
-basicplatformconstructor((2600, 200), 2)
-basicplatformconstructor((2300, 400), 2)
-basicplatformconstructor((2400, 600), 3)
-basicplatformconstructor((2200, 800), 5)
-basicplatformconstructor((0, 1000), 15)
-basicplatformconstructor((2000, 1000), 10)
+basicplatformconstructor((400,800), 5)
+basicplatformconstructor((1000,900), 2)
+basicplatformconstructor((1700,900), 2)
+basicplatformconstructor((2600,200), 2)
+basicplatformconstructor((2300,400), 2)
+basicplatformconstructor((2400,600), 3)
+basicplatformconstructor((2200,800), 5)
+basicplatformconstructor((0,1000), 15)
+basicplatformconstructor((2000,1000), 10)
 
-ground = groundblock("top", (3300, 1100))
-allsprites.add(ground)
-hardblocks.add(ground)
-ground1 = groundblock("startramp", (3500, 1000))
-allsprites.add(ground1)
-hardblocks.add(ground1)
-ground2 = groundblock("slant", (3700, 900))
-allsprites.add(ground2)
-hardblocks.add(ground2)
-ground3 = groundblock("stopramp", (3900, 800))
-allsprites.add(ground3)
-hardblocks.add(ground3)
-ground4 = groundblock("top", (4100, 800))
-allsprites.add(ground4)
-hardblocks.add(ground4)
+groundlist = [
+    ["top", (3300, 1100)],
+    ["startramp", (3500, 1000)],
+    ["slant", (3700, 900)],
+    ["stopramp", (3900, 800)],
+    ["top", (4100, 800)],
+
+]
+
+groundconstructor(groundlist)
 
 
 hardblockplacement(hardblocklist, rocktile)

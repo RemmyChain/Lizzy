@@ -167,17 +167,29 @@ class groundblock(pygame.sprite.Sprite):
             self.surf = groundblocks[8]
         elif self.type == "edge":
             self.surf = groundblocks[9]
+        elif self.type == "tallslant":
+            self.surf = groundblocks[10]
+        elif self.type == "cornerreverse":
+            self.surf = groundblocks[11]
+        elif self.type == "edgereverse":
+            self.surf = groundblocks[12]
+        elif self.type == "tallslantreverse":
+            self.surf = groundblocks[13]
         self.rect = self.surf.get_rect()
         self.rect.midbottom = pos
         self.towerstart = vec(pos)
         while self.towerstart.y < 1200:
             self.towerstart.y += 100
-            if self.type != "corner":
+            if self.type != "corner" and self.type != "cornerreverse" and self.type != "edge" and self.type != "edgereverse":
                 fillblock = groundblock("mid", self.towerstart)
                 hardblocks.add(fillblock)
                 allsprites.add(fillblock)
             elif self.type == "corner":
                 fillblock = groundblock("edge", self.towerstart)
+                hardblocks.add(fillblock)
+                allsprites.add(fillblock)
+            elif self.type == "cornerreverse":
+                fillblock = groundblock("edgereverse", self.towerstart)
                 hardblocks.add(fillblock)
                 allsprites.add(fillblock)
 
@@ -194,19 +206,37 @@ class groundblock(pygame.sprite.Sprite):
 
             threshold = self.rect.bottom - (cos(degreecor) + 1) * 100
 
+        elif type == "startrampreverse":
+
+            threshold = 100 - (self.rect.bottom - (cos(degreecor) + 1) * 100)
+
         elif type == "slant":
             threshold = self.rect.bottom - xcor / 2
 
+        elif type == "slantreverse":
+            threshold = 100 - (self.rect.bottom - xcor / 2)
+
+        elif type == "tallslant":
+            threshold = self.rect.bottom - xcor
+
+        elif type == "tallslantreverse":
+            threshold = 200 - (self.rect.bottom - xcor)
+
         elif type == "stopramp":
             threshold = self.rect.bottom - (cos(degreecor + pi / 2)) * 100
+
+        elif type == "stoprampreverse":
+            threshold = 100 - (self.rect.bottom - (cos(degreecor + pi / 2)) * 100)
 
         tik = pygame.sprite.collide_rect(self, liz)
         if tik:
             origin = vec(liz.rect.center - liz.vel)
             if liz.rect.bottom > threshold and \
                     (abs(origin.y - self.rect.centery) > abs(origin.x - self.rect.centerx) or self.treaded):
-
-                liz.rect.bottom = threshold + 1
+                if self.type != "mid":
+                    liz.rect.bottom = threshold + 1
+                else:
+                    liz.rect.bottom = threshold - 1
                 liz.pos.y = liz.rect.bottom
                 if not gatling.firing:
                     liz.vel.y = 10
@@ -240,19 +270,38 @@ class groundblock(pygame.sprite.Sprite):
         if not tik:
             self.treaded = False
         screen.blit(self.surf, self.rect)
-        if self.type == "top" or self.type == "mid" or self.type == "corner":
+        if self.type == "top" or self.type == "mid" or self.type == "corner" or self.type == "cornerreverse":
             self.topcheck("flattop")
             if self.type == "corner":
                 self.leftcheck()
+            elif self.type == "cornerreverse":
+                self.rightcheck()
+
+        elif self.type == "edge":
+            self.leftcheck()
+        elif self.type == "edgereverse":
+            self.rightcheck()
 
         elif self.type == "startramp":
             self.topcheck("startramp")
 
+        elif self.type == "startrampreverse":
+            self.topcheck("startrampreverse")
+
         elif self.type == "slant":
             self.topcheck("slant")
 
+        elif self.type == "slantreverse":
+            self.topcheck("slantreverse")
+
         elif self.type == "stopramp":
             self.topcheck("stopramp")
+
+        elif self.type == "tallslant":
+            self.topcheck("tallslant")
+
+        elif self.type == "tallslantreverse":
+            self.topcheck("tallslantreverse")
 
             # self.rightcheck()
 
@@ -300,6 +349,9 @@ groundlist = [
     ["slant", (3700, 900)],
     ["stopramp", (3900, 800)],
     ["top", (4100, 800)],
+    ["tallslant", (4300, 700)],
+    ["stopramp", (4500, 500)],
+    ["cornerreverse", (4650, 500)],
 
 ]
 

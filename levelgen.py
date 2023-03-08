@@ -231,8 +231,7 @@ class groundblock(pygame.sprite.Sprite):
         tik = pygame.sprite.collide_rect(self, liz)
         if tik:
             origin = vec(liz.rect.center - liz.vel)
-            if liz.rect.bottom > threshold and \
-                    (abs(origin.y - self.rect.centery) > abs(origin.x - self.rect.centerx) or self.treaded):
+            if liz.rect.bottom > threshold:
                 if self.type != "mid":
                     liz.rect.bottom = threshold + 1
                 else:

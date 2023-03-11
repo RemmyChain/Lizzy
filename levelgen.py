@@ -283,12 +283,18 @@ class groundblock(pygame.sprite.Sprite):
         if not tik:
             self.treaded = False
         screen.blit(self.surf, self.rect)
-        if self.type == "top" or self.type == "mid" or self.type == "corner" or self.type == "cornerreverse":
+        if self.type == "top" or self.type == "mid":
             self.topcheck("flattop")
-            if self.type == "corner":
-                self.leftcheck()
-            elif self.type == "cornerreverse":
-                self.rightcheck()
+        elif self.type == "corner":
+
+            if tik and liz.rect.bottom < self.rect.top + 70:
+                self.topcheck("flattop")
+            self.leftcheck()
+        elif self.type == "cornerreverse":
+
+            if tik and liz.rect.bottom < self.rect.top + 70:
+                self.topcheck("flattop")
+            self.rightcheck()
 
         elif self.type == "edge":
             self.leftcheck()

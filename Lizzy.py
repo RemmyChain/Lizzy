@@ -905,6 +905,16 @@ class LizMain(pygame.sprite.Sprite):
         standing = pygame.sprite.spritecollide(self, hardblocks, False)
         if self.grounded and not footing and not standing:
             self.grounded = False
+
+        # activating block code if player
+
+        if footing:
+            for i in footing:
+                i.playercheck()
+        if standing:
+            for i in standing:
+                i.playercheck()
+
         # setting gravity if not on solid ground
         if self.grounded or self.vel.y > 45:
             self.grav.y = 0

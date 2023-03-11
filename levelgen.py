@@ -132,9 +132,6 @@ class hardblock(pygame.sprite.Sprite):
             if liz.ammotype != 2:
                 pow = spriticle(impactsite, rotation)
                 allsprites.add(pow)
-            elif liz.ammotype == 2:
-                poef = explosive(impactsite)
-                allsprites.add(poef)
 
 class groundblock(pygame.sprite.Sprite):
     def __init__(self, orient, pos):

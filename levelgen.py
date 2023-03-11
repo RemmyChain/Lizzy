@@ -61,23 +61,23 @@ class basicplatformblock(pygame.sprite.Sprite):
         self.hole.set_alpha(0)
         self.surf.blit(self.image, (0, 0))
     def update(self):
-        if self.hardtop:
-            self.playercheck()
+
         self.surf.blit(self.hole, (20,20))
         screen.blit(self.surf, self.rect)
 
     # check if player is standing on block
     def playercheck(self):
+        if self.hardtop:
 
-        hits = pygame.sprite.collide_rect(self, liz)
+            hits = pygame.sprite.collide_rect(self, liz)
 
-        if hits:
-            if liz.pos.y <= (self.rect.top + 50):
-                liz.pos.y = (self.rect.top + 1)
-                liz.vel.y = 0
-                liz.grounded = True
-            else:
-                liz.grounded = False
+            if hits:
+                if liz.pos.y <= (self.rect.top + 50):
+                    liz.pos.y = (self.rect.top + 1)
+                    liz.vel.y = 0
+                    liz.grounded = True
+                else:
+                    liz.grounded = False
 
 
 # hard block class (blocks player movement and normal attacks, also is a platform)
@@ -89,7 +89,7 @@ class hardblock(pygame.sprite.Sprite):
         self.rect = self.surf.get_rect()
         self.rect.topleft = position
     def update(self):
-        self.playercheck()
+
         screen.blit(self.surf, self.rect)
 
     # check if player is standing on block
@@ -279,10 +279,13 @@ class groundblock(pygame.sprite.Sprite):
                 liz.vel.x = 0
 
     def update(self):
+
+        screen.blit(self.surf, self.rect)
+
+    def playercheck(self):
         tik = pygame.sprite.collide_rect(self, liz)
         if not tik:
             self.treaded = False
-        screen.blit(self.surf, self.rect)
         if self.type == "top" or self.type == "mid":
             self.topcheck("flattop")
         elif self.type == "corner":

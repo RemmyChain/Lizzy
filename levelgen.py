@@ -100,6 +100,8 @@ class hardblock(pygame.sprite.Sprite):
         if hits:
             revert = liz.pos.x - liz.vel.x
             reverty = liz.pos.y - liz.vel.y
+            if liz.vel.y > 25:
+                liz.rect.bottom = self.rect.top
 
             if self.rect.center[1] < liz.rect.bottom + 10 and self.rect.center[1] > liz.rect.top - 10:
                 liz.pos.x = revert
@@ -230,8 +232,8 @@ class groundblock(pygame.sprite.Sprite):
 
         tik = pygame.sprite.collide_rect(self, liz)
         if tik:
-            origin = vec(liz.rect.center - liz.vel)
-            if liz.rect.bottom > threshold:
+
+            if (threshold + 50) > liz.rect.bottom > threshold:
                 if self.type != "mid":
                     liz.rect.bottom = threshold + 1
                 else:
@@ -241,27 +243,26 @@ class groundblock(pygame.sprite.Sprite):
                     liz.vel.y = 10
                 liz.grounded = True
                 self.treaded = True
+        if not tik and self.treaded:
+            self.treaded = False
 
     def leftcheck(self):
 
         tik = pygame.sprite.collide_rect(self, liz)
         if tik and not self.treaded:
-            origin = vec(liz.rect.center - liz.vel)
-            if liz.rect.right < self.rect.centerx and \
-                    abs(origin.y - self.rect.centery) < abs(origin.x - self.rect.centerx) and \
-                    liz.rect.bottom > self.rect.top:
-                liz.pos -= liz.vel
-                liz.vel.x *= -1
 
+            if liz.rect.right > self.rect.centerx:
+                liz.rect.right = self.rect.right
+                liz.pos = vec(liz.rect.midbottom)
+                liz.vel.x = 0
 
     def rightcheck(self):
         tik = pygame.sprite.collide_rect(self, liz)
         if tik and not self.treaded:
-            origin = vec(liz.rect.center - liz.vel)
-            if liz.rect.right < self.rect.centerx and \
-                    abs(origin.y - self.rect.centery) < abs(origin.x - self.rect.centerx) and \
-                    liz.rect.bottom > self.rect.top:
-                liz.pos -= liz.vel
+
+            if liz.rect.left < self.rect.centerx:
+                liz.rect.left = self.rect.right
+                liz.pos = vec(liz.rect.midbottom)
                 liz.vel.x = 0
 
     def update(self):
@@ -351,6 +352,12 @@ groundlist = [
     ["tallslant", (4300, 700)],
     ["stopramp", (4500, 500)],
     ["cornerreverse", (4650, 500)],
+    ["corner", (4850, 600)],
+    ["stoprampreverse", (5000, 600)],
+    ["tallslantreverse", (5200, 800)],
+    ["startrampreverse", (5400, 900)],
+    ["top", (5600, 1000)],
+    ["cornerreverse", (5750, 1000)],
 
 ]
 

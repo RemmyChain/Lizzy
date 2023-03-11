@@ -168,13 +168,23 @@ class groundblock(pygame.sprite.Sprite):
         elif self.type == "corner":
             self.surf = groundblocks[8]
         elif self.type == "edge":
-            self.surf = groundblocks[9]
+            randy = random.randint(0, 1)
+            if randy == 0:
+                self.surf = groundblocks[9]
+            else:
+
+                self.surf = pygame.transform.flip(groundblocks[9], False, True)
         elif self.type == "tallslant":
             self.surf = groundblocks[10]
         elif self.type == "cornerreverse":
             self.surf = groundblocks[11]
         elif self.type == "edgereverse":
-            self.surf = groundblocks[12]
+            randa = random.randint(0, 1)
+            if randa == 0:
+                self.surf = groundblocks[12]
+            else:
+
+                self.surf = pygame.transform.flip(groundblocks[12], False, True)
         elif self.type == "tallslantreverse":
             self.surf = groundblocks[13]
         self.rect = self.surf.get_rect()
@@ -210,28 +220,31 @@ class groundblock(pygame.sprite.Sprite):
 
         elif type == "startrampreverse":
 
-            threshold = 100 - (self.rect.bottom - (cos(degreecor) + 1) * 100)
+            threshold = self.rect.bottom - (cos(degreecor - pi / 2) + 1) * 100
 
         elif type == "slant":
             threshold = self.rect.bottom - xcor / 2
 
         elif type == "slantreverse":
-            threshold = 100 - (self.rect.bottom - xcor / 2)
+
+            threshold = self.rect.bottom - (200 - xcor) / 2
 
         elif type == "tallslant":
             threshold = self.rect.bottom - xcor
 
         elif type == "tallslantreverse":
-            threshold = 200 - (self.rect.bottom - xcor)
+            threshold = self.rect.bottom - (200 - xcor)
 
         elif type == "stopramp":
             threshold = self.rect.bottom - (cos(degreecor + pi / 2)) * 100
 
         elif type == "stoprampreverse":
-            threshold = 100 - (self.rect.bottom - (cos(degreecor + pi / 2)) * 100)
+            threshold = self.rect.bottom - (cos(degreecor - pi)) * 100
 
         tik = pygame.sprite.collide_rect(self, liz)
         if tik:
+            if liz.vel.y > 25:
+                liz.rect.bottom = threshold + 1
 
             if (threshold + 50) > liz.rect.bottom > threshold:
                 if self.type != "mid":
@@ -240,7 +253,7 @@ class groundblock(pygame.sprite.Sprite):
                     liz.rect.bottom = threshold - 1
                 liz.pos.y = liz.rect.bottom
                 if not gatling.firing:
-                    liz.vel.y = 10
+                    liz.vel.y = 15
                 liz.grounded = True
                 self.treaded = True
         if not tik and self.treaded:
@@ -296,6 +309,9 @@ class groundblock(pygame.sprite.Sprite):
 
         elif self.type == "stopramp":
             self.topcheck("stopramp")
+
+        elif self.type == "stoprampreverse":
+            self.topcheck("stoprampreverse")
 
         elif self.type == "tallslant":
             self.topcheck("tallslant")

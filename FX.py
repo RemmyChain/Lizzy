@@ -315,7 +315,7 @@ class groundimpact(pygame.sprite.Sprite):
         rotangle = self.angle + 180
         if rotangle > 360:
             rotangle -= 360
-        rotated = pygame.transform.rotate(self.surf, self.angle)
+        rotated = pygame.transform.rotate(self.surf, radians(self.angle))
         screen.blit(rotated, self.rect)
         self.timer += 1
         if self.timer > 10:

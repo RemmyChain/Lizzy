@@ -205,8 +205,19 @@ class groundblock(pygame.sprite.Sprite):
 
     def gethit(self, impact, rotation, angle):
         if liz.ammotype != 2:
-            pief = groundimpact(impact, angle)
-            allsprites.add(pief)
+            if self.type == "edge" or self.type == "edgereverse" or self.type == "corner" or self.type == "cornerreverse" or self.type == "top":
+                pief = groundimpact(impact, angle)
+                allsprites.add(pief)
+            else:
+                orig = vec(impact)
+                finder = vec(impact)
+                threshold = self.thresholder(finder.x, self.type)
+                while finder.y < threshold and abs(finder.y - orig.y) < 25 and abs(finder.x - orig.x) < 25:
+                    finder.x += (cos(radians(angle)) * 5)
+                    finder.y += (sin(radians(angle)) * 5)
+                if finder.y >= threshold:
+                    pief = groundimpact(finder, angle)
+                    allsprites.add(pief)
 
     def thresholder(self, xinput, type):
         xcor = xinput

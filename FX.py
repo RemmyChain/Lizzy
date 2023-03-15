@@ -83,7 +83,7 @@ class blasticle():
 
 
 class particle():
-    def __init__(self, xpos, ypos, xvel, yvel, xacc, yacc, size, dsize, color, surface, colorchange, linger):
+    def __init__(self, xpos, ypos, xvel, yvel, xacc, yacc, size, dsize, color, surface, colorchange):
         self.xpos = xpos
         self.ypos = ypos
         self.xvel = xvel
@@ -93,7 +93,6 @@ class particle():
         self.size = size
         self.dsize = dsize
         self.color = color
-        self.linger = linger
         self.colorchange = colorchange
         self.surface = surface
         self.center = vec(self.xpos, self.ypos)
@@ -109,9 +108,8 @@ class particle():
         self.color = (self.red, self.green, self.blue)
         self.xvel += self.xacc
         self.yvel += self.yacc
-        if self.linger:
-            if self.yvel > 0:
-                self.yvel = random.randrange(-1,1)
+        if self.yvel > 0:
+            self.yvel = random.randrange(-1,1)
         # self.xpos += self.xvel
         # self.ypos += self.ypos
         self.size += self.dsize
@@ -245,7 +243,7 @@ class muzzleflash(pygame.sprite.Sprite):
                 random2 = random.randrange(0, 50)
                 random3 = random.randrange(-5, 5)
                 random4 = random.randrange(5, 15)
-                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 5, -1, color, self.orig, colorchange, True)
+                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 5, -1, color, self.orig, colorchange)
                 self.list.append(part)
         for i in self.list:
             i.draw()
@@ -294,55 +292,31 @@ class groundimpact(pygame.sprite.Sprite):
         self.smokesurf.set_colorkey((0, 0, 0))
         self.smokesurf.fill((0, 0, 0))
         self.timer = 0
-        self.smokealpha = 180
+        self.smokealpha = 255
 
         self.dirtparts = []
         self.smokeparts = []
 
     def dirtgen(self):
-        amount = random.randint(3, 6)
+        amount = random.randint(4, 7)
         for i in range(amount):
             randomy = random.randint(-25, -15)
             randomx = random.randint(-5, 5)
             randomsize = random.randint(1, 3)
-            dirt = particle(40, 120, randomx, randomy, 0, 2, randomsize, 0, ((20, 60, 5)), self.surf, ((0, 0, 0)), False)
+            dirt = particle(40, 120, randomx, randomy, 0, 2, randomsize, 0, ((20, 60, 5)), self.surf, ((0, 0, 0)))
             self.dirtparts.append(dirt)
-
-    def smokegen(self):
-        amount = random.randint(2, 5)
-        for i in range(amount):
-            randomy = random.randint(-15, -5)
-            randomx = random.randint(-2, 2)
-            xacc = randomx * -0.1
-            randomgrow = random.randint(1, 3)
-
-            smoke = particle(40, 120, randomx, randomy, xacc, 1, 1, randomgrow, ((50, 70, 40)), self.smokesurf, ((0, 0, 0)), True)
-            self.smokeparts.append(smoke)
 
     def update(self):
         if self.timer == 0:
             self.dirtgen()
-            self.smokegen()
         self.surf.fill((0, 0, 0))
-
         for dirt in self.dirtparts:
             dirt.draw()
-        for smoke in self.smokeparts:
-            smoke.draw()
         rotangle = self.angle + 180
         if rotangle > 360:
             rotangle -= 360
-        self.smokesurf.set_alpha(self.smokealpha)
-
         rotated = pygame.transform.rotate(self.surf, self.angle)
-        rotated2 = pygame.transform.rotate(self.smokesurf, self.angle)
-
         screen.blit(rotated, self.rect)
-        screen.blit(rotated2, self.rect)
-
-        self.smokealpha -= 20
-        if self.smokealpha < 0:
-            self.smokealpha = 0
         self.timer += 1
         if self.timer > 10:
             self.kill()
@@ -377,7 +351,7 @@ class spriticle(pygame.sprite.Sprite):
             randomdir = random.randrange(-10,10)
             xpos = 50
             ypos = 100
-            splinter = particle(xpos, ypos, randomdir , (-10 + randomdir), 0, 0, 5, -1, (255,220,150), self.splintscreen, (0,0,0), True)
+            splinter = particle(xpos, ypos, randomdir , (-10 + randomdir), 0, 0, 5, -1, (255,220,150), self.splintscreen, (0,0,0))
             self.splinterlist.append(splinter)
 
         for i in range(6):
@@ -389,7 +363,7 @@ class spriticle(pygame.sprite.Sprite):
 
             xpos = 50
             ypos = 100
-            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (50,40,10), self.orig, (0,0,0), True)
+            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (50,40,10), self.orig, (0,0,0))
             self.particlelist.append(part)
 
     def update(self):
@@ -424,7 +398,7 @@ class organichit(pygame.sprite.Sprite):
             xvel = random.randrange(-100, 100) / 10
             yvel = 10 - abs(xvel)
             yvel *= random.randint(-1, 1)
-            part = particle(50, 50, xvel, yvel, -1, -1, 3, -0.2, (240, 0, 0), self.surf, (0, 0, 0), True)
+            part = particle(50, 50, xvel, yvel, -1, -1, 3, -0.2, (240, 0, 0), self.surf, (0, 0, 0))
             self.list.append(part)
     def update(self):
         self.surf.fill((0, 0, 0))

@@ -121,7 +121,7 @@ class hardblock(pygame.sprite.Sprite):
                     liz.vel.y = 0
                     liz.pos.y = reverty
 
-    def gethit(self, impactsite, rotation):
+    def gethit(self, impactsite, rotation, angle):
         if liz.ammotype == 1:
             chance = random.randint(0, 3)
         elif liz.ammotype == 2:
@@ -202,8 +202,10 @@ class groundblock(pygame.sprite.Sprite):
                 hardblocks.add(fillblock)
                 allsprites.add(fillblock)
 
-    def gethit(self, impact, rotation):
-        pass
+    def gethit(self, impact, rotation, angle):
+        if liz.ammotype != 2:
+            pief = groundimpact(impact, angle)
+            allsprites.add(pief)
 
     def topcheck(self, type):
         xcor = liz.rect.centerx - self.rect.left

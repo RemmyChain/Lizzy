@@ -311,7 +311,7 @@ class Tracereffect(pygame.sprite.Sprite):
 
                         allsprites.add(boem)
                     else:
-                        hits[i].gethit(impactss[0].rect.center, self.rotation)
+                        hits[i].gethit(impactss[0].rect.center, self.rotation, self.angle)
 
                 if not impactss and liz.ammotype == 2:
                     if 90 < ref.angle < 270:
@@ -327,7 +327,7 @@ class Tracereffect(pygame.sprite.Sprite):
                         self.rotation -= 360
                     # pow = spriticle(self.impactsite, self.rotation)
                     # allsprites.add(pow)
-                    hits[i].gethit(exitss[0].rect.center, self.rotation)
+                    hits[i].gethit(exitss[0].rect.center, self.rotation, self.angle)
                 if liz.ammotype != 2:
                     screen.blit(
                         hits[i].surf,

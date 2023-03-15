@@ -138,6 +138,7 @@ class groundblock(pygame.sprite.Sprite):
         super().__init__()
         self.treaded = False
         self.type = orient
+
         if self.type == "top":
             self.surf = groundblocks[0]
         elif self.type == "mid":
@@ -207,38 +208,44 @@ class groundblock(pygame.sprite.Sprite):
             pief = groundimpact(impact, angle)
             allsprites.add(pief)
 
-    def topcheck(self, type):
-        xcor = liz.rect.centerx - self.rect.left
+    def thresholder(self, xinput, type):
+        xcor = xinput
         degree = pi / 400
         degreecor = xcor * degree + pi
+        threshold0 = 0
         if type == "flattop":
-            threshold = self.rect.top
+            threshold0 = self.rect.top
         elif type == "startramp":
 
-            threshold = self.rect.bottom - (cos(degreecor) + 1) * 100
+            threshold0 = self.rect.bottom - (cos(degreecor) + 1) * 100
 
         elif type == "startrampreverse":
 
-            threshold = self.rect.bottom - (cos(degreecor - pi / 2) + 1) * 100
+            threshold0 = self.rect.bottom - (cos(degreecor - pi / 2) + 1) * 100
 
         elif type == "slant":
-            threshold = self.rect.bottom - xcor / 2
+            threshold0 = self.rect.bottom - xcor / 2
 
         elif type == "slantreverse":
 
-            threshold = self.rect.bottom - (200 - xcor) / 2
+            threshold0 = self.rect.bottom - (200 - xcor) / 2
 
         elif type == "tallslant":
-            threshold = self.rect.bottom - xcor
+            threshold0 = self.rect.bottom - xcor
 
         elif type == "tallslantreverse":
-            threshold = self.rect.bottom - (200 - xcor)
+            threshold0 = self.rect.bottom - (200 - xcor)
 
         elif type == "stopramp":
-            threshold = self.rect.bottom - (cos(degreecor + pi / 2)) * 100
+            threshold0 = self.rect.bottom - (cos(degreecor + pi / 2)) * 100
 
         elif type == "stoprampreverse":
-            threshold = self.rect.bottom - (cos(degreecor - pi)) * 100
+            threshold0 = self.rect.bottom - (cos(degreecor - pi)) * 100
+        return(threshold0)
+
+    def topcheck(self, type):
+        xcor = liz.rect.centerx - self.rect.left
+        threshold = self.thresholder(xcor, type)
 
         tik = pygame.sprite.collide_rect(self, liz)
         if tik:

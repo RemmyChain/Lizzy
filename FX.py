@@ -334,8 +334,8 @@ class groundimpact(pygame.sprite.Sprite):
             rotangle -= 360
         self.smokesurf.set_alpha(self.smokealpha)
 
-        rotated = pygame.transform.rotate(self.surf, radians(self.angle))
-        rotated2 = pygame.transform.rotate(self.smokesurf, radians(self.angle))
+        rotated = pygame.transform.rotate(self.surf, self.angle)
+        rotated2 = pygame.transform.rotate(self.smokesurf, self.angle)
 
         screen.blit(rotated, self.rect)
         screen.blit(rotated2, self.rect)

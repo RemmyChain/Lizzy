@@ -211,10 +211,13 @@ class groundblock(pygame.sprite.Sprite):
             else:
                 orig = vec(impact)
                 finder = vec(impact)
-                threshold = self.thresholder(finder.x, self.type)
-                while finder.y < threshold and abs(finder.y - orig.y) < 25 and abs(finder.x - orig.x) < 25:
-                    finder.x += (cos(radians(angle)) * 5)
-                    finder.y += (sin(radians(angle)) * 5)
+                xin = finder.x - self.rect.left
+                threshold = self.thresholder(xin, self.type)
+                while finder.y < threshold and abs(finder.y - orig.y) < 100 and abs(finder.x - orig.x) < 100:
+                    finder.x += (sin(radians(angle)) * 10)
+                    finder.y += (cos(radians(angle)) * 10)
+                    xin = finder.x - self.rect.left
+                    threshold = self.thresholder(xin, self.type)
                 if finder.y >= threshold:
                     pief = groundimpact(finder, angle)
                     allsprites.add(pief)

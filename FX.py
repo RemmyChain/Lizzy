@@ -294,7 +294,7 @@ class groundimpact(pygame.sprite.Sprite):
         self.smokesurf.set_colorkey((0, 0, 0))
         self.smokesurf.fill((0, 0, 0))
         self.timer = 0
-        self.smokealpha = 200
+        self.smokealpha = 180
 
         self.dirtparts = []
         self.smokeparts = []

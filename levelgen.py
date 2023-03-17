@@ -45,6 +45,17 @@ def basicplatformconstructor(position, size):
         rightwall = basicplatformblock(groundtiles, 5, blockpos, False)
         allsprites.add(rightwall)
 
+class decal(pygame.sprite.Sprite):
+    def __init__(self, placement):
+        super().__init__()
+        randomimg = random.randint(0, 5)
+        self.surf = decals[randomimg]
+        self.rect = self.surf.get_rect()
+        self.rect.midbottom = placement
+
+    def update(self):
+        screen.blit(self.surf, self.rect)
+
 # a constructor for sprite level building blocks used in the above constructor
 
 class basicplatformblock(pygame.sprite.Sprite):
@@ -60,6 +71,13 @@ class basicplatformblock(pygame.sprite.Sprite):
         self.hole.fill(("black"))
         self.hole.set_alpha(0)
         self.surf.blit(self.image, (0, 0))
+
+        if hardtop:
+            chance = random.randint(0, 5)
+            if chance == 0:
+                planty = decal(self.rect.midtop)
+                allsprites.add(planty)
+
     def update(self):
 
         self.surf.blit(self.hole, (20,20))

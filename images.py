@@ -4,8 +4,8 @@ import os
 Lizhit = pygame.image.load(os.path.join('images', 'lizhit.png')).convert_alpha()
 
 decals = [
-    pygame.image.load(os.path.join('images', 'jarichblue.png')).convert_alpha(),
-    pygame.image.load(os.path.join('images', 'jarichpoppy.png')).convert_alpha(),
+    pygame.image.load(os.path.join('images', 'jarichblue.png')).convert(),
+    pygame.image.load(os.path.join('images', 'jarichpoppy.png')).convert(),
     pygame.image.load(os.path.join('images', 'jarichsunflower.png')).convert_alpha(),
     pygame.image.load(os.path.join('images', 'jarichtree.png')).convert_alpha(),
     pygame.image.load(os.path.join('images', 'jarichshrub.png')).convert_alpha(),

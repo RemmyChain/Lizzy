@@ -72,6 +72,8 @@ class basicplatformblock(pygame.sprite.Sprite):
         self.hole.set_alpha(0)
         self.surf.blit(self.image, (0, 0))
 
+# adding some decoration
+
         if hardtop:
             chance = random.randint(0, 5)
             if chance == 0:
@@ -220,6 +222,16 @@ class groundblock(pygame.sprite.Sprite):
                 fillblock = groundblock("edgereverse", self.towerstart)
                 hardblocks.add(fillblock)
                 allsprites.add(fillblock)
+
+        plantchance = random.randint(0, 5)
+        if plantchance == 0:
+            if self.type == "top" or self.type == "corner" or self.type == "cornerreverse":
+                plantje = decal(self.rect.midtop)
+                allsprites.add(plantje)
+            elif self.type != "mid" and self.type != "edge" and self.type != "edgereverse":
+                plantje = decal(self.rect.center)
+                allsprites.add(plantje)
+
 
     def gethit(self, impact, rotation, angle):
         if liz.ammotype != 2:

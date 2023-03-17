@@ -123,11 +123,11 @@ class hardblock(pygame.sprite.Sprite):
 
     def gethit(self, impactsite, rotation, angle):
         if liz.ammotype == 1:
-            chance = random.randint(0, 3)
+            chance = random.randint(0, 2)
         elif liz.ammotype == 2:
             chance = 0
         elif liz.ammotype == 0:
-            chance = random.randint(0, 2)
+            chance = random.randint(0, 1)
         if chance != 0:
             if liz.ammotype != 2:
                 pow = spriticle(impactsite, rotation)
@@ -205,9 +205,12 @@ class groundblock(pygame.sprite.Sprite):
 
     def gethit(self, impact, rotation, angle):
         if liz.ammotype != 2:
+            normalchance = random.randint(0, 1)
+            hyperchance = random.randint(0, 2)
             if self.type == "edge" or self.type == "edgereverse" or self.type == "corner" or self.type == "cornerreverse" or self.type == "top":
-                pief = groundimpact(impact, angle)
-                allsprites.add(pief)
+                if (liz.ammotype == 0 and normalchance == 0) or (liz.ammotype == 1 and hyperchance == 0):
+                    pief = groundimpact(impact, angle)
+                    allsprites.add(pief)
             else:
                 orig = vec(impact)
                 finder = vec(impact)
@@ -219,8 +222,9 @@ class groundblock(pygame.sprite.Sprite):
                     xin = finder.x - self.rect.left
                     threshold = self.thresholder(xin, self.type)
                 if finder.y >= threshold:
-                    pief = groundimpact(finder, angle)
-                    allsprites.add(pief)
+                    if (liz.ammotype == 0 and normalchance == 0) or (liz.ammotype == 1 and hyperchance == 0):
+                        pief = groundimpact(finder, angle)
+                        allsprites.add(pief)
 
     def thresholder(self, xinput, type):
         xcor = xinput

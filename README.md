@@ -1,6 +1,6 @@
 # Lizzy
 
-Lizzy platform game
+_Lizzy platform game_
 
 So, this is my first platform game. I do the coding and creating all graphic assets. You're Lizzy, and you got a gatling gun. So yeah, the sky is the limit!
 
@@ -14,4 +14,17 @@ Don't fall in a hole, cuz you'll die and the program will close :P
 
 Watch that recoil! It is quite substantial :P
 
-Oh yea, chaingirl.py is the main program. That might not be immediately obvious. ;)
+Oh yea, `chaingirl.py` is the main program. That might not be immediately obvious. ;)
+
+
+### Installing dependencies
+
+You can install required Python libraries by running:
+
+```commandline
+pip install -r requirements.txt
+```
+
+Do this from the repository root folder.
+It's recommended to do this in a virtual Python environment,
+to prevent the dependencies from interfering with other Python projects and their dependencies.

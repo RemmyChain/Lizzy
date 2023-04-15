@@ -8,6 +8,7 @@ import math
 from math import atan2, degrees, floor, sin, cos, radians, pi, sqrt
 import random
 
+
 class crash(pygame.sprite.Sprite):
     def __init__(self, coords):
         super().__init__()
@@ -24,7 +25,7 @@ class crash(pygame.sprite.Sprite):
         self.scale = 0
         self.fade = 0
         for i in range(0, 8):
-            spacing = (pi / 4)
+            spacing = pi / 4
             angle = (spacing * i) + (random.randint(-5, 5) / 50)
             radius = random.randint(20, 25)
             x = cos(angle) * 50 + 50
@@ -33,10 +34,14 @@ class crash(pygame.sprite.Sprite):
 
     def update(self):
         self.surf.fill((0, 0, 0))
-        self.innersurfx = pygame.transform.smoothscale(self.innersurf, ((100 + self.scale), (100 + self.scale)))
+        self.innersurfx = pygame.transform.smoothscale(
+            self.innersurf, ((100 + self.scale), (100 + self.scale))
+        )
         self.surf.set_alpha(255 - self.fade)
 
-        self.surf.blit(self.innersurfx, ((100 - (self.scale / 2)), (100 - (self.scale / 2))))
+        self.surf.blit(
+            self.innersurfx, ((100 - (self.scale / 2)), (100 - (self.scale / 2)))
+        )
         screen.blit(self.surf, self.rect)
         self.timer += 2
         self.scale += 20 - self.timer
@@ -44,8 +49,21 @@ class crash(pygame.sprite.Sprite):
         if self.timer > 10:
             self.kill()
 
-class blasticle():
-    def __init__(self, pos, vel, acc, size, dsize, ddsize, color, surface, colorchange, dcolorchange):
+
+class blasticle:
+    def __init__(
+        self,
+        pos,
+        vel,
+        acc,
+        size,
+        dsize,
+        ddsize,
+        color,
+        surface,
+        colorchange,
+        dcolorchange,
+    ):
         self.pos = vec(pos)
         self.vel = vec(vel)
         self.acc = vec(acc)
@@ -63,13 +81,13 @@ class blasticle():
     def draw(self):
         pygame.draw.circle(self.surface, self.color, self.pos, self.size, 0)
 
-        self.red += (self.colorchange[0] * self.dcolorchange)
+        self.red += self.colorchange[0] * self.dcolorchange
         if self.red < 10:
             self.red = 10
-        self.green += (self.colorchange[1] * self.dcolorchange)
+        self.green += self.colorchange[1] * self.dcolorchange
         if self.green < 10:
             self.green = 10
-        self.blue += (self.colorchange[2] * self.dcolorchange)
+        self.blue += self.colorchange[2] * self.dcolorchange
         if self.blue < 10:
             self.blue = 10
         self.color = (self.red, self.green, self.blue)
@@ -81,9 +99,21 @@ class blasticle():
         self.dsize += self.ddsize
 
 
-
-class particle():
-    def __init__(self, xpos, ypos, xvel, yvel, xacc, yacc, size, dsize, color, surface, colorchange):
+class particle:
+    def __init__(
+        self,
+        xpos,
+        ypos,
+        xvel,
+        yvel,
+        xacc,
+        yacc,
+        size,
+        dsize,
+        color,
+        surface,
+        colorchange,
+    ):
         self.xpos = xpos
         self.ypos = ypos
         self.xvel = xvel
@@ -99,6 +129,7 @@ class particle():
         self.red = self.color[0]
         self.blue = self.color[2]
         self.green = self.color[1]
+
     def draw(self):
         pygame.draw.circle(self.surface, self.color, self.center, self.size, 0)
 
@@ -109,12 +140,13 @@ class particle():
         self.xvel += self.xacc
         self.yvel += self.yacc
         if self.yvel > 0:
-            self.yvel = random.randrange(-1,1)
+            self.yvel = random.randrange(-1, 1)
         # self.xpos += self.xvel
         # self.ypos += self.ypos
         self.size += self.dsize
         self.center.x += self.xvel
         self.center.y += self.yvel
+
 
 class explosionhitbox(pygame.sprite.Sprite):
     def __init__(self, position):
@@ -126,6 +158,7 @@ class explosionhitbox(pygame.sprite.Sprite):
         self.rect.center = position
         self.expire = False
         self.damage = 3
+
     def update(self):
         enemieshit = pygame.sprite.spritecollide(self, enemies, False)
         if enemieshit:
@@ -160,7 +193,12 @@ class explosive(pygame.sprite.Sprite):
         self.fade = 10
         self.faderate = 1.5
 
-    def circly(self, size, expand, color,):
+    def circly(
+        self,
+        size,
+        expand,
+        color,
+    ):
         # self.blastsurf.fill((0, 0, 0))
         pygame.draw.circle(self.blastsurf, color, (100, 100), size)
         self.circleseedzise += expand
@@ -183,7 +221,18 @@ class explosive(pygame.sprite.Sprite):
             vel = vec(x, y)
             vel *= 10
             acc = vel * -0.1
-            part = blasticle((100, 100), vel, acc, size, 2.2, -0.8, (255, 255, 255), self.surf, (-5, -20, -30), 1.5)
+            part = blasticle(
+                (100, 100),
+                vel,
+                acc,
+                size,
+                2.2,
+                -0.8,
+                (255, 255, 255),
+                self.surf,
+                (-5, -20, -30),
+                1.5,
+            )
             self.list.append(part)
 
     def update(self):
@@ -213,8 +262,8 @@ class explosive(pygame.sprite.Sprite):
 class muzzleflash(pygame.sprite.Sprite):
     def __init__(self, color):
         super().__init__()
-        self.orig = pygame.surface.Surface((100,50))
-        self.orig.set_colorkey((0,0,0))
+        self.orig = pygame.surface.Surface((100, 50))
+        self.orig.set_colorkey((0, 0, 0))
         self.orig.set_alpha(200)
         self.rect = self.orig.get_rect()
         self.list = []
@@ -225,9 +274,8 @@ class muzzleflash(pygame.sprite.Sprite):
         self.color = color
 
     def update(self):
-
         self.timer += 1
-        self.orig.fill((0,0,0))
+        self.orig.fill((0, 0, 0))
         if self.color == 0:
             colorchange = (-15, -25, -60)
             color = (255, 255, 240)
@@ -243,7 +291,19 @@ class muzzleflash(pygame.sprite.Sprite):
                 random2 = random.randrange(0, 50)
                 random3 = random.randrange(-5, 5)
                 random4 = random.randrange(5, 15)
-                part = particle(random2, random1, random4, random3 ,0 ,(random3 * -0.2) , 5, -1, color, self.orig, colorchange)
+                part = particle(
+                    random2,
+                    random1,
+                    random4,
+                    random3,
+                    0,
+                    (random3 * -0.2),
+                    5,
+                    -1,
+                    color,
+                    self.orig,
+                    colorchange,
+                )
                 self.list.append(part)
         for i in self.list:
             i.draw()
@@ -278,13 +338,14 @@ class muzzleflash(pygame.sprite.Sprite):
         if gatling.firing == False:
             self.kill()
 
+
 class spriticle(pygame.sprite.Sprite):
     def __init__(self, coords, rotation):
         super().__init__()
-        self.orig = pygame.surface.Surface((100,100))
-        self.orig.set_colorkey((0,0,0))
-        self.splintscreen = pygame.surface.Surface((100,100))
-        self.splintscreen.set_colorkey((0,0,0))
+        self.orig = pygame.surface.Surface((100, 100))
+        self.orig.set_colorkey((0, 0, 0))
+        self.splintscreen = pygame.surface.Surface((100, 100))
+        self.splintscreen.set_colorkey((0, 0, 0))
         self.orig.set_alpha(255)
         self.alpha = 255
         self.fade = 0.85
@@ -304,15 +365,27 @@ class spriticle(pygame.sprite.Sprite):
         self.particlelist = []
         self.splinterlist = []
 
-        for i in range(random.randint(1,3)):
-            randomdir = random.randrange(-10,10)
+        for i in range(random.randint(1, 3)):
+            randomdir = random.randrange(-10, 10)
             xpos = 50
             ypos = 100
-            splinter = particle(xpos, ypos, randomdir , (-10 + randomdir), 0, 0, 5, -1, (255,220,150), self.splintscreen, (0,0,0))
+            splinter = particle(
+                xpos,
+                ypos,
+                randomdir,
+                (-10 + randomdir),
+                0,
+                0,
+                5,
+                -1,
+                (255, 220, 150),
+                self.splintscreen,
+                (0, 0, 0),
+            )
             self.splinterlist.append(splinter)
 
         for i in range(6):
-            randomized1 = random.randrange(-10,10) / 10
+            randomized1 = random.randrange(-10, 10) / 10
             randomized2 = random.randrange(-10, 10) / 10
             randomized3 = random.randrange(-10, 10) / 10
             randomized4 = random.randrange(-10, 10) / 10
@@ -320,12 +393,24 @@ class spriticle(pygame.sprite.Sprite):
 
             xpos = 50
             ypos = 100
-            part = particle(xpos,ypos, randomized1, (randomized2 * 2 - 22), (randomized3 / 20), (5 + (randomized4 / 20)), 1, (1 + (randomized5 / 2)), (50,40,10), self.orig, (0,0,0))
+            part = particle(
+                xpos,
+                ypos,
+                randomized1,
+                (randomized2 * 2 - 22),
+                (randomized3 / 20),
+                (5 + (randomized4 / 20)),
+                1,
+                (1 + (randomized5 / 2)),
+                (50, 40, 10),
+                self.orig,
+                (0, 0, 0),
+            )
             self.particlelist.append(part)
 
     def update(self):
         # self.orig.fill((0,0,0))
-        self.splintscreen.fill((0,0,0))
+        self.splintscreen.fill((0, 0, 0))
         for i in range(len(self.particlelist)):
             self.particlelist[i].draw()
         for i in range(len(self.splinterlist)):
@@ -341,6 +426,7 @@ class spriticle(pygame.sprite.Sprite):
         if self.timer > 15:
             self.kill()
 
+
 class organichit(pygame.sprite.Sprite):
     def __init__(self, coords):
         super().__init__()
@@ -355,8 +441,11 @@ class organichit(pygame.sprite.Sprite):
             xvel = random.randrange(-100, 100) / 10
             yvel = 10 - abs(xvel)
             yvel *= random.randint(-1, 1)
-            part = particle(50, 50, xvel, yvel, -1, -1, 3, -0.2, (240, 0, 0), self.surf, (0, 0, 0))
+            part = particle(
+                50, 50, xvel, yvel, -1, -1, 3, -0.2, (240, 0, 0), self.surf, (0, 0, 0)
+            )
             self.list.append(part)
+
     def update(self):
         self.surf.fill((0, 0, 0))
         for i in self.list:
@@ -365,7 +454,6 @@ class organichit(pygame.sprite.Sprite):
         screen.blit(self.surf, self.rect)
         if self.timer > 20:
             self.kill()
-
 
 
 class bullitimpact(pygame.sprite.Sprite):
@@ -384,9 +472,9 @@ class bullitimpact(pygame.sprite.Sprite):
         elif rotation == 270:
             self.rect.midleft = coords
 
-
         self.timer = 0
         self.rotation = rotation
+
     def update(self):
         self.timer += 1
         picnum = self.timer // 2

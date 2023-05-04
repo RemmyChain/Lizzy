@@ -3,6 +3,60 @@ import os
 
 Lizhit = pygame.image.load(os.path.join("images", "lizhit.png")).convert_alpha()
 
+crocwalk = [
+    pygame.image.load(os.path.join("images", "crocwalk0000.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocwalk0001.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocwalk0002.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocwalk0003.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocwalk0004.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocwalk0005.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocwalk0006.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocwalk0007.png")).convert_alpha(),
+]
+
+crocrotate = [
+    pygame.image.load(os.path.join("images", "crocrotate0000.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0001.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0002.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0003.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0004.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0005.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0006.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0007.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocrotate0008.png")).convert_alpha(),
+]
+
+crocdeath = [
+    pygame.image.load(os.path.join("images", "crocdeath0000.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocdeath0001.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocdeath0002.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocdeath0003.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocdeath0004.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocdeath0005.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocdeath0006.png")).convert_alpha(),
+]
+
+crocflamedeath = [
+    pygame.image.load(os.path.join("images", "crocflamedeath0000.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0001.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0002.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0003.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0004.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0005.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0006.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0007.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0008.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0009.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocflamedeath0010.png")).convert_alpha(),
+]
+
+crocextra = [
+    pygame.image.load(os.path.join("images", "crocxarm.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocxhead.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocxhose.png")).convert_alpha(),
+    pygame.image.load(os.path.join("images", "crocxtorso.png")).convert_alpha(),
+]
+
 decals = [
     pygame.image.load(os.path.join("images", "jarichblue.png")).convert_alpha(),
     pygame.image.load(os.path.join("images", "jarichpoppy.png")).convert_alpha(),

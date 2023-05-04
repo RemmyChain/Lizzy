@@ -5,18 +5,18 @@ from images import *
 import math
 from math import atan2, degrees, floor, sin, cos, radians
 import random
-import FX
-from FX import *
+import fx
+from fx import *
 
 
 class kamaker(pygame.sprite.Sprite):
     def __init__(self, coords):
         super().__init__()
-        self.surf = pygame.Surface((200,100))
+        self.surf = pygame.Surface((200, 100))
         self.killed = False
-        self.surf.fill((0,0,0))
+        self.surf.fill((0, 0, 0))
         self.surf.set_alpha(255)
-        self.surf.set_colorkey((0,0,0))
+        self.surf.set_colorkey((0, 0, 0))
         self.rect = self.surf.get_rect()
         self.hardblocked = False
         self.gothit = False
@@ -44,13 +44,12 @@ class kamaker(pygame.sprite.Sprite):
         self.attack = 20
 
     def gethit(self, hitcoords, damage, type):
-
         self.gothit = True
         self.health -= damage
-        chance = random.randint(0, 2)
+        chance = randint(0, 2)
         if type == "bullet" or type == "melee":
             if chance == 0:
-                hitfx = organichit(hitcoords)
+                hitfx = OrganicHit(hitcoords)
                 allsprites.add(hitfx)
         elif type == "explosive":
             blast = explosive(hitcoords)
@@ -74,7 +73,6 @@ class kamaker(pygame.sprite.Sprite):
             self.killed = True
 
     def move(self):
-
         self.oldpos = self.pos
         self.pos = vec(self.rect.midbottom)
         if not self.grounded:
@@ -89,11 +87,8 @@ class kamaker(pygame.sprite.Sprite):
             self.pos.x -= self.speed
         self.rect.midbottom = self.pos
 
-
     def edgedetect(self):
-
         if self.grounded:
-
             if not self.reversed:
                 self.rect.centerx -= 150
             elif self.reversed:
@@ -114,7 +109,6 @@ class kamaker(pygame.sprite.Sprite):
             # self.rect.midbottom = self.pos
 
     def platformcheck(self):
-
         hits = pygame.sprite.spritecollide(self, platforms, False)
         if hits:
             for i in hits:
@@ -140,7 +134,6 @@ class kamaker(pygame.sprite.Sprite):
             self.hardblocked = False
 
     def render(self):
-
         if not self.reversed:
             screen.blit(self.surf, self.rect)
             if self.gothit:
@@ -152,7 +145,9 @@ class kamaker(pygame.sprite.Sprite):
                 screen.blit(flipped, self.rect, special_flags=BLEND_RGB_ADD)
 
         if self.health < 25:
-            healthrect = pygame.Rect(self.rect.left, self.rect.bottom, self.health * 5, 5)
+            healthrect = pygame.Rect(
+                self.rect.left, self.rect.bottom, self.health * 5, 5
+            )
             pygame.draw.rect(screen, ("red"), healthrect)
         self.surf.fill((0, 0, 0))
 
@@ -165,7 +160,6 @@ class kamaker(pygame.sprite.Sprite):
         self.platformcheck()
         self.hardblockscheck()
 
-
         if self.deathtimer < 5:
             self.animate()
             self.render()
@@ -177,22 +171,36 @@ class kamaker(pygame.sprite.Sprite):
     def deathani(self):
         if self.deathtimer == 0:
             for i in range(30):
-                x = self.rect.centerx + (random.randint( -30, 30))
-                y = self.rect.centery + (random.randint(-10, 10))
-                randomcol = random.randint( 170, 230)
-                part1 = particle(x, y, 0, 0, 0, 0, 1, 4, (50, randomcol, 20), screen, (0 ,0 ,0), True)
+                x = self.rect.centerx + (randint(-30, 30))
+                y = self.rect.centery + (randint(-10, 10))
+                randomcol = randint(170, 230)
+                part1 = particle(
+                    x, y, 0, 0, 0, 0, 1, 4, (50, randomcol, 20), screen, (0, 0, 0), True
+                )
                 self.partlist1.append(part1)
         if self.deathtimer < 8:
-
             for i in self.partlist1:
                 i.draw()
 
         if self.deathtimer == 6:
             for i in range(50):
-                x = self.rect.centerx + (random.randint(-40, 40))
-                y = self.rect.centery + (random.randint(-20, 20))
-                randomcol2 = random.randint( 170, 230)
-                part2 = particle(x, y, random.randint(-15, 15), random.randint(-30, 0), 0, 1, 8, -0.4, (50, randomcol2, 20), screen, (0 ,0 ,0), True)
+                x = self.rect.centerx + (randint(-40, 40))
+                y = self.rect.centery + (randint(-20, 20))
+                randomcol2 = randint(170, 230)
+                part2 = particle(
+                    x,
+                    y,
+                    randint(-15, 15),
+                    randint(-30, 0),
+                    0,
+                    1,
+                    8,
+                    -0.4,
+                    (50, randomcol2, 20),
+                    screen,
+                    (0, 0, 0),
+                    True,
+                )
                 self.partlist2.append(part2)
         if self.deathtimer > 6 and self.deathtimer < 20:
             for i in self.partlist2:
@@ -202,7 +210,6 @@ class kamaker(pygame.sprite.Sprite):
             self.kill()
         self.deathtimer += 1
 
-
     def animate(self):
         self.frontpawfront()
         self.frontpawback()
@@ -210,11 +217,11 @@ class kamaker(pygame.sprite.Sprite):
         self.backpawback()
         self.surf.blit(kamakerpaw, (self.xpos1, self.ypos1))
         self.surf.blit(kamakerpaw, (self.xpos3, self.ypos3))
-        self.surf.blit(kamakerbody, (50,15))
-        self.surf.blit(kamakertail, (160,50))
+        self.surf.blit(kamakerbody, (50, 15))
+        self.surf.blit(kamakertail, (160, 50))
         self.surf.blit(kamakerpaw, (self.xpos2, self.ypos2))
         self.surf.blit(kamakerpaw, (self.xpos4, self.ypos4))
-        self.surf.blit(kamakerhead, (0,0))
+        self.surf.blit(kamakerhead, (0, 0))
 
     def frontpawfront(self):
         if self.timer < 10:
@@ -229,7 +236,7 @@ class kamaker(pygame.sprite.Sprite):
     def frontpawback(self):
         if self.timer < 5:
             self.xpos2 -= 5
-            self.ypos2 -=5
+            self.ypos2 -= 5
         elif self.timer >= 5 and self.timer < 10:
             self.xpos2 -= 5
             self.ypos2 += 5
@@ -249,12 +256,9 @@ class kamaker(pygame.sprite.Sprite):
     def backpawback(self):
         if self.timer < 5:
             self.xpos4 -= 5
-            self.ypos4 -=5
+            self.ypos4 -= 5
         elif self.timer >= 5 and self.timer < 10:
             self.xpos4 -= 5
             self.ypos4 += 5
         elif self.timer >= 10:
             self.xpos4 += 5
-
-
-

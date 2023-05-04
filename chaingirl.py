@@ -20,11 +20,11 @@ from levelgen import *
 
 # Lizzy main class and ancilliaries
 
-from Lizzy import *
+from lizzy import *
 
 # Special effects
 
-from FX import *
+from fx import *
 
 # enemies
 

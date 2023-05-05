@@ -332,89 +332,94 @@ class groundblock(pg.sprite.Sprite):
         return threshold0
 
     def topcheck(self, type):
-        xcor = liz.rect.centerx - self.rect.left
-        threshold = self.thresholder(xcor, type)
-
-        tik = pg.sprite.collide_rect(self, liz)
+        tik = pg.sprite.spritecollide(self, mobs, False)
         if tik:
-            if liz.vel.y > 25:
-                liz.rect.bottom = threshold + 1
+            for i in tik:
+                xcor = i.rect.centerx - self.rect.left
+                threshold = self.thresholder(xcor, type)
 
-            if (threshold + 50) > liz.rect.bottom > threshold:
-                if self.type != "mid":
-                    liz.rect.bottom = threshold + 1
-                else:
-                    liz.rect.bottom = threshold - 1
-                liz.pos.y = liz.rect.bottom
-                if not gatling.firing:
-                    liz.vel.y = 15
-                liz.grounded = True
-                self.treaded = True
+                if i.vel.y > 25:
+                    i.rect.bottom = threshold + 1
+
+                if (threshold + 50) > i.rect.bottom > threshold:
+                    if self.type != "mid":
+                        i.rect.bottom = threshold + 1
+                    else:
+                        i.rect.bottom = threshold - 1
+                    i.pos.y = i.rect.bottom
+                    if not gatling.firing:
+                        i.vel.y = 15
+                    i.grounded = True
+                    self.treaded = True
         if not tik and self.treaded:
             self.treaded = False
 
     def leftcheck(self):
-        tik = pg.sprite.collide_rect(self, liz)
+        tik = pg.sprite.spritecollide(self, mobs, False)
         if tik and not self.treaded:
-            if liz.rect.right > self.rect.centerx:
-                liz.rect.right = self.rect.right
-                liz.pos = vec(liz.rect.midbottom)
-                liz.vel.x = 0
+            for i in tik:
+                if i.rect.right > self.rect.centerx:
+                    i.rect.right = self.rect.right
+                    i.pos = vec(i.rect.midbottom)
+                    i.vel.x = 0
 
     def rightcheck(self):
-        tik = pg.sprite.collide_rect(self, liz)
+        tik = pg.sprite.spritecollide(self, mobs, False)
         if tik and not self.treaded:
-            if liz.rect.left < self.rect.centerx:
-                liz.rect.left = self.rect.right
-                liz.pos = vec(liz.rect.midbottom)
-                liz.vel.x = 0
+            for i in mobs:
+                if i.rect.left < self.rect.centerx:
+                    i.rect.left = self.rect.right
+                    i.pos = vec(i.rect.midbottom)
+                    i.vel.x = 0
 
     def update(self):
         screen.blit(self.surf, self.rect)
 
     def playercheck(self):
-        tik = pg.sprite.collide_rect(self, liz)
+        tik = pg.sprite.spritecollide(self, mobs, False)
         if not tik:
             self.treaded = False
-        if self.type == "top" or self.type == "mid":
-            self.topcheck("flattop")
-        elif self.type == "corner":
-            if tik and liz.rect.bottom < self.rect.top + 70:
-                self.topcheck("flattop")
-            self.leftcheck()
-        elif self.type == "cornerreverse":
-            if tik and liz.rect.bottom < self.rect.top + 70:
-                self.topcheck("flattop")
-            self.rightcheck()
+        if tik:
+            for i in tik:
+                if self.type == "top" or self.type == "mid":
+                    self.topcheck("flattop")
+                elif self.type == "corner":
+                    if tik and i.rect.bottom < self.rect.top + 70:
+                        self.topcheck("flattop")
+                    self.leftcheck()
+                elif self.type == "cornerreverse":
+                    if tik and i.rect.bottom < self.rect.top + 70:
+                        self.topcheck("flattop")
+                    self.rightcheck()
 
-        elif self.type == "edge":
-            self.leftcheck()
-        elif self.type == "edgereverse":
-            self.rightcheck()
+                elif self.type == "edge":
+                    self.leftcheck()
+                elif self.type == "edgereverse":
+                    self.rightcheck()
 
-        elif self.type == "startramp":
-            self.topcheck("startramp")
+                elif self.type == "startramp":
+                    self.topcheck("startramp")
 
-        elif self.type == "startrampreverse":
-            self.topcheck("startrampreverse")
+                elif self.type == "startrampreverse":
+                    self.topcheck("startrampreverse")
 
-        elif self.type == "slant":
-            self.topcheck("slant")
+                elif self.type == "slant":
+                    self.topcheck("slant")
 
-        elif self.type == "slantreverse":
-            self.topcheck("slantreverse")
+                elif self.type == "slantreverse":
+                    self.topcheck("slantreverse")
 
-        elif self.type == "stopramp":
-            self.topcheck("stopramp")
+                elif self.type == "stopramp":
+                    self.topcheck("stopramp")
 
-        elif self.type == "stoprampreverse":
-            self.topcheck("stoprampreverse")
+                elif self.type == "stoprampreverse":
+                    self.topcheck("stoprampreverse")
 
-        elif self.type == "tallslant":
-            self.topcheck("tallslant")
+                elif self.type == "tallslant":
+                    self.topcheck("tallslant")
 
-        elif self.type == "tallslantreverse":
-            self.topcheck("tallslantreverse")
+                elif self.type == "tallslantreverse":
+                    self.topcheck("tallslantreverse")
 
             # self.rightcheck()
 

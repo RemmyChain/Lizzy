@@ -29,6 +29,7 @@ platforms = pygame.sprite.Group()
 hardblocks = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 hazards = pygame.sprite.Group()
+mobs = pygame.sprite.Group()
 
 depthlayer = pygame.image.load(os.path.join("images", "depthlayer.png")).convert_alpha()
 

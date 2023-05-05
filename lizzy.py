@@ -908,7 +908,7 @@ class LizMain(pygame.sprite.Sprite):
         if self.grounded and not footing and not standing:
             self.grounded = False
 
-        # activating block code if player
+        # activating block code if player comes in contact with block
 
         if footing:
             for i in footing:
@@ -916,6 +916,8 @@ class LizMain(pygame.sprite.Sprite):
         if standing:
             for i in standing:
                 i.playercheck()
+        if not footing and not standing:
+            self.grounded = False
 
         # setting gravity if not on solid ground
         if self.grounded or self.vel.y > 45:
@@ -1073,4 +1075,6 @@ liz = LizMain()
 legs = Lizlegs()
 torso = Liztorso()
 gatling = barrels()
+
+mobs.add(liz)
 # cursor = Reticle()

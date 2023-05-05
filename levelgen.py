@@ -12,7 +12,7 @@ from initialising import (
     screen,
     hardblocks,
     enemies,
-    depthbg,
+    depthbg, mobs,
 )
 import pygame as pg
 
@@ -100,15 +100,14 @@ class basicplatformblock(pg.sprite.Sprite):
     # check if player is standing on block
     def playercheck(self):
         if self.hardtop:
-            hits = pg.sprite.collide_rect(self, liz)
+            hits = pg.sprite.spritecollide(self, mobs, False)
 
             if hits:
-                if liz.pos.y <= (self.rect.top + 50):
-                    liz.pos.y = self.rect.top + 1
-                    liz.vel.y = 0
-                    liz.grounded = True
-                else:
-                    liz.grounded = False
+                for i in hits:
+                    if i.pos.y <= (self.rect.top + 50):
+                        i.pos.y = self.rect.top + 1
+                        i.vel.y = 0
+                        i.grounded = True
 
 
 # hard block class (blocks player movement and normal attacks, also is a platform)
@@ -135,8 +134,7 @@ class hardblock(pg.sprite.Sprite):
                 liz.rect.bottom = self.rect.top
 
             if (
-                self.rect.center[1] < liz.rect.bottom + 10
-                and self.rect.center[1] > liz.rect.top - 10
+                    liz.rect.bottom + 10 > self.rect.center[1] > liz.rect.top - 10
             ):
                 liz.pos.x = revert
                 liz.rect.midbottom = liz.pos
@@ -160,6 +158,7 @@ class hardblock(pg.sprite.Sprite):
                     liz.pos.y = reverty
 
     def gethit(self, impactsite, rotation, angle):
+        chance = 0
         if liz.ammotype == 1:
             chance = randint(0, 2)
         elif liz.ammotype == 2:
@@ -486,6 +485,7 @@ enemies.add(kamaker1)
 enemies.add(kamaker2)
 allsprites.add(kamaker1)
 allsprites.add(kamaker2)
+
 
 depthcenter = vec(screen.get_size()) / 2
 depth = depthbg(depthcenter)

@@ -125,37 +125,38 @@ class hardblock(pg.sprite.Sprite):
 
     # check if player is standing on block
     def playercheck(self):
-        hits = pg.sprite.collide_rect(self, liz)
+        hits = pg.sprite.spritecollide(self, mobs, False)
 
         if hits:
-            revert = liz.pos.x - liz.vel.x
-            reverty = liz.pos.y - liz.vel.y
-            if liz.vel.y > 25:
-                liz.rect.bottom = self.rect.top
+            for i in hits:
+                revert = i.pos.x - i.vel.x
+                reverty = i.pos.y - i.vel.y
+                if i.vel.y > 25:
+                    i.rect.bottom = self.rect.top
 
-            if (
-                    liz.rect.bottom + 10 > self.rect.center[1] > liz.rect.top - 10
-            ):
-                liz.pos.x = revert
-                liz.rect.midbottom = liz.pos
-            elif (liz.pos.y <= (self.rect.top + 50)) and (
-                (liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 50)
-                or (liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -50)
-            ):
-                liz.pos.y = self.rect.top + 1
-                liz.vel.y = 0
-                liz.grounded = True
-            else:
-                liz.grounded = False
-
-            if liz.vel.y < 0:
                 if (
-                    liz.vel.x <= 0 and liz.rect.center[0] - self.rect.center[0] < 45
-                ) or (
-                    liz.vel.x >= 0 and liz.rect.center[0] - self.rect.center[0] > -45
+                        i.rect.bottom + 10 > self.rect.center[1] > i.rect.top - 10
                 ):
-                    liz.vel.y = 0
-                    liz.pos.y = reverty
+                    i.pos.x = revert
+                    i.rect.midbottom = i.pos
+                elif (i.pos.y <= (self.rect.top + 50)) and (
+                    (i.vel.x <= 0 and i.rect.center[0] - self.rect.center[0] < 50)
+                    or (i.vel.x >= 0 and i.rect.center[0] - self.rect.center[0] > -50)
+                ):
+                    i.pos.y = self.rect.top + 1
+                    i.vel.y = 0
+                    i.grounded = True
+                else:
+                    i.grounded = False
+
+                if i.vel.y < 0:
+                    if (
+                        i.vel.x <= 0 and i.rect.center[0] - self.rect.center[0] < 45
+                    ) or (
+                        i.vel.x >= 0 and i.rect.center[0] - self.rect.center[0] > -45
+                    ):
+                        i.vel.y = 0
+                        i.pos.y = reverty
 
     def gethit(self, impactsite, rotation, angle):
         chance = 0

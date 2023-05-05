@@ -573,7 +573,7 @@ class LizMain(pygame.sprite.Sprite):
         self.acc = vec(4, 0)
         self.grav = vec(0, 0)
         self.vel = vec(0, 0)
-        self.pos = vec(200, 200)
+        self.pos = vec(800, 200)
         self.fric = 0.2
         self.grounded = False
         self.recoil = vec(0, 0)

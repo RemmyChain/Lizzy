@@ -442,6 +442,9 @@ def groundconstructor(list):
 # generating a level
 
 hardblocklist = [
+    (-2400, 500),
+    (-2400, 400),
+    (-2400, 300),
     (200, 600),
     (300, 600),
     (0, 900),
@@ -452,6 +455,8 @@ hardblocklist = [
     (600, 700),
 ]
 
+basicplatformconstructor((-700, 800), 5)
+basicplatformconstructor((-1200, 1000), 10)
 basicplatformconstructor((400, 800), 5)
 basicplatformconstructor((1000, 900), 2)
 basicplatformconstructor((1700, 900), 2)
@@ -463,6 +468,13 @@ basicplatformconstructor((0, 1000), 15)
 basicplatformconstructor((2000, 1000), 10)
 
 groundlist = [
+    ["corner", (-2350, 700)],
+    ["top", (-2200, 700)],
+    ["stoprampreverse", (-2000, 700)],
+    ["tallslantreverse", (-1800, 900)],
+    ["startrampreverse", (-1600, 1000)],
+    ["top", (-1400, 1100)],
+    ["cornerreverse", (-1250, 1100)],
     ["corner", (3150, 1100)],
     ["top", (3300, 1100)],
     ["startramp", (3500, 1000)],

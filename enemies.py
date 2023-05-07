@@ -9,6 +9,86 @@ import fx
 from fx import *
 
 
+class groundmob(pygame.sprite.Sprite):
+    def __init__(self, rectdimensions, startpos, speed, health):
+        super().__init__()
+        self.surf = pg.surface.Surface(rectdimensions)
+        self.surf.set_alpha(0)
+        self.rect = self.surf.get_rect()
+        self.acc = vec(speed)
+        self.vel = vec(0, 0)
+        self.pos = vec(startpos)
+        self.rect.center = self.pos
+        self.grav = vec(0, 0)
+        self.fric = vec(0.2, 0)
+        self.grounded = False
+        self.gothit = False
+        self.killed = False
+        self.health = health
+        self.reversed = False
+        self.obstructed = False
+
+    def update(self):
+        self.groundcheck()
+        self.obstructioncheck()
+        self.move()
+        self.render()
+
+    def gethit(self, damage):
+        self.health -= damage
+
+    def deathcheck(self):
+        if self.health <= 0:
+            self.killed = True
+
+    def move(self):
+        self.vel += self.acc
+        self.vel += self.grav
+        self.vel -= self.fric * self.vel.x
+        self.pos += self.vel
+        self.rect.center = self.pos
+
+    def groundcheck(self):
+        platformhit = pg.sprite.spritecollide(self, platforms, False)
+        hardblockhit = pg.sprite.spritecollide(self, hardblocks, False)
+        if not platformhit and not hardblockhit:
+            self.grounded = False
+        if platformhit:
+            for i in platformhit:
+                i.playercheck()
+        if hardblockhit:
+            for i in hardblockhit:
+                i.playercheck()
+        if self.grounded or self.vel.y > 45:
+            self.grav.y = 0
+        else:
+            self.grav.y = 2
+
+    def obstructioncheck(self):
+        if not self.reversed:
+            self.rect.x += 200
+        elif self.reversed:
+            self.rect.x -= 200
+        blockcheck = pg.sprite.spritecollide(self, hardblocks, False)
+        platformcheck = pg.sprite.spritecollide(self, platforms, False)
+        if not blockcheck and not platformcheck:
+            self.obstructed = True
+        elif blockcheck:
+            for i in blockcheck:
+                if i.rect.centery < self.rect.bottom:
+                    self.obstructed = True
+        else:
+            self.obstructed = False
+        self.rect.x = self.pos.x
+
+    def render(self):
+        if self.reversed:
+            reverseimg = pg.transform.flip(self.surf, True, False)
+            screen.blit(reverseimg, self.rect)
+        else:
+            screen.blit(self.surf, self.rect)
+
+
 class kamaker(pygame.sprite.Sprite):
     def __init__(self, coords):
         super().__init__()
@@ -202,7 +282,7 @@ class kamaker(pygame.sprite.Sprite):
                     True,
                 )
                 self.partlist2.append(part2)
-        if self.deathtimer > 6 and self.deathtimer < 20:
+        if 6 < self.deathtimer < 20:
             for i in self.partlist2:
                 i.draw()
 
@@ -226,7 +306,7 @@ class kamaker(pygame.sprite.Sprite):
     def frontpawfront(self):
         if self.timer < 10:
             self.xpos1 += 5
-        elif self.timer >= 10 and self.timer < 15:
+        elif 10 <= self.timer < 15:
             self.xpos1 -= 5
             self.ypos1 -= 5
         elif self.timer >= 15:
@@ -237,7 +317,7 @@ class kamaker(pygame.sprite.Sprite):
         if self.timer < 5:
             self.xpos2 -= 5
             self.ypos2 -= 5
-        elif self.timer >= 5 and self.timer < 10:
+        elif 5 <= self.timer < 10:
             self.xpos2 -= 5
             self.ypos2 += 5
         elif self.timer >= 10:
@@ -246,7 +326,7 @@ class kamaker(pygame.sprite.Sprite):
     def backpawfront(self):
         if self.timer < 10:
             self.xpos3 += 5
-        elif self.timer >= 10 and self.timer < 15:
+        elif 10 <= self.timer < 15:
             self.xpos3 -= 5
             self.ypos3 -= 5
         elif self.timer >= 15:
@@ -257,7 +337,7 @@ class kamaker(pygame.sprite.Sprite):
         if self.timer < 5:
             self.xpos4 -= 5
             self.ypos4 -= 5
-        elif self.timer >= 5 and self.timer < 10:
+        elif 5 <= self.timer < 10:
             self.xpos4 -= 5
             self.ypos4 += 5
         elif self.timer >= 10:

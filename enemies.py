@@ -27,12 +27,7 @@ class groundmob(pygame.sprite.Sprite):
         self.health = health
         self.reversed = False
         self.obstructed = False
-
-    def update(self):
-        self.groundcheck()
-        self.obstructioncheck()
-        self.move()
-        self.render()
+        self.timer = 0
 
     def gethit(self, damage):
         self.health -= damage
@@ -81,12 +76,54 @@ class groundmob(pygame.sprite.Sprite):
             self.obstructed = False
         self.rect.x = self.pos.x
 
+
+class flamecroc(groundmob):
+    def __init__(self, startpos):
+        super().__init__((200, 100), startpos, 2, 300)
+        self.imageset = crocwalk
+        self.image = self.imageset[0]
+        self.state = "walking"
+
+    def update(self):
+        self.groundcheck()
+        if self.state == "walking":
+            self.obstructioncheck()
+        self.control()
+        self.animate()
+        self.move()
+        self.render()
+
+    def control(self):
+        if self.obstructed and self.timer == 0:
+            self.state = "turning"
+        if self.state == "turning":
+            self.turn()
+
+    def animate(self):
+        cutoff = len(self.imageset)
+        self.image = self.imageset[self.timer]
+        self.timer += 1
+        if self.timer > cutoff:
+            self.timer = 0
+
+    def turn(self):
+        if self.timer == 0:
+            self.imageset = crocrotate
+            self.acc *= -1
+        if self.timer == 7:
+            self.imageset = crocwalk
+            self.state = "walking"
+            if self.reversed:
+                self.reversed = False
+            elif not self.reversed:
+                self.reversed = True
+
     def render(self):
         if self.reversed:
-            reverseimg = pg.transform.flip(self.surf, True, False)
+            reverseimg = pg.transform.flip(self.image, True, False)
             screen.blit(reverseimg, self.rect)
         else:
-            screen.blit(self.surf, self.rect)
+            screen.blit(self.image, self.rect)
 
 
 class kamaker(pygame.sprite.Sprite):

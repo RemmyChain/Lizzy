@@ -67,9 +67,9 @@ class groundmob(pygame.sprite.Sprite):
 
     def obstructioncheck(self):
         if not self.reversed:
-            self.rect.x += 150
+            self.rect.x += 100
         elif self.reversed:
-            self.rect.x -= 150
+            self.rect.x -= 100
         blockcheck = pg.sprite.spritecollide(self, hardblocks, False)
         platformcheck = pg.sprite.spritecollide(self, platforms, False)
         if not blockcheck and not platformcheck:
@@ -103,7 +103,8 @@ class flamecroc(groundmob):
         self.render()
 
     def control(self):
-        if self.obstructed and self.timer == 0 and self.state == "walking":
+        if self.obstructed and self.state == "walking":
+            self.timer = 0
             self.state = "turning"
         if self.state == "turning":
             self.turn()
@@ -116,6 +117,7 @@ class flamecroc(groundmob):
             self.timer = 0
 
     def turn(self):
+
         self.obstructed = False
         if self.timer == 0:
             self.imageset = crocrotate

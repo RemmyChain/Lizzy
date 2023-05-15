@@ -2,7 +2,7 @@
 from math import sin, radians, cos, pi
 from random import randint
 
-from enemies import kamaker
+from enemies import kamaker, flamecroc
 from fx import groundimpact, spriticle
 from images import groundtiles, rocktile, decals, groundblocks
 from initialising import (
@@ -494,7 +494,6 @@ groundlist = [
 
 groundconstructor(groundlist)
 
-
 hardblockplacement(hardblocklist, rocktile)
 
 kamaker1 = kamaker((1000, 600))
@@ -504,6 +503,9 @@ enemies.add(kamaker2)
 allsprites.add(kamaker1)
 allsprites.add(kamaker2)
 
+testflamey = flamecroc((-500, 400))
+mobs.add(testflamey)
+allsprites.add(testflamey)
 
 depthcenter = vec(screen.get_size()) / 2
 depth = depthbg(depthcenter)

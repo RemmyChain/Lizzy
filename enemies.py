@@ -13,7 +13,8 @@ class groundmob(pygame.sprite.Sprite):
     def __init__(self, rectdimensions, startpos, speed, health):
         super().__init__()
         self.surf = pg.surface.Surface(rectdimensions)
-        self.surf.set_alpha(0)
+        self.surf.fill((255, 0, 0))
+        self.surf.set_alpha(50)
         self.rect = self.surf.get_rect()
         self.acc = vec(speed)
         self.vel = vec(0, 0)
@@ -33,15 +34,19 @@ class groundmob(pygame.sprite.Sprite):
         self.health -= damage
 
     def deathcheck(self):
-        if self.health <= 0:
+        if self.health <= 0 or self.pos.y > 2000:
             self.killed = True
 
     def move(self):
-        self.vel += self.acc
-        self.vel += self.grav
-        self.vel -= self.fric * self.vel.x
+        self.pos = vec(self.rect.midbottom)
+        if self.grounded:
+            self.vel.x += self.acc.x
+            self.vel.x -= self.fric.x * self.vel.x
+        self.vel.y += self.grav.y
+
         self.pos += self.vel
-        self.rect.center = self.pos
+
+        self.rect.midbottom = self.pos
 
     def groundcheck(self):
         platformhit = pg.sprite.spritecollide(self, platforms, False)
@@ -58,12 +63,13 @@ class groundmob(pygame.sprite.Sprite):
             self.grav.y = 0
         else:
             self.grav.y = 2
+        self.rect.midbottom = self.pos
 
     def obstructioncheck(self):
         if not self.reversed:
-            self.rect.x += 200
+            self.rect.x += 150
         elif self.reversed:
-            self.rect.x -= 200
+            self.rect.x -= 150
         blockcheck = pg.sprite.spritecollide(self, hardblocks, False)
         platformcheck = pg.sprite.spritecollide(self, platforms, False)
         if not blockcheck and not platformcheck:
@@ -74,43 +80,47 @@ class groundmob(pygame.sprite.Sprite):
                     self.obstructed = True
         else:
             self.obstructed = False
-        self.rect.x = self.pos.x
+        self.rect.midbottom = self.pos
 
 
 class flamecroc(groundmob):
     def __init__(self, startpos):
-        super().__init__((200, 100), startpos, 2, 300)
+        super().__init__((100, 180), startpos, 2, 300)
         self.imageset = crocwalk
         self.image = self.imageset[0]
+        self.imageframe = self.image.get_rect()
         self.state = "walking"
 
     def update(self):
-        self.groundcheck()
-        if self.state == "walking":
+        self.move()
+        if self.state == "walking" and self.grounded:
             self.obstructioncheck()
+        self.groundcheck()
+
         self.control()
         self.animate()
-        self.move()
+
         self.render()
 
     def control(self):
-        if self.obstructed and self.timer == 0:
+        if self.obstructed and self.timer == 0 and self.state == "walking":
             self.state = "turning"
         if self.state == "turning":
             self.turn()
 
     def animate(self):
-        cutoff = len(self.imageset)
-        self.image = self.imageset[self.timer]
+        cutoff = 3 * len(self.imageset)
+        self.image = self.imageset[(self.timer // 3)]
         self.timer += 1
-        if self.timer > cutoff:
+        if self.timer == cutoff:
             self.timer = 0
 
     def turn(self):
+        self.obstructed = False
         if self.timer == 0:
             self.imageset = crocrotate
-            self.acc *= -1
-        if self.timer == 7:
+            self.acc.x *= -1
+        if self.timer == 21:
             self.imageset = crocwalk
             self.state = "walking"
             if self.reversed:
@@ -119,11 +129,13 @@ class flamecroc(groundmob):
                 self.reversed = True
 
     def render(self):
-        if self.reversed:
+        self.imageframe.center = self.rect.center
+        screen.blit(self.surf, self.rect)
+        if not self.reversed:
             reverseimg = pg.transform.flip(self.image, True, False)
-            screen.blit(reverseimg, self.rect)
+            screen.blit(reverseimg, self.imageframe)
         else:
-            screen.blit(self.image, self.rect)
+            screen.blit(self.image, self.imageframe)
 
 
 class kamaker(pygame.sprite.Sprite):

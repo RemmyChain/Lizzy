@@ -43,6 +43,9 @@ while running:
 
     # this is for rendering some data on the screen for testing and debugging ets.
 
+    flameystate = font.render("flamey behaviour: " + str(testflamey.state), True, ("black"))
+    flameyground = font.render("flamey grounded: " + str(testflamey.grounded), True, ("black"))
+    flameyobstruct = font.render("flamey obstructed: " + str(testflamey.obstructed), True, ("black"))
     terminal = font.render("angle: " + str(ref.angle), True, ("black"))
     frame = font.render("frame number: " + str(torso.frame), True, ("black"))
     rotangle = font.render("rotation angle: " + str(torso.anglecheck), True, ("black"))
@@ -55,9 +58,12 @@ while running:
         "number of sprites: " + str(len(allsprites)), True, ("black")
     )
     screen.blit(virtualcoords, (20, 20))
-    screen.blit(terminal, (20, 40))
-    screen.blit(lizvelocity, (20, 60))
-    screen.blit(spritenumber, (20, 80))
+    # screen.blit(terminal, (20, 40))
+    # screen.blit(lizvelocity, (20, 40))
+    screen.blit(spritenumber, (20, 40))
+    screen.blit(flameystate, (20, 60))
+    screen.blit(flameyground, (20, 80))
+    screen.blit(flameyobstruct, (20, 100))
 
     pygame.display.update()
 

@@ -65,6 +65,20 @@ class groundmob(pygame.sprite.Sprite):
             self.grav.y = 2
         self.rect.midbottom = self.pos
 
+    def wallcheck(self):
+        oldpos = self.rect.midbottom
+        if not self.reversed:
+            self.rect.x += 50
+
+        elif self.reversed:
+            self.rect.x -= 50
+
+        blockcheck = pg.sprite.spritecollide(self, hardblocks, False)
+        if blockcheck:
+            for i in blockcheck:
+                i.playercheck()
+        self.rect.midbottom = oldpos
+
     def gapcheck(self):
         if not self.reversed:
             self.rect.x += 100
@@ -94,6 +108,7 @@ class flamecroc(groundmob):
         self.move()
         if self.state == "walking" and self.grounded:
             self.gapcheck()
+            self.wallcheck()
         self.groundcheck()
 
         self.control()

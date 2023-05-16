@@ -61,9 +61,9 @@ while running:
     # screen.blit(terminal, (20, 40))
     # screen.blit(lizvelocity, (20, 40))
     screen.blit(spritenumber, (20, 40))
-    screen.blit(flameystate, (20, 60))
-    screen.blit(flameyground, (20, 80))
-    screen.blit(flameyobstruct, (20, 100))
+    # screen.blit(flameystate, (20, 60))
+    # screen.blit(flameyground, (20, 80))
+    # screen.blit(flameyobstruct, (20, 100))
 
     pygame.display.update()
 

@@ -139,6 +139,7 @@ class hardblock(pg.sprite.Sprite):
                 ):
                     i.pos.x = revert
                     i.rect.midbottom = i.pos
+                    i.obstructed = True
                 elif (i.pos.y <= (self.rect.top + 50)) and (
                     (i.vel.x <= 0 and i.rect.center[0] - self.rect.center[0] < 50)
                     or (i.vel.x >= 0 and i.rect.center[0] - self.rect.center[0] > -50)
@@ -362,6 +363,7 @@ class groundblock(pg.sprite.Sprite):
                     i.rect.right = self.rect.right
                     i.pos = vec(i.rect.midbottom)
                     i.vel.x = 0
+                    i.obstructed = True
 
     def rightcheck(self):
         tik = pg.sprite.spritecollide(self, mobs, False)
@@ -371,6 +373,7 @@ class groundblock(pg.sprite.Sprite):
                     i.rect.left = self.rect.right
                     i.pos = vec(i.rect.midbottom)
                     i.vel.x = 0
+                    i.obstructed = True
 
     def update(self):
         screen.blit(self.surf, self.rect)
@@ -503,7 +506,7 @@ enemies.add(kamaker2)
 allsprites.add(kamaker1)
 allsprites.add(kamaker2)
 
-testflamey = flamecroc((-500, 400))
+testflamey = flamecroc((-1000, 400))
 mobs.add(testflamey)
 allsprites.add(testflamey)
 

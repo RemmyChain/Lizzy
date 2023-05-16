@@ -65,19 +65,18 @@ class groundmob(pygame.sprite.Sprite):
             self.grav.y = 2
         self.rect.midbottom = self.pos
 
-    def obstructioncheck(self):
+    def gapcheck(self):
         if not self.reversed:
             self.rect.x += 100
+            self.rect.y += 200
         elif self.reversed:
             self.rect.x -= 100
+            self.rect.y += 200
         blockcheck = pg.sprite.spritecollide(self, hardblocks, False)
         platformcheck = pg.sprite.spritecollide(self, platforms, False)
         if not blockcheck and not platformcheck:
             self.obstructed = True
-        elif blockcheck:
-            for i in blockcheck:
-                if i.rect.centery < self.rect.bottom:
-                    self.obstructed = True
+
         else:
             self.obstructed = False
         self.rect.midbottom = self.pos
@@ -94,7 +93,7 @@ class flamecroc(groundmob):
     def update(self):
         self.move()
         if self.state == "walking" and self.grounded:
-            self.obstructioncheck()
+            self.gapcheck()
         self.groundcheck()
 
         self.control()
@@ -132,7 +131,7 @@ class flamecroc(groundmob):
 
     def render(self):
         self.imageframe.center = self.rect.center
-        screen.blit(self.surf, self.rect)
+        # screen.blit(self.surf, self.rect)
         if not self.reversed:
             reverseimg = pg.transform.flip(self.image, True, False)
             screen.blit(reverseimg, self.imageframe)

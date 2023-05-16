@@ -598,6 +598,7 @@ class LizMain(pygame.sprite.Sprite):
         self.ammo = [200, 200, 200]
         self.ammotype = 0
         self.ammoswitchpressed = False
+        self.obstructed = False
 
     # dying animation controller
 

@@ -3,7 +3,6 @@ from random import randrange, randint, random
 
 import pygame as pg
 
-from images import hitpix
 from initialising import screen, enemies, hazards, allsprites, vec
 from lizzy import ref, liz, gatling
 

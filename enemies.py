@@ -1,16 +1,10 @@
-import pygame
-from pygame import *
-from initialising import *
-from images import *
-import math
-from math import atan2, degrees, floor, sin, cos, radians
-import random
-import fx
 from fx import *
+from images import *
+from initialising import *
 
 
 class groundmob(pygame.sprite.Sprite):
-    def __init__(self, rectdimensions, startpos, speed, health):
+    def __init__(self, rectdimensions, startpos, speed, health, attack):
         super().__init__()
         self.surf = pg.surface.Surface(rectdimensions)
         self.surf.fill((255, 0, 0))
@@ -24,23 +18,27 @@ class groundmob(pygame.sprite.Sprite):
         self.fric = vec(0.2, 0)
         self.grounded = False
         self.gothit = False
-        self.killed = False
         self.health = health
+        self.attack = attack
         self.reversed = False
         self.obstructed = False
         self.timer = 0
+        self.timerreset = False
+        self.duration = 1
+        self.fatality = False
+        self.dying = False
 
-    def gethit(self, damage):
-        self.health -= damage
-
-    def deathcheck(self):
-        if self.health <= 0 or self.pos.y > 2000:
-            self.killed = True
+    def gethit(self, hitcoords, damage, type):
+        if not self.gothit:
+            self.health -= damage
+            self.gothit = True
+            self.timerreset = True
 
     def move(self):
         self.pos = vec(self.rect.midbottom)
         if self.grounded:
-            self.vel.x += self.acc.x
+            if not self.gothit and not self.dying:
+                self.vel.x += self.acc.x
             self.vel.x -= self.fric.x * self.vel.x
         self.vel.y += self.grav.y
 
@@ -98,7 +96,7 @@ class groundmob(pygame.sprite.Sprite):
 
 class flamecroc(groundmob):
     def __init__(self, startpos):
-        super().__init__((100, 180), startpos, 2, 300)
+        super().__init__((100, 180), startpos, 2, 300, 20)
         self.imageset = crocwalk
         self.image = self.imageset[0]
         self.imageframe = self.image.get_rect()
@@ -122,13 +120,19 @@ class flamecroc(groundmob):
             self.state = "turning"
         if self.state == "turning":
             self.turn()
+        if self.gothit:
+            self.hitanim()
+        self.deathcheck()
 
     def animate(self):
         cutoff = 3 * len(self.imageset)
         self.image = self.imageset[(self.timer // 3)]
         self.timer += 1
         if self.timer == cutoff:
-            self.timer = 0
+            if not self.dying:
+                self.timer = 0
+            else:
+                self.timer -= 1
 
     def turn(self):
 
@@ -143,6 +147,34 @@ class flamecroc(groundmob):
                 self.reversed = False
             elif not self.reversed:
                 self.reversed = True
+
+    def deathcheck(self):
+        if self.health <= 0:
+            self.die(0)
+        if self.pos.y > 3000:
+            self.die(1)
+
+    def hitanim(self):
+
+        if self.timerreset:
+            self.timer = 0
+            self.timerreset = False
+            self.imageset = crocdeath
+            self.duration = randint(1, 4)
+        if self.timer == self.duration:
+            self.gothit = False
+            self.timer = 0
+            self.imageset = crocwalk
+
+    def die(self, type):
+        if type == 1:
+            self.kill()
+        if type == 0:
+            if self.fatality:
+                self.timer = 0
+                self.fatality = False
+                self.dying = True
+            self.imageset = crocdeath
 
     def render(self):
         self.imageframe.center = self.rect.center

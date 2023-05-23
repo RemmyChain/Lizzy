@@ -368,7 +368,7 @@ class groundblock(pg.sprite.Sprite):
     def rightcheck(self):
         tik = pg.sprite.spritecollide(self, mobs, False)
         if tik and not self.treaded:
-            for i in mobs:
+            for i in tik:
                 if i.rect.left < self.rect.centerx:
                     i.rect.left = self.rect.right
                     i.pos = vec(i.rect.midbottom)
@@ -509,6 +509,7 @@ allsprites.add(kamaker2)
 testflamey = flamecroc((-1000, 400))
 mobs.add(testflamey)
 allsprites.add(testflamey)
+enemies.add(testflamey)
 
 depthcenter = vec(screen.get_size()) / 2
 depth = depthbg(depthcenter)

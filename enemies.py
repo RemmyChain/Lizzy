@@ -8,7 +8,7 @@ class groundmob(pygame.sprite.Sprite):
         super().__init__()
         self.surf = pg.surface.Surface(rectdimensions)
         self.surf.fill((255, 0, 0))
-        self.surf.set_alpha(50)
+        self.surf.set_alpha(0)
         self.rect = self.surf.get_rect()
         self.acc = vec(speed)
         self.vel = vec(0, 0)
@@ -29,10 +29,13 @@ class groundmob(pygame.sprite.Sprite):
         self.dying = False
 
     def gethit(self, hitcoords, damage, type):
-        if not self.gothit:
+        if not self.dying:
             self.health -= damage
-            self.gothit = True
-            self.timerreset = True
+            hitfx = OrganicHit(hitcoords)
+            allsprites.add(hitfx)
+            if not self.gothit:
+                self.gothit = True
+                self.timerreset = True
 
     def move(self):
         self.pos = vec(self.rect.midbottom)
@@ -96,7 +99,7 @@ class groundmob(pygame.sprite.Sprite):
 
 class flamecroc(groundmob):
     def __init__(self, startpos):
-        super().__init__((100, 180), startpos, 2, 300, 20)
+        super().__init__((100, 180), startpos, 2, 50, 20)
         self.imageset = crocwalk
         self.image = self.imageset[0]
         self.imageframe = self.image.get_rect()
@@ -125,6 +128,8 @@ class flamecroc(groundmob):
         self.deathcheck()
 
     def animate(self):
+        if self.dying:
+            self.imageset = crocdeath
         cutoff = 3 * len(self.imageset)
         self.image = self.imageset[(self.timer // 3)]
         self.timer += 1
@@ -149,7 +154,8 @@ class flamecroc(groundmob):
                 self.reversed = True
 
     def deathcheck(self):
-        if self.health <= 0:
+        if self.health <= 0 and not self.dying:
+            self.fatality = True
             self.die(0)
         if self.pos.y > 3000:
             self.die(1)
@@ -160,7 +166,7 @@ class flamecroc(groundmob):
             self.timer = 0
             self.timerreset = False
             self.imageset = crocdeath
-            self.duration = randint(1, 4)
+            self.duration = randint(1, 9)
         if self.timer == self.duration:
             self.gothit = False
             self.timer = 0
@@ -171,6 +177,7 @@ class flamecroc(groundmob):
             self.kill()
         if type == 0:
             if self.fatality:
+                enemies.remove(self)
                 self.timer = 0
                 self.fatality = False
                 self.dying = True

@@ -154,7 +154,7 @@ class flamecroc(groundmob):
             if (not self.reversed and self.pos.x >= liz.pos.x) or (
                     self.reversed and self.pos.x <= liz.pos.x
             ):
-                if self.state == "walking":
+                if self.state == "walking" and not self.gothit:
                     self.timer = 0
                     self.state = "turning"
         if self.state == "turning":

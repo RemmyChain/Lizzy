@@ -47,7 +47,7 @@ while running:
         "flamey sees Lizzy: " + str(testflamey.playerSeen), True, ("black")
     )
     flameyground = font.render(
-        "flamey grounded: " + str(testflamey.grounded), True, ("black")
+        "flamey aggrevated: " + str(testflamey.aggro), True, ("black")
     )
     flameyobstruct = font.render(
         "flamey obstructed: " + str(testflamey.obstructed), True, ("black")
@@ -68,7 +68,7 @@ while running:
     # screen.blit(lizvelocity, (20, 40))
     screen.blit(spritenumber, (20, 40))
     screen.blit(flameystate, (20, 60))
-    # screen.blit(flameyground, (20, 80))
+    screen.blit(flameyground, (20, 80))
     # screen.blit(flameyobstruct, (20, 100))
 
     pygame.display.update()

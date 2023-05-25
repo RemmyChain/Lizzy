@@ -30,8 +30,8 @@ class groundmob(pygame.sprite.Sprite):
         self.dying = False
         self.playerSeen = False
 
-    def playerdetect(self):
-        if abs(self.pos.x - liz.pos.x) < 800:
+    def playerdetect(self, range):
+        if abs(self.pos.x - liz.pos.x) < range:
             if (not self.reversed and self.pos.x <= liz.pos.x) or (
                     self.reversed and self.pos.x >= liz.pos.x
             ):
@@ -117,13 +117,22 @@ class flamecroc(groundmob):
         self.image = self.imageset[0]
         self.imageframe = self.image.get_rect()
         self.state = "walking"
+        self.aggro = False
+        self.aggroTimer = 0
+
+    def doAggro(self):
+        if not self.aggro:
+            self.aggro = True
+        self.aggroTimer += 1
+        if self.aggroTimer >= 30:
+            self.aggro = False
 
     def update(self):
         self.move()
         if self.state == "walking" and self.grounded:
             self.gapcheck()
             self.wallcheck()
-        self.playerdetect()
+        self.playerdetect(800)
         self.groundcheck()
 
         self.control()
@@ -136,6 +145,18 @@ class flamecroc(groundmob):
         if self.obstructed and self.state == "walking":
             self.timer = 0
             self.state = "turning"
+        if self.playerSeen or self.gothit:
+            self.aggroTimer = 0
+            self.doAggro()
+        elif self.aggro:
+            self.doAggro()
+        if self.aggro:
+            if (not self.reversed and self.pos.x >= liz.pos.x) or (
+                    self.reversed and self.pos.x <= liz.pos.x
+            ):
+                if self.state == "walking":
+                    self.timer = 0
+                    self.state = "turning"
         if self.state == "turning":
             self.turn()
         if self.gothit:

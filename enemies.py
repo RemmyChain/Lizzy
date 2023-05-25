@@ -1,6 +1,7 @@
 from fx import *
 from images import *
 from initialising import *
+from lizzy import liz
 
 
 class groundmob(pygame.sprite.Sprite):
@@ -27,6 +28,18 @@ class groundmob(pygame.sprite.Sprite):
         self.duration = 1
         self.fatality = False
         self.dying = False
+        self.playerSeen = False
+
+    def playerdetect(self):
+        if abs(self.pos.x - liz.pos.x) < 800:
+            if (not self.reversed and self.pos.x <= liz.pos.x) or (
+                    self.reversed and self.pos.x >= liz.pos.x
+            ):
+                self.playerSeen = True
+            else:
+                self.playerSeen = False
+        else:
+            self.playerSeen = False
 
     def gethit(self, hitcoords, damage, type):
         if not self.dying:
@@ -110,6 +123,7 @@ class flamecroc(groundmob):
         if self.state == "walking" and self.grounded:
             self.gapcheck()
             self.wallcheck()
+        self.playerdetect()
         self.groundcheck()
 
         self.control()
@@ -118,6 +132,7 @@ class flamecroc(groundmob):
         self.render()
 
     def control(self):
+
         if self.obstructed and self.state == "walking":
             self.timer = 0
             self.state = "turning"
@@ -140,7 +155,6 @@ class flamecroc(groundmob):
                 self.timer -= 1
 
     def turn(self):
-
         self.obstructed = False
         if self.timer == 0:
             self.imageset = crocrotate
@@ -161,7 +175,6 @@ class flamecroc(groundmob):
             self.die(1)
 
     def hitanim(self):
-
         if self.timerreset:
             self.timer = 0
             self.timerreset = False

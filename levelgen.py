@@ -12,7 +12,8 @@ from initialising import (
     screen,
     hardblocks,
     enemies,
-    depthbg, mobs,
+    depthbg,
+    mobs,
 )
 import pygame as pg
 
@@ -134,9 +135,7 @@ class hardblock(pg.sprite.Sprite):
                 if i.vel.y > 25:
                     i.rect.bottom = self.rect.top
 
-                if (
-                        i.rect.bottom + 10 > self.rect.center[1] > i.rect.top - 10
-                ):
+                if i.rect.bottom + 10 > self.rect.center[1] > i.rect.top - 10:
                     i.pos.x = revert
                     i.rect.midbottom = i.pos
                     i.obstructed = True

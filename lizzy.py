@@ -659,8 +659,7 @@ class LizMain(pygame.sprite.Sprite):
     # main update routine
 
     def update(self):
-        if not self.dying and not self.dead:
-            self.gethit()
+
         self.move()
 
         self.integrate()
@@ -670,6 +669,8 @@ class LizMain(pygame.sprite.Sprite):
         torso.update()
         gatling.rotate()
         self.terrainInteract()
+        if not self.dying and not self.dead:
+            self.gethit()
 
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)

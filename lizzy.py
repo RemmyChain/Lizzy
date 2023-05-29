@@ -669,6 +669,7 @@ class LizMain(pygame.sprite.Sprite):
         self.deathcheck()
         torso.update()
         gatling.rotate()
+        self.terrainInteract()
 
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
@@ -900,9 +901,7 @@ class LizMain(pygame.sprite.Sprite):
             elif direction == "down":
                 self.meleetoken[2] -= 1
 
-    # controlling movement and actions based on keyboard and mouse input
-
-    def move(self):
+    def terrainInteract(self):
         # testing if Liz is touching any platforms and if not, setting grounded to false
         footing = pygame.sprite.spritecollide(self, platforms, False)
         standing = pygame.sprite.spritecollide(self, hardblocks, False)
@@ -925,6 +924,10 @@ class LizMain(pygame.sprite.Sprite):
             self.grav.y = 0
         else:
             self.grav.y = 2
+
+    # controlling movement and actions based on keyboard and mouse input
+
+    def move(self):
 
         # key input:
 

@@ -2,6 +2,7 @@ from fx import *
 from images import *
 from initialising import *
 from lizzy import liz
+from math import atan, atan2, degrees, floor, sin, cos, radians, sqrt
 
 
 class groundmob(pygame.sprite.Sprite):
@@ -29,6 +30,7 @@ class groundmob(pygame.sprite.Sprite):
         self.fatality = False
         self.dying = False
         self.playerSeen = False
+        self.stop = False
 
     def playerdetect(self, range):
         if abs(self.pos.x - liz.pos.x) < range:
@@ -53,7 +55,7 @@ class groundmob(pygame.sprite.Sprite):
     def move(self):
         self.pos = vec(self.rect.midbottom)
         if self.grounded:
-            if not self.gothit and not self.dying:
+            if not self.gothit and not self.dying and not self.stop:
                 self.vel.x += self.acc.x
             self.vel.x -= self.fric.x * self.vel.x
         self.vel.y += self.grav.y
@@ -112,13 +114,35 @@ class groundmob(pygame.sprite.Sprite):
 
 class flamecroc(groundmob):
     def __init__(self, startpos):
-        super().__init__((100, 180), startpos, 2, 50, 20)
+        super().__init__((100, 180), startpos, (2, 0), 50, 20)
         self.imageset = crocwalk
         self.image = self.imageset[0]
         self.imageframe = self.image.get_rect()
         self.state = "walking"
         self.aggro = False
         self.aggroTimer = 0
+        self.power = 20
+        self.timer2 = 0
+
+    def utilityTimer(self):
+        self.timer2 += 1
+        if self.timer2 > 40:
+            self.timer2 = 0
+
+    def firingAngle(self, speed, gravity, x, y):
+        quadratic = speed ** 4 - gravity * (gravity * x ** 2 + 2 * speed ** 2 * y)
+        tangent = (speed ** 2 - sqrt(quadratic)) / (gravity * x)
+        angle = degrees(atan(tangent))
+        return angle
+
+    def fire(self):
+
+        if self.state == "firing":
+            self.stop = True
+
+        if self.timer2 < 10 or self.timer2 > 30:
+            self.state = "walking"
+            self.stop = False
 
     def doAggro(self):
         if not self.aggro:
@@ -128,6 +152,7 @@ class flamecroc(groundmob):
             self.aggro = False
 
     def update(self):
+        self.utilityTimer()
         self.move()
         if self.state == "walking" and self.grounded:
             self.gapcheck()
@@ -136,7 +161,8 @@ class flamecroc(groundmob):
         self.groundcheck()
 
         self.control()
-        self.animate()
+        if self.state != "firing":
+            self.animate()
 
         self.render()
 
@@ -145,6 +171,8 @@ class flamecroc(groundmob):
         if self.obstructed and self.state == "walking":
             self.timer = 0
             self.state = "turning"
+        if self.state == "walking" and self.playerSeen and 10 < self.timer2 < 30:
+            self.state = "firing"
         if self.playerSeen or self.gothit:
             self.aggroTimer = 0
             self.doAggro()
@@ -159,6 +187,8 @@ class flamecroc(groundmob):
                     self.state = "turning"
         if self.state == "turning":
             self.turn()
+        if self.state == "firing":
+            self.fire()
         if self.gothit:
             self.hitanim()
         self.deathcheck()

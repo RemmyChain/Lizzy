@@ -118,6 +118,11 @@ class flamecroc(groundmob):
         self.imageset = crocwalk
         self.image = self.imageset[0]
         self.imageframe = self.image.get_rect()
+        self.sheet = pg.surface.Surface((279, 200))
+        self.sheet.set_alpha(255)
+        self.sheet.fill((0, 0, 0))
+        self.sheetrect = self.sheet.get_rect()
+        self.sheet.set_colorkey((0, 0, 0))
         self.state = "walking"
         self.aggro = False
         self.aggroTimer = 0
@@ -126,7 +131,7 @@ class flamecroc(groundmob):
 
     def utilityTimer(self):
         self.timer2 += 1
-        if self.timer2 > 40:
+        if self.timer2 > 100:
             self.timer2 = 0
 
     def firingAngle(self, speed, gravity, x, y):
@@ -137,10 +142,15 @@ class flamecroc(groundmob):
 
     def fire(self):
 
-        if self.state == "firing":
+        if self.state == "firing" and not self.stop:
             self.stop = True
+            self.sheet.blit(crocextra[2], (50, 70))
+            self.sheet.blit(crocextra[3], self.sheetrect)
+            self.sheet.blit(crocextra[1], (28, 22))
+            self.sheet.blit(crocextra[0], self.sheetrect)
+            self.image = self.sheet
 
-        if self.timer2 < 10 or self.timer2 > 30:
+        if self.timer2 < 20 or self.timer2 > 70:
             self.state = "walking"
             self.stop = False
 
@@ -171,7 +181,7 @@ class flamecroc(groundmob):
         if self.obstructed and self.state == "walking":
             self.timer = 0
             self.state = "turning"
-        if self.state == "walking" and self.playerSeen and 10 < self.timer2 < 30:
+        if self.state == "walking" and self.playerSeen and 20 < self.timer2 < 70 and not self.dying:
             self.state = "firing"
         if self.playerSeen or self.gothit:
             self.aggroTimer = 0

@@ -140,15 +140,30 @@ class flamecroc(groundmob):
         angle = degrees(atan(tangent))
         return angle
 
+    def watchAngle(self, x, y):
+        angle = degrees(atan2(x, y))
+        angle += 270
+        if angle > 360:
+            angle -= 360
+        return angle
+
     def fire(self):
+        self.sheet.fill((0, 0, 0))
 
         if self.state == "firing" and not self.stop:
             self.stop = True
-            self.sheet.blit(crocextra[2], (50, 70))
-            self.sheet.blit(crocextra[3], self.sheetrect)
-            self.sheet.blit(crocextra[1], (28, 22))
-            self.sheet.blit(crocextra[0], self.sheetrect)
-            self.image = self.sheet
+        x = liz.rect.centerx - self.rect.centerx
+        y = self.rect.centery - liz.rect.centery
+        absx = abs(x)
+        watchangle = self.watchAngle(absx, y)
+        crochead = pg.transform.rotate(crocextra[1], watchangle)
+        crocrect = crochead.get_rect()
+        crocrect.center = (110, 55)
+        self.sheet.blit(crocextra[2], (50, 70))
+        self.sheet.blit(crocextra[3], self.sheetrect)
+        self.sheet.blit(crochead, crocrect)
+        self.sheet.blit(crocextra[0], self.sheetrect)
+        self.image = self.sheet
 
         if self.timer2 < 20 or self.timer2 > 70:
             self.state = "walking"

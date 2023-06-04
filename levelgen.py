@@ -401,27 +401,43 @@ class groundblock(pg.sprite.Sprite):
 
                 elif self.type == "startramp":
                     self.topcheck("startramp")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x -= 0.5
 
                 elif self.type == "startrampreverse":
                     self.topcheck("startrampreverse")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x += 0.5
 
                 elif self.type == "slant":
                     self.topcheck("slant")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x -= 0.5
 
                 elif self.type == "slantreverse":
                     self.topcheck("slantreverse")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x += 0.5
 
                 elif self.type == "stopramp":
                     self.topcheck("stopramp")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x -= 0.5
 
                 elif self.type == "stoprampreverse":
                     self.topcheck("stoprampreverse")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x += 0.5
 
                 elif self.type == "tallslant":
                     self.topcheck("tallslant")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x -= 1
 
                 elif self.type == "tallslantreverse":
                     self.topcheck("tallslantreverse")
+                    if i.grounded and abs(i.vel.x) > 1:
+                        i.vel.x += 1
 
             # self.rightcheck()
 

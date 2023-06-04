@@ -170,22 +170,27 @@ class flamecroc(groundmob):
         y = self.rect.centery - liz.rect.centery
         absx = abs(x)
         watchangle = self.watchAngle(absx, y)
+        fireangle = self.firingAngle(self.power, 2, x, y)
+        firerotate = degrees(self.firingAngle(self.power, 2, absx, y))
         crochead = pg.transform.rotate(crocextra[1], watchangle)
         crocrect = crochead.get_rect()
         crocrect.center = (110, 55)
+        crocgun = pg.transform.rotate(crocextra[0], firerotate)
+        gunrect = crocgun.get_rect()
+        gunrect.center = (130, 100)
         self.sheet.blit(crocextra[2], (50, 70))
         self.sheet.blit(crocextra[3], self.sheetrect)
         self.sheet.blit(crochead, crocrect)
-        self.sheet.blit(crocextra[0], self.sheetrect)
+        self.sheet.blit(crocgun, gunrect)
         self.image = self.sheet
 
         if self.timer2 < 20 or self.timer2 > 70:
             self.state = "walking"
             self.stop = False
         if self.timer2 > 25:
-            blob = fireBlob(self.power, self.firingAngle(self.power, 2, x, y), self.rect.center)
+            blob = fireBlob(self.power, fireangle, self.rect.center)
             allsprites.add(blob)
-            # mobs.add(blob)
+            hazards.add(blob)
 
     def doAggro(self):
         if not self.aggro:
@@ -303,13 +308,21 @@ class flamecroc(groundmob):
 class fireBlob(pygame.sprite.Sprite):
     def __init__(self, power, angle, coords):
         super().__init__()
-        self.surf = pygame.Surface((5, 5))
+        self.surf = pygame.Surface((6, 6))
         self.rect = self.surf.get_rect()
         self.surf.fill((0, 0, 0))
         self.surf.set_colorkey((0, 0, 0))
         pg.draw.circle(self.surf, ((255, 255, 50)), (3, 3), 3)
+        self.glow = pygame.Surface((20, 20))
+        self.glowrect = self.glow.get_rect()
+
+        self.glow.fill((0, 0, 0))
+        self.glow.set_colorkey((0, 0, 0))
+        self.glow.set_alpha(70)
+        pg.draw.circle(self.glow, ((180, 40, 0)), (10, 10), 10)
         self.pos = vec(coords)
         self.rect.center = self.pos
+        self.glowrect.center = self.pos
         self.gravity = 2
         err = random() - 0.5
 
@@ -317,11 +330,17 @@ class fireBlob(pygame.sprite.Sprite):
         self.angle = angle + err / 10
         self.vel = vec((cos(self.angle) * self.speed), (sin(self.angle) * self.speed))
         self.grounded = False
+        self.obstructed = False
         self.timer = 0
 
     def update(self):
+        if not self.grounded:
+            self.gravity = 2
         self.move()
-        # self.groundcheck()
+        if self.timer > 3:
+            mobs.add(self)
+
+            self.groundcheck()
         if self.timer > 3:
             self.render()
         self.timer += 1
@@ -334,8 +353,11 @@ class fireBlob(pygame.sprite.Sprite):
         if self.grounded:
             self.vel.y = 0
             self.vel.x *= 0.9
+        if self.obstructed:
+            self.vel.x *= -0.1
         self.pos += self.vel
         self.rect.center = self.pos
+        self.glowrect.center = self.pos
 
     def groundcheck(self):
         platformhit = pg.sprite.spritecollide(self, platforms, False)
@@ -348,13 +370,11 @@ class fireBlob(pygame.sprite.Sprite):
         if hardblockhit:
             for i in hardblockhit:
                 i.playercheck()
-        if self.grounded:
-            self.gravity = 0
-        else:
-            self.gravity = 2
 
     def render(self):
+
         screen.blit(self.surf, self.rect)
+        screen.blit(self.glow, self.glowrect, special_flags=BLEND_RGB_ADD)
 
 
 class kamaker(pygame.sprite.Sprite):

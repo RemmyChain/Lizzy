@@ -184,10 +184,10 @@ class flamecroc(groundmob):
         self.sheet.blit(crocgun, gunrect)
         self.image = self.sheet
 
-        if self.timer2 < 20 or self.timer2 > 70:
+        if self.timer2 < 20 or self.timer2 > 60:
             self.state = "walking"
             self.stop = False
-        if self.timer2 > 25:
+        if self.timer2 > 30:
             blob = fireBlob(self.power, fireangle, self.rect.center)
             allsprites.add(blob)
             hazards.add(blob)
@@ -308,18 +308,18 @@ class flamecroc(groundmob):
 class fireBlob(pygame.sprite.Sprite):
     def __init__(self, power, angle, coords):
         super().__init__()
-        self.surf = pygame.Surface((6, 6))
+        self.surf = pygame.Surface((20, 20))
         self.rect = self.surf.get_rect()
         self.surf.fill((0, 0, 0))
         self.surf.set_colorkey((0, 0, 0))
-        pg.draw.circle(self.surf, ((255, 255, 50)), (3, 3), 3)
+        pg.draw.circle(self.surf, ((255, 255, 50)), (10, 10), 3)
         self.glow = pygame.Surface((20, 20))
         self.glowrect = self.glow.get_rect()
 
         self.glow.fill((0, 0, 0))
         self.glow.set_colorkey((0, 0, 0))
         self.glow.set_alpha(70)
-        pg.draw.circle(self.glow, ((180, 40, 0)), (10, 10), 10)
+        pg.draw.circle(self.glow, ((180, 40, 0)), (7, 7), 10)
         self.pos = vec(coords)
         self.rect.center = self.pos
         self.glowrect.center = self.pos
@@ -332,19 +332,21 @@ class fireBlob(pygame.sprite.Sprite):
         self.grounded = False
         self.obstructed = False
         self.timer = 0
+        self.length = 20
+        self.factor = 1.7
 
     def update(self):
         if not self.grounded:
             self.gravity = 2
         self.move()
-        if self.timer > 3:
+        if self.timer > 4:
             mobs.add(self)
 
             self.groundcheck()
         if self.timer > 3:
             self.render()
         self.timer += 1
-        if self.timer > 40:
+        if self.timer > 35:
             self.kill()
 
     def move(self):
@@ -372,6 +374,11 @@ class fireBlob(pygame.sprite.Sprite):
                 i.playercheck()
 
     def render(self):
+        if self.timer % 3 == 0:
+            self.length *= self.factor
+            self.surf = pg.transform.scale(self.surf, (self.length, self.length))
+            self.glow = pg.transform.scale(self.glow, (self.length, self.length))
+            self.factor *= 0.85
 
         screen.blit(self.surf, self.rect)
         screen.blit(self.glow, self.glowrect, special_flags=BLEND_RGB_ADD)

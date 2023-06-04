@@ -3,6 +3,7 @@ from images import *
 from initialising import *
 from lizzy import liz
 from math import atan, atan2, degrees, floor, sin, cos, radians, sqrt
+from random import randrange, randint, random
 
 
 class groundmob(pygame.sprite.Sprite):
@@ -126,7 +127,7 @@ class flamecroc(groundmob):
         self.state = "walking"
         self.aggro = False
         self.aggroTimer = 0
-        self.power = 20
+        self.power = 40
         self.timer2 = 0
 
     def utilityTimer(self):
@@ -135,9 +136,22 @@ class flamecroc(groundmob):
             self.timer2 = 0
 
     def firingAngle(self, speed, gravity, x, y):
+        flip = x
+        x = abs(x)
+        gravity *= -1
+        y *= -1
+        if x == 0:
+            x = 0.01
         quadratic = speed ** 4 - gravity * (gravity * x ** 2 + 2 * speed ** 2 * y)
-        tangent = (speed ** 2 - sqrt(quadratic)) / (gravity * x)
-        angle = degrees(atan(tangent))
+        if quadratic < 0:
+            quadratic = 0
+        divider = gravity * x
+        tangent = (speed ** 2 - sqrt(quadratic)) / divider
+        angle = atan(tangent)
+
+        if flip < 0:
+            angle = pi - angle
+
         return angle
 
     def watchAngle(self, x, y):
@@ -168,6 +182,10 @@ class flamecroc(groundmob):
         if self.timer2 < 20 or self.timer2 > 70:
             self.state = "walking"
             self.stop = False
+        if self.timer2 > 25:
+            blob = fireBlob(self.power, self.firingAngle(self.power, 2, x, y), self.rect.center)
+            allsprites.add(blob)
+            # mobs.add(blob)
 
     def doAggro(self):
         if not self.aggro:
@@ -280,6 +298,63 @@ class flamecroc(groundmob):
             screen.blit(reverseimg, self.imageframe)
         else:
             screen.blit(self.image, self.imageframe)
+
+
+class fireBlob(pygame.sprite.Sprite):
+    def __init__(self, power, angle, coords):
+        super().__init__()
+        self.surf = pygame.Surface((5, 5))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((0, 0, 0))
+        self.surf.set_colorkey((0, 0, 0))
+        pg.draw.circle(self.surf, ((255, 255, 50)), (3, 3), 3)
+        self.pos = vec(coords)
+        self.rect.center = self.pos
+        self.gravity = 2
+        err = random() - 0.5
+
+        self.speed = power + err
+        self.angle = angle + err / 10
+        self.vel = vec((cos(self.angle) * self.speed), (sin(self.angle) * self.speed))
+        self.grounded = False
+        self.timer = 0
+
+    def update(self):
+        self.move()
+        # self.groundcheck()
+        if self.timer > 3:
+            self.render()
+        self.timer += 1
+        if self.timer > 40:
+            self.kill()
+
+    def move(self):
+        self.pos = vec(self.rect.center)
+        self.vel.y += self.gravity
+        if self.grounded:
+            self.vel.y = 0
+            self.vel.x *= 0.9
+        self.pos += self.vel
+        self.rect.center = self.pos
+
+    def groundcheck(self):
+        platformhit = pg.sprite.spritecollide(self, platforms, False)
+        hardblockhit = pg.sprite.spritecollide(self, hardblocks, False)
+        if not platformhit and not hardblockhit:
+            self.grounded = False
+        if platformhit:
+            for i in platformhit:
+                i.playercheck()
+        if hardblockhit:
+            for i in hardblockhit:
+                i.playercheck()
+        if self.grounded:
+            self.gravity = 0
+        else:
+            self.gravity = 2
+
+    def render(self):
+        screen.blit(self.surf, self.rect)
 
 
 class kamaker(pygame.sprite.Sprite):

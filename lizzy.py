@@ -675,8 +675,8 @@ class LizMain(pygame.sprite.Sprite):
     def gethit(self):
         ouch = pygame.sprite.spritecollide(self, enemies, False)
         yikes = pygame.sprite.spritecollide(self, hazards, False)
-        if ouch or yikes:
-            self.pos -= self.vel
+        # if ouch or yikes:
+        #    self.pos -= self.vel
 
         if ouch and not self.gothit and self.hittimer == 0 and not self.immune:
             self.health -= ouch[0].attack
@@ -978,10 +978,10 @@ class LizMain(pygame.sprite.Sprite):
         ):
             gatling.winddown()
         # move left and right:
-        if key[K_d] and not self.gothit and not self.dying:
+        if key[K_d] and not self.dying:
             self.vel.x += self.acc.x
 
-        if key[K_a] and not self.gothit and not self.dying:
+        if key[K_a] and not self.dying:
             self.vel.x -= self.acc.x
 
         # setting melee token if grounded and not pressing melee button:
@@ -1064,7 +1064,7 @@ class LizMain(pygame.sprite.Sprite):
         # position change based on velocity
         self.pos += self.vel
         self.rect.midbottom = self.pos
-        if self.vel.x < 0.1 and self.vel.x > -0.1:
+        if 0.1 > self.vel.x > -0.1:
             self.vel.x = 0
 
         if self.vel.x > 0:

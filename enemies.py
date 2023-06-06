@@ -171,6 +171,11 @@ class flamecroc(groundmob):
         absx = abs(x)
         watchangle = self.watchAngle(absx, y)
         fireangle = self.firingAngle(self.power, 2, x, y)
+        if not self.reversed and fireangle > pi / 2:
+            fireangle = pi / 2
+        elif self.reversed and fireangle < pi / 2:
+            fireangle = pi / 2
+
         firerotate = degrees(self.firingAngle(self.power, 2, absx, y))
         crochead = pg.transform.rotate(crocextra[1], watchangle)
         crocrect = crochead.get_rect()

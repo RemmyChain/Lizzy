@@ -220,11 +220,15 @@ class flamecroc(groundmob):
         self.render()
 
     def control(self):
-
         if self.obstructed and self.state == "walking":
             self.timer = 0
             self.state = "turning"
-        if self.state == "walking" and self.playerSeen and 20 < self.timer2 < 70 and not self.dying:
+        if (
+                self.state == "walking"
+                and self.playerSeen
+                and 20 < self.timer2 < 70
+                and not self.dying
+        ):
             self.state = "firing"
         if self.playerSeen or self.gothit:
             self.aggroTimer = 0

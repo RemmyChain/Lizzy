@@ -659,7 +659,6 @@ class LizMain(pygame.sprite.Sprite):
     # main update routine
 
     def update(self):
-
         self.move()
 
         self.integrate()
@@ -929,7 +928,6 @@ class LizMain(pygame.sprite.Sprite):
     # controlling movement and actions based on keyboard and mouse input
 
     def move(self):
-
         # key input:
 
         key = pygame.key.get_pressed()

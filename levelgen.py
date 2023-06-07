@@ -109,6 +109,8 @@ class basicplatformblock(pg.sprite.Sprite):
                         i.pos.y = self.rect.top + 1
                         i.vel.y = 0
                         i.grounded = True
+                    else:
+                        i.grounded = False
 
 
 # hard block class (blocks player movement and normal attacks, also is a platform)
@@ -529,10 +531,6 @@ flamey2 = flamecroc((3000, 400))
 mobs.add(flamey2)
 allsprites.add(flamey2)
 enemies.add(flamey2)
-flamey3 = flamecroc((2700, 0))
-mobs.add(flamey3)
-allsprites.add(flamey3)
-enemies.add(flamey3)
 
 depthcenter = vec(screen.get_size()) / 2
 depth = depthbg(depthcenter)

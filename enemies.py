@@ -119,7 +119,7 @@ class flamecroc(groundmob):
         self.imageset = crocwalk
         self.image = self.imageset[0]
         self.imageframe = self.image.get_rect()
-        self.sheet = pg.surface.Surface((279, 200))
+        self.sheet = pg.surface.Surface((279, 300))
         self.sheet.set_alpha(255)
         self.sheet.fill((0, 0, 0))
         self.sheetrect = self.sheet.get_rect()
@@ -179,15 +179,16 @@ class flamecroc(groundmob):
         firerotate = degrees(self.firingAngle(self.power, 2, absx, y))
         crochead = pg.transform.rotate(crocextra[1], watchangle)
         crocrect = crochead.get_rect()
-        crocrect.center = (110, 55)
+        crocrect.center = (110, 90)
         crocgun = pg.transform.rotate(crocextra[0], firerotate)
         gunrect = crocgun.get_rect()
-        gunrect.center = (130, 100)
+        gunrect.center = (130, 140)
         hose = pg.transform.rotate(crocextra[2], firerotate)
         hoserect = hose.get_rect()
-        hoserect.center = (130, 100)
+        hoserect.center = (130, 140)
+        center = (0, 30)
         self.sheet.blit(hose, hoserect)
-        self.sheet.blit(crocextra[3], self.sheetrect)
+        self.sheet.blit(crocextra[3], center)
         self.sheet.blit(crochead, crocrect)
         self.sheet.blit(crocgun, gunrect)
         self.image = self.sheet
@@ -310,6 +311,8 @@ class flamecroc(groundmob):
     def render(self):
         self.imageframe.center = self.rect.center
         # screen.blit(self.surf, self.rect)
+        if self.state == "firing":
+            self.imageframe.centery = self.rect.centery - 30
         if not self.reversed:
             reverseimg = pg.transform.flip(self.image, True, False)
             screen.blit(reverseimg, self.imageframe)

@@ -115,7 +115,7 @@ class groundmob(pygame.sprite.Sprite):
 
 class flamecroc(groundmob):
     def __init__(self, startpos):
-        super().__init__((100, 180), startpos, (2, 0), 50, 20)
+        super().__init__((100, 180), startpos, (2, 0), 80, 20)
         self.imageset = crocwalk
         self.image = self.imageset[0]
         self.imageframe = self.image.get_rect()
@@ -359,18 +359,31 @@ class gashitbox(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.attack = 0
-        self.health = 10
+        self.health = 20
         self.pos = vec(0, 0)
-        self.surf = pg.surface.Surface((60, 80))
+        self.surf = pg.surface.Surface((50, 70))
         self.rect = self.surf.get_rect()
         self.surf.fill((255, 0, 0))
         self.surf.set_alpha(0)
+
+    def erupt(self):
+
+        for i in range(40):
+            randompower = random() * 20 + 15
+            randomangle = random() * 2 * pi
+            blob = fireBlob(randompower, randomangle, self.pos)
+            allsprites.add(blob)
+            hazards.add(blob)
 
     def update(self):
         self.rect.center = self.pos
 
     def gethit(self, hitcoords, damage, type):
         self.health -= damage
+        sparkz = metalhit(hitcoords)
+        allsprites.add(sparkz)
+        if self.health <= 0:
+            self.erupt()
 
 
 class fireBlob(pygame.sprite.Sprite):

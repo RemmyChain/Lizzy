@@ -434,6 +434,56 @@ class groundimpact(pg.sprite.Sprite):
         if self.timer > 10:
             self.kill()
 
+class metalhit(pg.sprite.Sprite):
+    def __init__(self, coords):
+        super().__init__()
+        self.surf = pg.surface.Surface((100, 100))
+        self.surf.fill((0, 0, 0))
+        self.surf.set_colorkey((0, 0, 0))
+        self.rect = self.surf.get_rect()
+        self.rect.center = coords
+        self.sparks = []
+        self.timer = 0
+
+        for i in range(randint(2, 5)):
+            randomizer = random()
+            randomizer += 1
+            randomizer *= 10
+            negativizer = randint(0, 1)
+            if negativizer == 0:
+                randomizer *= -1
+
+            randomdir = randomizer
+            xpos = 50
+            ypos = 50
+            spark = particle(
+                xpos,
+                ypos,
+                randomdir,
+                randomdir,
+                0,
+                0,
+                4,
+                -0.5,
+                (255, 220, 150),
+                self.surf,
+                (0, 0, 0),
+                True,
+            )
+            self.sparks.append(spark)
+
+    def update(self):
+
+        self.surf.fill((0, 0, 0))
+        for i in range(len(self.sparks)):
+            self.sparks[i].draw()
+
+        self.timer += 1
+
+        screen.blit(self.surf, self.rect)
+
+        if self.timer > 15:
+            self.kill()
 
 class spriticle(pg.sprite.Sprite):
     def __init__(self, coords, rotation):

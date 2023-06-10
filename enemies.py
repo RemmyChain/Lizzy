@@ -126,6 +126,7 @@ class flamecroc(groundmob):
         self.sheet.set_colorkey((0, 0, 0))
         self.state = "walking"
         self.aggro = False
+        self.exploding = False
         self.aggroTimer = 0
         self.power = 40
         self.timer2 = 0
@@ -235,6 +236,7 @@ class flamecroc(groundmob):
                 and self.playerSeen
                 and 20 < self.timer2 < 70
                 and not self.dying
+                and not self.exploding
         ):
             self.state = "firing"
         if self.playerSeen or self.gothit:
@@ -260,12 +262,16 @@ class flamecroc(groundmob):
     def animate(self):
         if self.dying:
             self.imageset = crocdeath
+        if self.exploding:
+            self.imageset = crocflamedeath
         cutoff = 3 * len(self.imageset)
         self.image = self.imageset[(self.timer // 3)]
         self.timer += 1
         if self.timer == cutoff:
             if not self.dying:
                 self.timer = 0
+            elif self.exploding:
+                self.kill()
             else:
                 self.timer -= 1
 
@@ -310,6 +316,10 @@ class flamecroc(groundmob):
                 self.fatality = False
                 self.dying = True
             self.imageset = crocdeath
+        if type == 2:
+            self.exploding = True
+            self.dying = True
+            self.imageset = crocflamedeath
 
     def render(self):
         self.imageframe.center = self.rect.center
@@ -338,6 +348,10 @@ class flamecroc(groundmob):
 
         self.gaz.update()
         if self.gaz.health <= 0:
+            # self.fatality = True
+            self.die(2)
+            self.gaz.kill()
+        if self.exploding or self.dying:
             self.gaz.kill()
 
 
@@ -350,11 +364,10 @@ class gashitbox(pygame.sprite.Sprite):
         self.surf = pg.surface.Surface((60, 80))
         self.rect = self.surf.get_rect()
         self.surf.fill((255, 0, 0))
+        self.surf.set_alpha(0)
 
     def update(self):
         self.rect.center = self.pos
-        if self.health > 0:
-            screen.blit(self.surf, self.rect)
 
     def gethit(self, hitcoords, damage, type):
         self.health -= damage

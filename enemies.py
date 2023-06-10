@@ -129,6 +129,8 @@ class flamecroc(groundmob):
         self.aggroTimer = 0
         self.power = 40
         self.timer2 = 0
+        self.gaz = gashitbox()
+        enemies.add(self.gaz)
 
     def utilityTimer(self):
         self.timer2 += 1
@@ -222,6 +224,7 @@ class flamecroc(groundmob):
             self.animate()
 
         self.render()
+        self.gasboxcontrol()
 
     def control(self):
         if self.obstructed and self.state == "walking":
@@ -318,6 +321,43 @@ class flamecroc(groundmob):
             screen.blit(reverseimg, self.imageframe)
         else:
             screen.blit(self.image, self.imageframe)
+
+    def gasboxcontrol(self):
+        if self.state != "turning":
+            if self.reversed:
+                self.gaz.pos = vec(self.rect.center) + vec(35, -40)
+            elif not self.reversed:
+                self.gaz.pos = vec(self.rect.center) + vec(-35, -40)
+        elif self.state == "turning":
+            increment = 70 / 21
+
+            if self.reversed:
+                self.gaz.pos = vec(self.rect.center) + vec((35 - self.timer * increment), -40)
+            elif not self.reversed:
+                self.gaz.pos = vec(self.rect.center) + vec((-35 + self.timer * increment), -40)
+
+        self.gaz.update()
+        if self.gaz.health <= 0:
+            self.gaz.kill()
+
+
+class gashitbox(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.attack = 0
+        self.health = 10
+        self.pos = vec(0, 0)
+        self.surf = pg.surface.Surface((60, 80))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255, 0, 0))
+
+    def update(self):
+        self.rect.center = self.pos
+        if self.health > 0:
+            screen.blit(self.surf, self.rect)
+
+    def gethit(self, hitcoords, damage, type):
+        self.health -= damage
 
 
 class fireBlob(pygame.sprite.Sprite):

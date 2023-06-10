@@ -255,7 +255,7 @@ class flamecroc(groundmob):
             self.turn()
         if self.state == "firing":
             self.fire()
-        if self.gothit:
+        if self.gothit and not self.dying:
             self.hitanim()
         self.deathcheck()
 

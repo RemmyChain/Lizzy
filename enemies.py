@@ -196,7 +196,7 @@ class flamecroc(groundmob):
         self.sheet.blit(crocgun, gunrect)
         self.image = self.sheet
 
-        if self.timer2 < 20 or self.timer2 > 60:
+        if self.timer2 < 20 or self.timer2 > 60 or self.exploding:
             self.state = "walking"
             self.stop = False
         if self.timer2 > 30:
